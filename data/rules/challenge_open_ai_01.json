@@ -1,0 +1,14 @@
+{
+  "ruleset_id": "OPEN-AI-01",
+  "version": "2026-10-11.teammate-rules.1",
+  "source_note": "Material rejection and review policy restored from teammate commit 60f2057 (2026-10-08.1). Existing workbench demo/full-intake package profiles and document adapters retained. Challenge PDF, 光伏自核材料及规则-v2.xlsx Sheet1, and 光伏风险等级评估方案_安装方式完善版.docx were supplied. The DOCX adds installation applicability and historical screening requirements but contains no high-fire industry names or surcharge/intercept schedule. Those business rules and comparable annual wind/hail/snow series remain unconfigured. Legacy 0.75/1.25 demo ratios are not applied to catastrophe ratings.",
+  "high_fire_risk_industries": [],
+  "environment_auto_reject_relations": [
+    "project_site"
+  ],
+  "environment_auto_reject_min_confidence": 0.65,
+  "advanced_checks_enabled": false,
+  "catastrophe_adequate_margin_ratio": 1.25,
+  "catastrophe_critical_shortfall_ratio": 0.75,
+  "package_requirement_profile": "demo_minimum"
+}

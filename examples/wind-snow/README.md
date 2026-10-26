@@ -1,0 +1,1 @@
+TEST-5400、example.com和来源文字都是人工构造的测试夹具，不是真实组件、厂家网址或真实现场。默认示例风能力5400Pa、雪能力6000Pa。预期风637.5Pa、雪250Pa，整体低，但can_auto_approve为false。created_at等时间字段不作逐字比对。真实API会自行查询组件，不能将fixture作为浏览器能力输入。

@@ -1,0 +1,44 @@
+(function(){
+'use strict';const $=id=>document.getElementById(id),form=$('strategyForm');let catalog,baseId=null,rules=[];
+const valueNames={accept:'建议通过',conditional_accept:'有条件通过',request_more:'需要补材',manual_review:'待人工复核',recommend_reject:'建议拒保',surcharge:'加费建议',low:'低',medium:'中',high:'高',critical:'极高',unknown:'未知／待核',sufficient:'判断依据充分',incomplete:'判断依据不足'};
+const statuses={active:'生效中',pending:'待生效',expired:'已到期',revoked:'已撤销'};
+const el=(t,text)=>{const n=document.createElement(t);if(text!=null)n.textContent=text;return n;};
+function message(t){$('status').textContent=t;}
+async function api(path='',body){const r=await fetch('/api/v1/strategies'+path,{method:body?'POST':'GET',headers:body?{'Content-Type':'application/json'}:{},body:body?JSON.stringify(body):undefined,cache:'no-store'}),d=await r.json();if(!r.ok)throw Error(r.status===403?'当前账号权限不足；发布与撤销需管理员权限。':typeof d.detail==='string'?d.detail:JSON.stringify(d.detail));return d;}
+function input(parent,label,type,value,change,required=false){const wrap=el('label',label);wrap.className='field';const n=el(type==='textarea'?'textarea':'input');if(type!=='textarea')n.type=type;n.value=value??'';n.required=required;n.setAttribute('aria-label',label);n.oninput=()=>change(n.value);wrap.append(n);parent.append(wrap);return n;}
+function select(parent,label,options,value,change){const wrap=el('label',label);wrap.className='field';const n=el('select');n.setAttribute('aria-label',label);for(const [v,t]of Object.entries(options))n.append(new Option(t,v));n.value=value;n.onchange=()=>change(n.value);wrap.append(n);parent.append(wrap);return n;}
+const split=v=>v.split(/[,，、\n]/).map(x=>x.trim()).filter(Boolean);
+const fresh=()=>({id:'rule_'+Date.now()+'_'+Math.floor(Math.random()*10000),name:'',conditions:{provinces:[],cities:[],models:[],start_months:[],min_capacity_kw:null,max_capacity_kw:null},source:'wind',values:['high','critical'],action:'manual_review',priority:100,attention_level:'high',reason:''});
+function renderRules(){
+ $('rules').replaceChildren();rules.forEach((r,index)=>{const box=el('fieldset');box.append(el('legend','处理策略 '+(index+1)));const g=el('div');g.className='grid';box.append(g);
+ input(g,'策略名称 '+(index+1),'text',r.name,v=>r.name=v,true);
+ const priority=input(g,'优先级 '+(index+1),'number',r.priority,v=>r.priority=Number(v),true);priority.min=0;priority.max=999;priority.step=1;
+ for(const [key,label]of [['provinces','省份完整名称'],['cities','城市完整名称'],['models','组件完整型号']])input(g,label+' '+(index+1),'text',r.conditions[key].join('，'),v=>r.conditions[key]=split(v));
+ input(g,'拟起保月份 '+(index+1),'text',r.conditions.start_months.join('，'),v=>r.conditions.start_months=split(v).map(Number)).placeholder='留空不限；如 12，1，2，按拟起保日期判断';
+ for(const [key,label]of [['min_capacity_kw','装机规模下限 kW'],['max_capacity_kw','装机规模上限 kW']]){const n=input(g,label+' '+(index+1),'number',r.conditions[key],v=>r.conditions[key]=v===''?null:Number(v));n.min=0;n.step='any';}
+ select(g,'引用风险结果 '+(index+1),catalog.sources,r.source,v=>{r.source=v;r.values=[catalog.values[v][0]];renderRules();});
+ const matches=el('div');matches.append(el('strong','匹配结果（可多选）'));for(const value of catalog.values[r.source]){const label=el('label');label.className='check';const c=el('input');c.type='checkbox';c.checked=r.values.includes(value);c.onchange=()=>{r.values=c.checked?[...new Set([...r.values,value])]:r.values.filter(x=>x!==value);};label.append(c,document.createTextNode(valueNames[value]));matches.append(label);}g.append(matches);
+ select(g,'处理动作 '+(index+1),catalog.actions,r.action,v=>r.action=v);
+ select(g,'策略关注等级 '+(index+1),{low:'低',medium:'中',high:'高',critical:'极高'},r.attention_level,v=>r.attention_level=v);
+ input(g,'处理理由／规则依据 '+(index+1),'textarea',r.reason,v=>r.reason=v,true);
+ box.append(el('p','条件全部满足才命中；不同省份、城市和型号使用逗号分隔。地区按项目资料中的完整名称匹配，型号仅采用已核验的精确型号。策略关注等级不会改写计算风险等级。'));
+ const remove=el('button','移除此条策略');remove.type='button';remove.className='secondary';remove.onclick=()=>{rules.splice(index,1);renderRules();};box.append(remove);$('rules').append(box);
+ });
+}
+const local=d=>new Date(new Date(d).getTime()-new Date(d).getTimezoneOffset()*60000).toISOString().slice(0,16);
+function reset(){form.reset();baseId=null;rules=[fresh()];form.elements.valid_from.value=local(Date.now());form.elements.expires_at.value=local(Date.now()+90*86400000);$('editing').textContent='新建方案；保存后在整单测试中选择该版本才会使用。';renderRules();}
+function edit(r){baseId=r.id;for(const key of ['name','company','basis'])form.elements[key].value=r[key];for(const key of ['valid_from','expires_at'])form.elements[key].value=local(r[key]);form.elements.reviewer_name.value='';form.elements.confirmed.checked=false;form.elements.demo.checked=r.demo;rules=structuredClone(r.rules);$('editing').textContent='基于 '+r.name+' V'+r.version+' 发布新版本，原版本不覆盖；原版本停用需另行撤销。';$('editor').open=true;renderRules();$('editor').scrollIntoView({block:'start'});}
+function renderRecords(){
+ $('records').replaceChildren();if(!catalog.records.length)$('records').append(el('p','尚无策略方案。没有选择策略时沿用原 AI 建议，不输出新加费比例。'));
+ for(const r of catalog.records){const box=el('article');box.append(el('h2',r.name+' · V'+r.version+' · '+statuses[r.status]+(r.demo?' · 演示方案':'')),el('p',r.company+' · 发布人：'+r.approved_by),el('p','有效期：'+new Date(r.valid_from).toLocaleString('zh-CN')+' 至 '+new Date(r.expires_at).toLocaleString('zh-CN')),el('p','业务依据：'+r.basis));
+ for(const rule of r.rules){const d=el('details');d.append(el('summary',rule.name+' · '+catalog.actions[rule.action]+' · 优先级 '+rule.priority),el('p',catalog.sources[rule.source]+'：'+rule.values.map(v=>valueNames[v]).join('、')),el('p','处理理由：'+rule.reason),el('p','范围：'+Object.entries(rule.conditions).filter(([,v])=>Array.isArray(v)?v.length:v!=null).map(([k,v])=>({provinces:'省份',cities:'城市',models:'完整型号',start_months:'拟起保月份',min_capacity_kw:'规模下限 kW',max_capacity_kw:'规模上限 kW'}[k])+': '+v).join('；')));box.append(d);}
+ const copy=el('button','编辑并发布新版本');copy.type='button';copy.onclick=()=>edit(r);box.append(copy);
+ const trial=el('details');trial.append(el('summary','用已完成案件试算（不改写原报告）'));const trialForm=el('form');let caseId='';input(trialForm,'试算案件编号','text','',v=>caseId=v,true);const btn=el('button','试算策略'),out=el('div');btn.type='submit';trialForm.append(btn,out);trialForm.onsubmit=async e=>{e.preventDefault();btn.disabled=true;try{const d=await api('/preview',{case_id:caseId,record_id:r.id});out.replaceChildren(el('p',d.notice),el('p','匹配事实：'+(d.result.facts.province||'省份未提供')+'；拟起保日期 '+(d.result.facts.start_date||'未提供')+'；以业务日期匹配月份。'),el('p','原 AI 建议：'+(valueNames[d.result.original_ai_decision]||d.result.original_ai_decision)+'；策略处理建议：'+(catalog.actions[d.result.effective_suggestion]||valueNames[d.result.effective_suggestion]||d.result.effective_suggestion)),el('p',d.result.pricing.notice));for(const item of d.result.rule_results)out.append(el('p',item.name+'：'+({matched:'命中',not_matched:'不匹配',insufficient:'依据不足'}[item.status])+'；'+item.reason));for(const note of d.result.reasons)out.append(el('p',note));if(r.status!=='active')out.prepend(el('p','该版本当前不生效，结果仅用于历史对比。'));}catch(e){out.textContent=e.message;}finally{btn.disabled=false;}};trial.append(trialForm);box.append(trial);
+ if(r.revocation)box.append(el('p','撤销：'+r.revocation.actor+'；'+r.revocation.reason));else{const panel=el('details');panel.append(el('summary','撤销此版本'));const rev=el('form');let actor='',reason='';input(rev,'撤销人','text','',v=>actor=v,true);input(rev,'撤销原因','textarea','',v=>reason=v,true);const b=el('button','确认撤销版本');b.type='submit';rev.append(b);rev.onsubmit=async e=>{e.preventDefault();b.disabled=true;try{await api('/'+r.id+'/revoke',{reviewer_name:actor,reason});await reload();message('已撤销，新任务不可再选该版本；历史报告保留原快照。');}catch(e){message(e.message);b.disabled=false;}};panel.append(rev);box.append(panel);}$('records').append(box);
+ }
+}
+async function reload(){catalog=await api();renderRecords();}
+form.onsubmit=async e=>{e.preventDefault();const button=form.querySelector('button[type=submit]');button.disabled=true;try{const f=Object.fromEntries(new FormData(form));await api('',{base_id:baseId,name:f.name,company:f.company,basis:f.basis,reviewer_name:f.reviewer_name,valid_from:new Date(f.valid_from).toISOString(),expires_at:new Date(f.expires_at).toISOString(),confirmed:true,demo:form.elements.demo.checked,rules});await reload();reset();$('editor').open=false;message('已发布独立版本；请在整单测试中选择后使用。');}catch(e){message(e.message);}finally{button.disabled=false;}};
+$('addRule').onclick=()=>{rules.push(fresh());renderRules();};$('newScheme').onclick=reset;$('refresh').onclick=()=>reload().catch(e=>message(e.message));
+PvWorkbench.init('strategies');reload().then(reset).catch(e=>message(e.message));
+})();

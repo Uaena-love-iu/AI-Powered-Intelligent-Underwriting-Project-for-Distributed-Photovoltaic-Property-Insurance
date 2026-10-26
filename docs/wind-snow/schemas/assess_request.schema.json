@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "model",
+    "address"
+  ],
+  "properties": {
+    "project_id": {
+      "type": "string",
+      "default": ""
+    },
+    "model": {
+      "type": "string",
+      "minLength": 1,
+      "maxLength": 150
+    },
+    "address": {
+      "type": "string",
+      "minLength": 2,
+      "maxLength": 500
+    },
+    "screening_input": {
+      "$ref": "screening_input.schema.json"
+    }
+  }
+}

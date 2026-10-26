@@ -1,0 +1,1 @@
+接口顶层使用Pydantic AssessmentInput校验；screening_input在现有服务中为dict，由计算阶段进行业务校验。本JSON Schema用于联调，不代表FastAPI已经对嵌套dict强制执行该Schema。字段之外的取值关系（min≤max、高度范围、地址匹配、来源冲突）以city_engine和unified的运行校验为准。缺输入可返回业务待评估，不应在UI显示0。ComponentProfile Schema直接由实际Pydantic模型导出。

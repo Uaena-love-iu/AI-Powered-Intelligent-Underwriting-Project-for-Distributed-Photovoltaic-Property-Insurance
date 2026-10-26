@@ -1,0 +1,2 @@
+判断是否有覆盖示意、明确标注或实际监控画面支持监控有效覆盖光伏阵列。只有摄像头存在不能确认覆盖有效，缺乏覆盖证据用 uncertain，说明需要覆盖示意或监控画面。
+有充分覆盖证据时 monitoring_effective_coverage 为 detected、severity=info；证据明确显示覆盖不足时为 not_detected，说明盲区；不推断摄像头在线、录像留存或系统可靠性。

@@ -1,0 +1,496 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="application-name" content="pv-underwriting-workbench">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>整单测试 · 光伏核保</title>
+  <style>
+    :root{font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif;color:#172721;background:#f2f5f1}
+    *{box-sizing:border-box}body{margin:0}button,select,textarea{font:inherit}button{cursor:pointer}[hidden]{display:none!important}
+    .top{height:68px;display:flex;align-items:center;justify-content:space-between;padding:0 28px;background:#14382f;color:white}
+    .brand{font-size:19px;font-weight:750;letter-spacing:.02em}.brand small{display:block;font-size:11px;font-weight:400;opacity:.7;margin-top:3px}
+    .topright{display:flex;align-items:center;gap:16px;font-size:13px}.top a{color:#e1f0e8;text-decoration:none}.status{display:flex;align-items:center;gap:7px}.dot{width:8px;height:8px;border-radius:50%;background:#a2aaa5}.dot.ok{background:#80e0ae}.dot.bad{background:#f4a69d}
+    .intro{max-width:1500px;margin:auto;padding:28px 28px 18px;display:flex;justify-content:space-between;gap:20px;align-items:end}
+    h1{font-size:28px;letter-spacing:-.04em;margin:0 0 8px}p{margin:0}.muted{color:#62746b}.intro p{font-size:14px;line-height:1.6}
+    .actions{display:flex;gap:9px;flex-wrap:wrap}.btn{border:1px solid #b9c8bf;background:white;color:#173a30;border-radius:9px;padding:10px 15px;font-weight:650;white-space:nowrap}.btn:hover{background:#edf5ef}.btn.primary{background:#1c6048;color:white;border-color:#1c6048}.btn.primary:hover{background:#154b39}.btn:disabled{opacity:.45;cursor:not-allowed}
+    .layout{max-width:1500px;margin:auto;padding:0 28px 30px;display:grid;grid-template-columns:278px minmax(400px,1fr) 356px;gap:14px;min-height:calc(100vh - 180px)}
+    .panel{background:#fff;border:1px solid #dbe5dc;border-radius:14px;min-width:0;overflow:hidden;box-shadow:0 2px 10px #173f2d08}.ph{padding:17px 18px;border-bottom:1px solid #e8eee8;display:flex;align-items:center;justify-content:space-between;gap:12px}.ph strong{font-size:15px}.ph span{font-size:12px;color:#718278}
+    .queue{padding:12px}.drop{border:1.5px dashed #a6c2ae;border-radius:11px;background:#f5faf5;padding:20px 12px;text-align:center;color:#285a3e;line-height:1.6;font-size:13px;cursor:pointer}.drop b{display:block;font-size:14px}.drop.drag{background:#dcefe0;border-color:#348157}.hint{font-size:11px;color:#819087;line-height:1.5;margin:10px 2px 15px}.filelist{display:flex;flex-direction:column;gap:7px}.fileitem{width:100%;text-align:left;border:1px solid #e4ebe4;border-radius:9px;background:white;padding:11px;display:flex;gap:9px;align-items:flex-start;color:#20392b}.fileitem.active{border-color:#61a478;background:#f0f8f1}.fileitem:hover{background:#f6faf6}.fileicon{font-size:17px}.fn{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:190px;font-size:13px;font-weight:650}.fm{font-size:11px;color:#718278;margin-top:5px}.tag{display:inline-block;padding:3px 7px;border-radius:5px;background:#edf3ed;color:#456453;font-size:11px}.tag.done{background:#e0f3e8;color:#21704c}.tag.error{background:#ffebe9;color:#b64439}.tag.running{background:#fff0d6;color:#986900}
+    .viewer{display:flex;flex-direction:column;min-height:620px}.viewerbar{padding:14px 18px;border-bottom:1px solid #e8eee8;display:flex;justify-content:space-between;align-items:center;gap:10px}.viewerbar strong{font-size:15px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.viewerbar span{font-size:12px;color:#7d8980}.canvas{position:relative;flex:1;min-height:450px;background:#e9eee9;display:flex;align-items:center;justify-content:center;overflow:auto;padding:20px}.empty{text-align:center;color:#668071;font-size:14px;line-height:1.8}.empty .big{font-size:42px;display:block;margin-bottom:12px}.imagewrap{position:relative;line-height:0;max-width:100%;max-height:68vh}.imagewrap img{display:block;max-width:100%;max-height:68vh;width:auto;height:auto;object-fit:contain;border-radius:3px;box-shadow:0 7px 25px #1b342025}.box{position:absolute;border:2px solid #d83b35;background:#d83b3524;pointer-events:none}.box.pending{border-color:#d83b35;border-style:dashed;background:#d83b3524}.box.pending span{background:#d83b35}.box span{position:absolute;top:-23px;left:-2px;background:#d83b35;color:white;font-size:11px;line-height:18px;padding:0 5px;white-space:nowrap}.canvas iframe{width:100%;height:68vh;border:0;background:white}.viewerfoot{padding:12px 18px;border-top:1px solid #e8eee8;color:#6d8173;font-size:12px;line-height:1.5}
+    .details{padding:18px;overflow:auto;max-height:calc(100vh - 192px)}.field{margin-bottom:16px}.field label{display:block;color:#53675b;font-size:12px;font-weight:650;margin-bottom:7px}.field input,.field select,.field textarea{width:100%;border:1px solid #cbdacf;border-radius:8px;background:#fff;padding:10px 11px;color:#20352a}.field textarea{min-height:72px;resize:vertical}.sectiontitle{font-weight:750;font-size:14px;padding:13px 0 9px;border-top:1px solid #e9eee9}.small{font-size:12px;line-height:1.55;color:#708176}.result{border:1px solid #e2eae3;background:#fbfdfb;border-radius:9px;padding:12px;margin:9px 0}.resulthead{display:flex;align-items:flex-start;justify-content:space-between;gap:8px}.resulthead strong{font-size:13px;line-height:1.4}.result p{font-size:12px;line-height:1.55;color:#3d5545;margin-top:8px;overflow-wrap:anywhere}.meta{font-size:11px;color:#788b7b;margin-top:7px}.pill{border-radius:5px;padding:3px 6px;background:#e9f2e9;color:#376a48;font-size:11px;white-space:nowrap}.pill.warn{background:#fff0da;color:#986219}.pill.risk{background:#ffebe6;color:#ad4a31}.review{display:flex;gap:5px;margin-top:10px;flex-wrap:wrap}.review button{background:#fff;border:1px solid #cadbce;border-radius:5px;padding:5px 7px;color:#536e5b;font-size:11px}.review button.selected{background:#245b43;color:white;border-color:#245b43}.errorbox{background:#fff1ef;border:1px solid #f4cdc7;border-radius:8px;padding:11px;color:#9a3f33;font-size:12px;line-height:1.6;overflow-wrap:anywhere}.notice{background:#f3f8f3;border-radius:8px;padding:11px;color:#42624c;font-size:12px;line-height:1.55}.footnote{max-width:1500px;margin:0 auto 22px;padding:0 28px;color:#728477;font-size:12px}
+    .itemactions{display:flex;gap:8px;margin-top:14px}.itemactions button{border:1px solid #cbdacf;border-radius:7px;background:white;color:#44624d;padding:7px 9px;font-size:12px}.itemactions button:disabled{opacity:.45}
+    .chain-summary{max-width:1444px;margin:0 auto 14px;background:#fff;border:1px solid #dbe5dc;border-radius:12px;padding:18px 20px}.chain-summary h2{font-size:17px;margin:0 0 7px}.chain-summary p{font-size:12px;line-height:1.6;color:#526a57}.trace-list{display:flex;gap:6px;flex-wrap:wrap;margin-top:11px}.trace-list span{font-size:11px;border:1px solid #d5e3d8;background:#f1f8f2;color:#416749;border-radius:6px;padding:5px 7px}.trace-list span.bad{background:#fff1eb;border-color:#efd0c5;color:#a6543e}.trace-list span.skip{background:#faf6e9;border-color:#e8dbc0;color:#8f762f}
+    .tabs{max-width:1500px;margin:auto;padding:0 28px 18px;display:flex;gap:8px}.tabs button{border:1px solid #cfddd1;background:transparent;color:#627767;border-radius:9px;padding:10px 17px;font-weight:700}.tabs button.active{background:#1c6048;border-color:#1c6048;color:#fff}
+    .replay-layout{max-width:1500px;margin:auto;padding:0 28px 30px}.replay-tools{display:flex;gap:10px;align-items:end;flex-wrap:wrap;margin-bottom:14px}.replay-tools label{font-size:11px;color:#647b69;font-weight:700;display:block;margin-bottom:6px}.replay-tools select{background:white;border:1px solid #c9d7cb;border-radius:8px;padding:9px 10px;min-width:155px}.replay-grid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:14px}.replay-list{max-height:calc(100vh - 275px);overflow:auto;min-height:400px}.replay-item{display:block;width:100%;text-align:left;border:0;border-bottom:1px solid #e8eee8;background:white;padding:15px 18px;color:#223629}.replay-item:hover,.replay-item.active{background:#edf7ef}.replay-item b{font-size:13px;display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;margin:5px 0}.replay-item small{color:#7b8c7e;font-size:11px}.replay-content{padding:20px 22px;min-height:450px}.replay-content h2{font-size:22px;margin:0 0 6px}.replay-meta{font-size:11px;color:#7a8d7d;overflow-wrap:anywhere}.flow{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px;margin-top:12px}.flow-step{border:1px solid #dce9dd;border-radius:8px;background:#f5faf5;padding:9px;min-height:66px}.flow-step.wait{background:#faf6ef;border-color:#eee0cb}.flow-step strong{display:block;font-size:11px}.flow-step span{display:block;font-size:10px;color:#738474;line-height:1.4;margin-top:5px}.replay-materials{display:flex;gap:7px;overflow:auto;margin:10px 0}.replay-materials button{white-space:nowrap;background:#fff;border:1px solid #cdded0;border-radius:7px;padding:8px 10px;color:#44674d;font-size:11px}.replay-materials button.active{background:#1c6048;color:white;border-color:#1c6048}.comparison{display:grid;grid-template-columns:1fr 1fr;gap:12px}.comparison>div{border:1px solid #dde8df;border-radius:9px;overflow:hidden}.comparison h3{font-size:13px;color:#285e3c;background:#f4f8f4;padding:11px 12px;margin:0;border-bottom:1px solid #dde8df}.comparison-body{padding:12px;min-height:220px}.replay-preview{background:#eef2ed;border-radius:5px;min-height:200px;display:flex;justify-content:center;align-items:center}.replay-preview img{max-width:100%;max-height:410px}.replay-preview iframe{width:100%;height:410px;border:0}.replay-result{border:1px solid #e3ebe3;border-radius:7px;padding:10px;margin:0 0 8px;font-size:12px}.replay-result p{line-height:1.5;margin:7px 0;overflow-wrap:anywhere}.replay-human{border-top:1px solid #e8eee8;margin-top:22px;padding-top:16px}.replay-human label{display:block;font-size:12px;font-weight:700;color:#57705d;margin:11px 0 7px}.replay-human select,.replay-human textarea{width:100%;border:1px solid #cbdacf;border-radius:8px;padding:10px}.replay-human textarea{min-height:80px;resize:vertical}.replay-human button{margin-top:10px}.replay-empty{padding:28px;color:#718374;font-size:13px;line-height:1.7}
+    @media(max-width:1100px){.layout{grid-template-columns:240px minmax(0,1fr)}.details-panel{grid-column:1/-1}.details{max-height:none;display:grid;grid-template-columns:1fr 1fr;gap:0 22px}.details>.full{grid-column:1/-1}}
+    @media(max-width:700px){.top{padding:0 16px}.topright a{display:none}.intro{padding:20px 16px;display:block}.actions{margin-top:16px}.layout{padding:0 12px 24px;display:block}.panel{margin-bottom:12px}.viewer{min-height:450px}.canvas{min-height:320px}.details{display:block}.footnote{padding:0 15px}.tabs{padding:0 14px 14px}.replay-layout{padding:0 12px 22px}.replay-grid,.comparison{grid-template-columns:1fr}.replay-list{min-height:0;max-height:240px}.flow{grid-template-columns:repeat(2,1fr)}}
+  #caseReviewPanel p{font-size:14px;line-height:1.7;margin:8px 0}#caseReviewPanel .field{display:block;margin:12px 0;font-size:13px;color:#3d5545}#caseReviewPanel .field input,#caseReviewPanel .field textarea,#caseReviewPanel .field select{display:block;margin-top:6px}#caseReviewPanel a{color:#236b51;text-underline-offset:3px;font-size:13px}#caseReviewPanel summary{cursor:pointer;font-weight:650;margin:6px 0}#caseReviewPanel h3{margin:10px 0}#caseReviewPanel .small{font-size:12px}
+
+  #componentReviewPanel{font-size:14px;line-height:1.7}#componentReviewPanel .cr-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}#componentReviewPanel .cr-field{display:grid;gap:5px;margin:6px 0}#componentReviewPanel input:not([type=checkbox]),#componentReviewPanel select,#componentReviewPanel textarea{width:100%;min-width:0;padding:8px;border:1px solid #b6cbbd;border-radius:6px;font:inherit}#componentReviewPanel textarea{min-height:70px}#componentReviewPanel details{margin:14px 0}#componentReviewPanel summary{font-weight:650;cursor:pointer}#componentReviewPanel fieldset{margin:16px 0;border:1px solid #ccdcd1;border-radius:8px;padding:14px}#componentReviewPanel table{width:100%;border-collapse:collapse}#componentReviewPanel th,#componentReviewPanel td{padding:10px;border-bottom:1px solid #d9e5dd;text-align:left;vertical-align:top}#componentReviewPanel .cr-evidence,#componentReviewPanel .cr-candidate{padding:8px;border:1px solid #dce6df;border-radius:6px;margin:6px 0}#componentReviewPanel .small{font-size:12px;color:#597063}#componentReviewPanel p{margin:6px 0;overflow-wrap:anywhere}#componentReviewPanel .btn{margin:6px 8px 6px 0}#componentReviewPanel .cr-check{display:flex;gap:8px;align-items:flex-start;margin:12px 0}#componentReviewPanel .cr-check input{width:auto;margin-top:6px}#componentReviewPanel a{color:#236b51}#componentReviewPanel .error{color:#9a3129}
+</style>
+  <link rel="stylesheet" href="/workbench.css?v=20261006-nav3">
+  <link rel="stylesheet" href="/evaluation/progress.css?v=20261016-red-evidence">
+</head>
+<body>
+  <header class="top"><div class="brand">光伏核保 <small>工作台 v2 · 证据核验与逐项复核</small></div><div class="topright"><div class="status"><i id="dot" class="dot"></i><span id="service">检查服务中</span></div></div></header>
+  <div class="intro"><div><h1 id="pageTitle">整单测试</h1><p id="caseIdentity" class="muted" style="font-size:13px;margin-top:7px"></p><p id="pageSubtitle" class="muted">一次上传整组材料，查看完整核保链路；也能针对单份材料复测 OCR 或图片风险。</p><p id="saveinfo" class="muted" style="font-size:12px;margin-top:6px">每次分析完成后自动保存为本机案例。</p></div><div id="testActions" class="actions"><button class="btn" id="newWorkspace" disabled>新建测试</button><details class="wb-more"><summary>更多操作</summary><div class="wb-more-menu"><button class="btn" id="clearWorkspace" disabled>清空当前材料</button></div></details><button class="btn" id="export" disabled>导出评测记录</button><button class="btn primary" id="run" disabled>运行整条链路</button></div></div>
+  <nav id="caseTabs" class="wb-case-tabs" aria-label="当前案件视图" role="tablist"><button type="button" role="tab" data-case-view="materials" aria-selected="true" aria-controls="testWorkspace">材料与项目资料</button><button type="button" role="tab" data-case-view="process" aria-selected="false" aria-controls="processPanel">分析过程</button></nav>
+  <div id="caseStatus" class="wb-case-status"><span id="caseStatusText" class="wb-message">等待添加材料</span><button type="button" class="btn" id="viewReport" hidden>查看报告</button></div>
+  <section id="strategySelectionPanel" class="chain-summary"></section>
+  <section id="componentReviewPanel" class="chain-summary" hidden></section>
+  <section id="caseReviewPanel" class="chain-summary" hidden></section>
+  <section id="taskRecoveryPanel" aria-live="polite"></section>
+  <section id="processPanel" class="chain-summary ap-container" hidden></section>
+  <button id="tabTest" hidden></button><button id="tabReplay" hidden></button>
+  <section id="chainSummary" class="chain-summary" hidden></section>
+  <section id="classificationIssues" class="chain-summary" role="status" aria-live="polite" hidden></section>
+  <section id="ruleSelection"></section>
+  <details id="projectDetails" class="chain-summary">
+    <summary><strong>投保项目资料</strong> · 起保日期、行业和被保险信息需填写</summary>
+    <p style="margin:12px 0">这些是本次投保的申报信息。备案证和现场水印用于交叉核对；未填写的信息会保留为缺失。</p>
+    <div class="field" style="grid-column:1/-1"><button type="button" id="editWindSnow">填写风雪安装条件</button><p class="small">打开风雪量化表单，填写高度、倾角和地形条件后保存回当前案件。</p><details><summary>高级：查看或编辑参数 JSON</summary><textarea id="pvLoadScreeningInput" rows="4" style="width:100%" aria-label="风雪安装参数 JSON"></textarea></details></div><div id="projectFields" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:0 18px"></div>
+    <p>Demo 材料数量门槛：至少 5 张现场照片、2 张全景、1 份备案证。全景视角可标注供复核参考，不作为缺材条件；证照图片单独计数。达到数量门槛后，系统仍会检查实际风险及缺失信息。</p>
+  </details>
+  <main id="testWorkspace" class="layout">
+    <aside class="panel"><div class="ph"><strong>待评测材料</strong><span id="count">0 份</span></div><div class="queue"><div id="drop" class="drop" tabindex="0" role="button" aria-label="选择或粘贴文件"><b>＋ 添加图片、PDF 或 XLSX</b>点击选择、拖入，或直接粘贴截图</div><input id="files" type="file" accept="image/png,image/jpeg,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,.xlsx" multiple hidden><p class="hint">支持多份一次加入。图片、PDF 和 XLSX 均先分类，可随时人工修改；后续按类别执行适用的 OCR、图片风险或设备清单解析。</p><div id="filelist" class="filelist"></div></div></aside>
+    <section class="panel viewer"><div class="viewerbar"><strong id="viewtitle">原始材料</strong><span id="viewindex">—</span></div><div id="canvas" class="canvas"><div class="empty"><span class="big">▧</span>添加图片后在这里查看原图<br>模型发现用实线框，待核线索用虚线框</div></div><div id="viewerfoot" class="viewerfoot">评测原则：实线表示模型发现，虚线表示待核，不代表已作出核保结论；没有定位信息时只展示文字证据。</div></section>
+    <aside class="panel details-panel"><div class="ph"><strong>模块结果与人工核对</strong><span id="detailstatus">等待材料</span></div><div id="details" class="details"><div class="notice">先添加一张或多张材料。主按钮运行整条链路；右侧也可单测 OCR 或图片风险。</div></div></aside>
+  </main>
+  <section id="replayWorkspace" class="replay-layout" hidden>
+    <div class="replay-tools"><div><label for="replayCase">案件</label><select id="replayCase"><option value="all">全部案件</option></select></div><div><label for="replayFunction">功能</label><select id="replayFunction"><option value="all">全部</option><option value="vision">图片风险识别</option><option value="ocr">文字提取</option></select></div><div><label for="replayFeedback">反馈</label><select id="replayFeedback"><option value="all">全部</option><option value="reviewed">已标注</option><option value="unreviewed">未标注</option><option value="incorrect">含错误标注</option></select></div><div><label for="replayConclusion">人工结论</label><select id="replayConclusion"><option value="all">全部</option><option value="correct">正确</option><option value="partial">部分正确</option><option value="incorrect">错误</option><option value="uncertain">待核</option><option value="unset">未填写</option></select></div><button id="refreshReplay" class="btn" type="button">刷新记录</button></div>
+    <div class="replay-grid"><aside class="panel"><div class="ph"><strong>分析记录</strong><span id="replayCount">0 条</span></div><div id="replayList" class="replay-list"></div></aside><article id="replayDetail" class="panel replay-content"><div class="replay-empty">选择左侧案例查看复盘。</div></article></div>
+  </section>
+  <div class="footnote">整条链路调用现有核保任务接口；缺少真实起保日期和项目坐标时，相关判断保留为未知。本机浏览器保留案例与原图；为支持任务恢复，服务端本机也会保留本轮材料和成功步骤，异常恢复缓存默认 7 天后在启动时清理；新建核保轮次另存原文件和修正审计，随案件保留策略保存。清除浏览器数据会删除本机历史记录。未建立完整标准答案前，不计算“准确率”。</div>
+  <link rel="stylesheet" href="/evaluation/report.css?v=20261022-coverage">
+  <script src="/rule-selection.js?v=20261022-coverage"></script>
+  <script src="/evaluation/report.js?v=20261022-coverage"></script>
+  <script src="/task-recovery.js?v=20261021-1"></script>
+  <script src="/case-review.js?v=20261022-coverage"></script>
+  <script src="/evaluation/progress.js?v=20261016-red-evidence"></script>
+  <script src="/material-files.js?v=20261011-classification2"></script>
+  <script src="/workbench.js?v=20261022-strategies"></script>
+  <script src="/strategy-selection.js?v=20261022-1"></script>
+  <script src="/component-review.js?v=20261022-1"></script>
+  <script>
+  (() => {
+    let categories = [];
+    const canonicalCategory=c=>['filing_certificate','grid_connection_document'].includes(c)?'project_document':c;
+    const categoryConfig=fetch('/api/v1/vision/lab/config').then(async response=>{if(!response.ok)throw Error('材料分类配置加载失败');const config=await response.json();categories=config.material_types.map(t=>[t.category,t.label]);return config;});
+
+    const $ = id => document.getElementById(id);
+    const emptyProject=()=>({project_name:null,insured_name:null,insured_address:null,project_entity:null,industry_name:null,fire_surcharge_confirmed:null,project_type:'unknown',installation_type:'unknown',site_address:null,province:null,city:null,district:null,longitude:null,latitude:null,proposed_start_date:null,component_model:null});
+    PvWorkbench.init(new URL(location.href).searchParams.get('view')==='replay'?'history':'case');
+    const legacyPdfIds=new Set();
+    const state = {workId:crypto.randomUUID(),runNumber:0,reportRunNumber:0,runDurationMs:null,stale:false,staleReason:'',reportItems:[],caseView:'materials',scrollY:0,items:[], selected:null, running:false,lastCaseId:null,lastRunAt:null,fullCase:null,analysisKind:null,recordItemIds:null,progress:'',pvLoadScreeningInputText:'',project:emptyProject()};
+    const processRuntime={disconnected:false,job:null,visited:new Set(),selected:0,autoFollow:true,failed:false};
+    const projectFieldSpecs=[['project_name','项目名称','text'],['project_type','标的类型','select'],['proposed_start_date','拟起保日期','date'],['insured_name','被保险人','text'],['insured_address','被保险地址','text'],['site_address','电站实际地址','text'],['project_entity','项目单位','text'],['industry_name','企业所属行业','text'],['longitude','电站经度','number'],['latitude','电站纬度','number'],['component_model','组件完整型号（也可由 OCR 提取）','text']];
+    for(const [key,label,type] of projectFieldSpecs){const box=document.createElement('div');box.className='field';const text=document.createElement('label');text.htmlFor='project-'+key;text.textContent=label;const control=document.createElement(type==='select'?'select':'input');control.id='project-'+key;control.dataset.projectKey=key;if(type==='select'){for(const [value,name] of [['unknown','待确认'],['rooftop','屋顶式'],['carport','车棚顶式'],['unsupported','其他安装场景']]){const opt=document.createElement('option');opt.value=value;opt.textContent=name;control.append(opt);}}else{control.type=type;if(type==='number'){control.step='any';control.min=key==='longitude'?-180:-90;control.max=key==='longitude'?180:90;}}control.onchange=()=>{if(state.running)return;if(!control.reportValidity())return;if(key==='component_model'&&state.project.component_model!==(control.value.trim()||null)&&state.revisionDraft)state.revisionDraft.corrections=[];state.project={...emptyProject(),...state.project,[key]:type==='number'?(control.value===''?null:Number(control.value)):(control.value.trim()||null)};markStale('材料或项目资料已更新，报告待重测');state.progress='';renderChainSummary();persistWorkspace();};control.oninput=()=>{if(control.checkValidity())control.onchange();};box.append(text,control);$('projectFields').append(box);}
+    function renderProjectFields(){if(document.activeElement!==$("pvLoadScreeningInput"))$("pvLoadScreeningInput").value=state.pvLoadScreeningInputText||"";for(const control of $('projectFields').querySelectorAll('[data-project-key]')){control.disabled=state.running;if(document.activeElement!==control)control.value=state.project?.[control.dataset.projectKey]??(control.dataset.projectKey==='project_type'?'unknown':'');}}
+    $('editWindSnow').onclick=()=>openLab('risk').catch(e=>alert(e.message));
+    $('pvLoadScreeningInput').oninput=()=>{state.pvLoadScreeningInputText=$('pvLoadScreeningInput').value;markStale('风雪安装参数已更新，报告待重测');persistWorkspace();};
+    let workspaceReady=false, workspaceSaveError=null, workspaceWrites=Promise.resolve();
+    const replay = {records:[],selected:null,itemIndex:0,urls:[]};
+    const statusNames = {pending:'待分析',running:'分析中',done:'已完成',error:'失败'};
+    const detectionNames = {detected:'识别到',not_detected:'未识别到',uncertain:'不确定',not_applicable:'不适用'};
+    const fieldNames = {extracted:'已提取',missing:'缺失',uncertain:'不确定'};
+    const safeName = n => n || '未命名文件';
+    function formatRunDuration(milliseconds){
+      if(!Number.isFinite(milliseconds)||milliseconds<0)return '';
+      const seconds=Math.max(1,Math.ceil(milliseconds/1000));
+      const hours=Math.floor(seconds/3600),minutes=Math.floor(seconds%3600/60),remaining=seconds%60;
+      return [hours&&hours+' 小时',minutes&&minutes+' 分钟',remaining&&remaining+' 秒'].filter(Boolean).join(' ')||'1 秒';
+    }
+    function openReplayDb(){return new Promise((resolve,reject)=>{const request=indexedDB.open('pv-evaluation-replay-workbench-v2',2);request.onupgradeneeded=()=>{if(!request.result.objectStoreNames.contains('cases'))request.result.createObjectStore('cases',{keyPath:'id'});if(!request.result.objectStoreNames.contains('workspace'))request.result.createObjectStore('workspace');};request.onsuccess=()=>resolve(request.result);request.onerror=()=>reject(request.error);});}
+    function persistWorkspace(){
+      if(!workspaceReady)return workspaceWrites;
+      const snapshot=structuredClone({...state,running:false,items:state.items.map(({url,...item})=>item)});
+      workspaceWrites=workspaceWrites.catch(()=>{}).then(async()=>{const db=await openReplayDb();try{await new Promise((resolve,reject)=>{const tx=db.transaction('workspace','readwrite');tx.objectStore('workspace').put(snapshot,'current');tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);tx.onabort=()=>reject(tx.error);});workspaceSaveError=null;}finally{db.close();}}).catch(error=>{workspaceSaveError=error;$('saveinfo').textContent='当前材料保存失败，请导出记录后再离开页面：'+(error?.message||error);});
+      return workspaceWrites;
+    }
+    async function restoreWorkspace(){
+      try{const db=await openReplayDb();let saved,migrated=false;try{saved=await new Promise((resolve,reject)=>{const tx=db.transaction(['workspace','cases'],'readonly');const get=tx.objectStore('workspace').get('current');let value;get.onsuccess=()=>{value=get.result;if(value===undefined){const cases=tx.objectStore('cases').getAll();cases.onsuccess=()=>{const last=(cases.result||[]).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))[0];if(last){migrated=true;value={items:last.items.map(i=>({...i,additionalCategories:i.additional_categories||[],categorySource:i.category_source,categoryNote:i.category_note,classificationError:i.classification_error??i.classificationError,captureView:i.capture_view,ocrResults:i.ocr_results||[],visionResults:i.vision_results||[]})),selected:last.items[0]?.id,lastCaseId:last.id,lastRunAt:last.created_at,runDurationMs:last.run_duration_ms??null,fullCase:last.full_case,analysisKind:last.analysis_kind,progress:last.full_case?'已恢复上次整单分析结果。':''};}};}};tx.oncomplete=()=>resolve(value);tx.onerror=()=>reject(tx.error);});}finally{db.close();}
+      if(saved){Object.assign(state,saved,{running:false});if(saved.jobId){processRuntime.job=saved.jobSnapshot||null;processRuntime.failed=['failed','cancelled'].includes(saved.jobSnapshot?.status);state.jobDisconnected=!['completed','failed','cancelled'].includes(saved.jobSnapshot?.status);}state.items=(saved.items||[]).filter(i=>i.file).map(i=>{const restored=PvMaterialFiles.restoreItemFile(i);const file=restored.name?restored:new File([restored],i.file_name||'未命名材料',{type:i.file_type||restored.type});const legacyPdf=/\.pdf$/i.test(file.name)&&!i.classification&&i.categoryNote?.startsWith('PDF 不调用照片分类');if(legacyPdf)legacyPdfIds.add(i.id);return {...i,file,url:URL.createObjectURL(file),categorySource:legacyPdf?'unclassified':i.categorySource,categoryNote:legacyPdf?'等待内容分类':i.categoryNote,status:i.status==='running'?'pending':i.status};});if(state.fullCase&&!state.reportItems?.length)state.reportItems=state.items.map(({url,...i})=>structuredClone(i));if(state.fullCase&&!state.runNumber)state.runNumber=1;if(state.fullCase&&!state.reportRunNumber)state.reportRunNumber=state.runNumber;if(!state.items.some(i=>i.id===state.selected))state.selected=state.items[0]?.id||null;if(state.items.length)$('saveinfo').textContent=migrated?'已恢复上次分析材料和结果。':'已恢复当前案件，材料与报告保留。';if(!state.fullCase&&state.items.some(i=>i.status==='pending'))state.progress='';}
+      }catch(error){$('saveinfo').textContent='当前材料恢复失败：'+(error?.message||error);}
+      finally{workspaceReady=true;render();}
+    }
+    async function clearWorkspace(){
+      if(state.running||!workspaceReady)return;
+      for(const item of state.items)URL.revokeObjectURL(item.url);
+      Object.assign(state,{workId:crypto.randomUUID(),runNumber:0,reportRunNumber:0,runDurationMs:null,stale:false,staleReason:'',reportItems:[],caseView:'materials',items:[],selected:null,running:false,lastCaseId:null,lastRunAt:null,fullCase:null,analysisKind:null,recordItemIds:null,progress:'',pvLoadScreeningInputText:'',project:emptyProject()});
+      state.revisionDraft=null;state.reviewRefresh=0;state.submissionIssue=null;state.jobId=null;state.jobSnapshot=null;state.jobFingerprint=null;state.appliedJobId=null;state.jobDisconnected=false;state.ruleDraft=null;await window.RuleSelection.restore(null);
+      Object.assign(processRuntime,{job:null,visited:new Set(),selected:0,autoFollow:true,failed:false});
+      $('files').value='';const cleanUrl=new URL(location.href);cleanUrl.searchParams.delete('work');cleanUrl.searchParams.set('panel','materials');history.replaceState({},'',cleanUrl);render();await persistWorkspace();if(workspaceSaveError)return;$('saveinfo').textContent='已清空本次材料；历史案例仍可在“案例复盘”查看。';
+    }
+    const workspaceLoaded=restoreWorkspace();
+    Promise.all([workspaceLoaded,categoryConfig]).then(()=>{const legacy=state.items.filter(item=>legacyPdfIds.has(item.id));if(legacy.length)retryClassifications(legacy);}).catch(()=>{});
+    async function saveCurrentCase(newRun=false){
+      await persistWorkspace();if(!state.lastCaseId||(state.stale&&!newRun))return;
+      const savedItems=state.recordItemIds?state.items.filter(x=>state.recordItemIds.includes(x.id)):state.items;
+      const record={revision_draft:state.revisionDraft||null,job_id:state.jobId||null,job_snapshot:state.jobSnapshot||null,job_fingerprint:state.jobFingerprint||null,work_id:state.workId,run_number:state.runNumber,report_run_number:state.reportRunNumber,run_duration_ms:state.analysisKind==='chain'?state.runDurationMs:null,project:structuredClone(state.project),pv_load_screening_input_text:state.pvLoadScreeningInputText||'',rule_draft:state.ruleDraft||null,stale:state.stale,report_items:structuredClone(state.reportItems||[]),id:state.lastCaseId,created_at:state.lastRunAt,title:savedItems.length>1?savedItems[0]?.file.name+' 等 '+savedItems.length+' 份材料':savedItems[0]?.file.name||'未命名案例',human_conclusion:null,human_note:'',analysis_kind:state.analysisKind,full_case:state.analysisKind==='chain'?state.fullCase:null,items:savedItems.map(x=>({id:x.id,file:x.file,sourceOnly:!!x.sourceOnly,fileBytes:x.fileBytes,file_name:x.file.name,file_type:x.file.type,file_size:x.file.size,category:x.category,additional_categories:x.additionalCategories||[],category_source:x.categorySource,category_note:x.categoryNote,classification_error:x.classificationError||null,classification:x.classification,capture_view:x.captureView,mode:x.mode,status:x.status,results:x.results,ocr_results:x.ocrResults||[],vision_results:x.visionResults||[],error:x.error,feedback:{...x.feedback},note:x.note}))};
+      try{const db=await openReplayDb();await new Promise((resolve,reject)=>{const tx=db.transaction('cases','readwrite');const store=tx.objectStore('cases');const get=store.get(record.id);get.onsuccess=()=>{const old=get.result;store.put(old?{...old,items:old.items.map(i=>{const current=savedItems.find(x=>x.id===i.id);return current?{...i,feedback:{...current.feedback},note:current.note}:i;})}:record);};tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});db.close();$('saveinfo').textContent='已保存至本机案例 · '+new Date().toLocaleTimeString('zh-CN');}
+      catch(err){$('saveinfo').textContent='案例本地保存失败，请先点击“导出评测记录”：'+(err?.message||String(err));}
+    }
+    function selected(){ return state.items.find(x=>x.id===state.selected); }
+    function option(select, value, label){ const o=document.createElement('option');o.value=value;o.textContent=label;select.append(o); }
+    function updateButtons(){ $('clearWorkspace').disabled=!workspaceReady||state.running||(!state.items.length&&!state.fullCase);$('run').disabled=!workspaceReady||state.running||(!['completed','failed','cancelled'].includes(state.jobSnapshot?.status)&&!!state.jobId&&jobCompatible())||!state.items.length; $('export').disabled=!state.fullCase&&!state.items.some(x=>x.status==='done'||x.status==='error'); $('count').textContent=state.items.length+' 份';$('newWorkspace').disabled=state.running||!workspaceReady; }
+    function inferMaterialFromName(fileName){
+      const name=fileName.normalize('NFKC').toLowerCase().replace(/[_\s-]+/g,'');
+      const rules=[
+        ['filing_certificate',/备案|filingcertificate/],
+        ['grid_connection_document',/并网|调度协议|gridconnection/],
+        ['component_nameplate',/组件铭牌|光伏板铭牌|电池板铭牌|componentnameplate|modulenameplate/],
+        ['combiner_box',/汇流箱|combinerbox/],
+        ['inverter_nameplate',/逆变器|inverter/],
+        ['electrical_grounding',/接地|防雷|电气系统|线缆|grounding/],
+        ['workshop',/车间|厂房内部|仓库内部|workshop/],
+        ['roof_connection',/屋顶连接|屋面连接|支架节点|支架连接|锚固|roofconnection/],
+        ['parapet',/女儿墙|排水口|护栏|parapet/],
+        ['component_surface',/组件表面|组件破损|背板|componentsurface/],
+        ['monitoring_optional',/监控|摄像头|monitoring/],
+        ['equipment_inventory',/设备清单|equipmentinventory/],
+        ['panorama',/全景|俯拍|航拍|阵列间通道|正面平视|panorama/]
+      ];
+      const hits=rules.filter(([,pattern])=>pattern.test(name));
+      const category=hits[0]?.[0]||'other';
+      const captureView=category==='panorama'?(/俯拍|航拍|overhead/.test(name)?'overhead':/正面平视|frontlevel/.test(name)?'front_level':/反向|通道/.test(name)?'other':'unknown'):'unknown';
+      return {category,captureView,source:hits.length?'filename':'unmatched',note:hits.length?'按文件名自动填写，可直接修改'+(hits.length>1?'（名称包含多类线索，已按具体对象优先匹配）':''):'文件名没有类型线索，暂填“其他”；可手动修改。'};
+    }
+    function invalidateModelCorrection(id){ComponentReview.invalidate(state,id);if(state.revisionDraft?.corrections?.some(c=>c.material_id===id)){state.revisionDraft.corrections=[];state.project.component_model=null;}}
+    async function addFiles(files,replaceId=null,sourceOnly=false){
+      if(state.running)return;
+      files=await PvMaterialFiles.captureFiles(files);
+      await workspaceLoaded;
+      try{await categoryConfig;}catch(error){alert(error.message);return;}
+      const addedItems=[];
+      let added=false;
+      for(const file of files){
+        const name=file.name.toLowerCase(); const pdf=file.type==='application/pdf'||name.endsWith('.pdf');
+        const xlsx=file.type==='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'||name.endsWith('.xlsx');
+        const image=/^image\/(png|jpeg)$/.test(file.type)||/\.(png|jpe?g)$/.test(name);
+        if(!pdf&&!image&&!xlsx){alert('暂只支持 PNG、JPEG、PDF 或 XLSX：'+safeName(file.name));continue;}
+        const fileBytes=await file.arrayBuffer();
+        const existing=replaceId?state.items.find(i=>i.id===replaceId):state.items.find(i=>i.file.name===file.name&&!!i.sourceOnly===sourceOnly);
+        if(existing){invalidateModelCorrection(existing.id);URL.revokeObjectURL(existing.url);existing.file=file;existing.fileBytes=fileBytes;existing.url=URL.createObjectURL(file);existing.error='';existing.status='pending';existing.additionalCategories=[];existing.classification=null;existing.ocrResults=[];existing.visionResults=[];existing.results=[];existing.feedback={};if(existing.categorySource!=='manual'&&!existing.sourceOnly)addedItems.push(existing);added=true;state.selected=existing.id;continue;}
+        const id=globalThis.crypto?.randomUUID?.() || String(Date.now())+'-'+Math.random();
+        const inferred=inferMaterialFromName(file.name);const category=canonicalCategory(inferred.category);
+        state.items.push({id,file,fileBytes,url:URL.createObjectURL(file),sourceOnly,category:sourceOnly?'other':category,additionalCategories:[],captureView:inferred.captureView,categorySource:sourceOnly?'manual':'unclassified',categoryNote:sourceOnly?'厂家参数参考资料，仅作来源证据':'等待内容分类',mode:pdf?'ocr':xlsx?'inventory':'vision',status:'pending',results:[],ocrResults:[],visionResults:[],error:'',feedback:{},note:''});
+        if(!sourceOnly)addedItems.push(state.items.at(-1));added=true;
+        if(!state.selected)state.selected=id;
+      }
+      if(added){markStale('材料或项目资料已更新，报告待重测');state.progress='';}
+      render();
+      if(addedItems.length){state.running=true;render();for(const item of addedItems){item.status='running';state.selected=item.id;state.progress='正在自动分类：'+item.file.name;render();try{await classifyEvaluationItem(item);item.status='pending';}catch(error){item.status='pending';item.classificationError=error.message;item.categoryNote='自动分类失败：'+error.message;}render();}state.running=false;const pending=PvMaterialFiles.classificationFailures(state.items);state.progress=pending.length?'有 '+pending.length+' 份材料需要重试分类或人工确认类别。':'材料分类已完成，可以运行整条链路。';render();}
+    }
+    async function classifyEvaluationItem(item){
+      const data=await PvMaterialFiles.requestClassification(item,{allowedCategories:categories.map(c=>c[0])});
+      item.classification=data;item.classificationError=null;item.category=canonicalCategory(data.category);item.additionalCategories=(item.additionalCategories||[]).filter(c=>c!==item.category);item.categorySource='automatic';item.categoryNote='内容自动分类：'+(categories.find(c=>c[0]===item.category)?.[1]||item.category);item.captureView=data.capture_view&&data.capture_view!=='unknown'?data.capture_view:item.captureView||'unknown';
+    }
+    async function retryClassifications(items){
+      if(state.running||!items.length)return;state.running=true;
+      let completed=0;
+      try{
+        for(const item of items){
+          state.selected=item.id;state.progress='正在分类 '+(completed+1)+' / '+items.length+'：'+item.file.name;render();
+          try{await classifyEvaluationItem(item);item.status='pending';item.results=[];item.ocrResults=[];item.visionResults=[];item.feedback={};item.error='';markStale('材料类别已更新，报告待重测');}
+          catch(error){item.classificationError=error.message;item.categoryNote='自动分类失败：'+error.message;}
+          completed++;
+        }
+      }finally{state.running=false;const remaining=PvMaterialFiles.classificationFailures(state.items);state.progress=remaining.length?'还有 '+remaining.length+' 份材料需要人工确认类别或重试分类。':'材料分类已完成，可以运行整条链路。';render();}
+    }
+    function renderClassificationIssues(){
+      const root=$('classificationIssues');root.replaceChildren();
+      const pending=PvMaterialFiles.classificationFailures(state.items);
+      root.hidden=!pending.length||state.caseView!=='materials'||new URL(location.href).searchParams.get('view')==='replay';
+      if(root.hidden)return;
+      root.append(node('h2','',pending.length+' 份材料的类别待确认'));
+      root.append(node('p','','可重试失败项，或人工确认正确类别。如果提示无法读取文件，请重新选择该文件；同名材料会替换原件，案件保留。'));
+      for(const item of pending){const line=node('div','itemactions');const choose=node('button','btn',item.file.name+' · 查看并处理');choose.type='button';choose.disabled=state.running;choose.onclick=()=>{state.selected=item.id;render();$('details').scrollIntoView({block:'center',behavior:'smooth'});};line.append(choose,node('span','small',item.classificationError||item.categoryNote||'尚未分类'));root.append(line);}
+      const retry=node('button','btn','重试失败分类');retry.type='button';retry.disabled=state.running;retry.style.marginTop='12px';retry.onclick=()=>retryClassifications(PvMaterialFiles.classificationFailures(state.items));root.append(retry);
+    }
+    function renderList(){
+      const root=$('filelist');root.replaceChildren();
+      for(const item of state.items){
+        const b=document.createElement('button');b.type='button';b.className='fileitem'+(state.selected===item.id?' active':'');b.onclick=()=>{state.selected=item.id;render();};
+        const icon=document.createElement('span');icon.className='fileicon';icon.textContent=/\.(pdf|xlsx)$/i.test(item.file.name)?'▤':'▧';
+        const wrap=document.createElement('span');wrap.style.minWidth='0';
+        const name=document.createElement('div');name.className='fn';name.textContent=safeName(item.file.name);name.title=safeName(item.file.name);
+        const info=document.createElement('div');info.className='fm';info.textContent=(categories.find(c=>c[0]===item.category)?.[1]||item.category)+(item.status==='done'?' · OCR '+(item.ocrResults?.length||0)+' / 识别结果 '+(item.visionResults?.length||0):'');
+        const needsCategory=item.status!=='running'&&PvMaterialFiles.classificationFailures([item]).length>0;const tag=document.createElement('span');tag.className='tag '+(needsCategory?'error':item.status);tag.textContent=needsCategory?'类别待确认':statusNames[item.status];
+        wrap.append(name,info,tag);b.append(icon,wrap);root.append(b);
+      }
+    }
+    function renderViewer(item){
+      const canvas=$('canvas');canvas.replaceChildren();
+      if(!item){$('viewtitle').textContent='原始材料';$('viewindex').textContent='—';const empty=document.createElement('div');empty.className='empty';empty.innerHTML='<span class="big">▧</span>添加图片后在这里查看原图<br>模型发现用实线框，待核线索用虚线框';canvas.append(empty);return;}
+      $('viewtitle').textContent=safeName(item.file.name);$('viewindex').textContent=(state.items.indexOf(item)+1)+' / '+state.items.length;
+      if(item.file.type==='application/pdf'||item.file.name.toLowerCase().endsWith('.pdf')){const frame=document.createElement('iframe');frame.src=item.url;frame.title=safeName(item.file.name);canvas.append(frame);return;}
+      if(item.file.name.toLowerCase().endsWith('.xlsx')){canvas.append(node('div','empty','设备清单表格已上传；整单运行时解析工作簿内容。'));return;}
+      const wrap=document.createElement('div');wrap.className='imagewrap';const img=document.createElement('img');img.src=item.url;img.alt='原始材料：'+safeName(item.file.name);wrap.append(img);
+      if(item.status==='done')(item.visionResults||[]).filter(r=>['detected','uncertain'].includes(r.detection_status)&&!['installation_type','image_quality'].includes(r.category)).forEach((r,i)=>{const p=r.bbox;if(!p||p.coordinate_space!=='normalized_0_1')return;const pending=r.detection_status==='uncertain'||r.requires_manual_review;const box=document.createElement('div');box.className='box'+(pending?' pending':'');box.style.left=(p.x_min*100)+'%';box.style.top=(p.y_min*100)+'%';box.style.width=((p.x_max-p.x_min)*100)+'%';box.style.height=((p.y_max-p.y_min)*100)+'%';const label=document.createElement('span');label.textContent=(pending?'待核':'模型发现')+' · '+(i+1)+' · '+(r.label||r.field_name||'定位');box.append(label);wrap.append(box);});
+      if(item.status==='done')(item.ocrResults||[]).filter(r=>r.filing_assessment?.status==='confirmed'&&r.filing_assessment.evidence_bbox).forEach((r,i)=>{const p=UnderwritingReport.paddedEvidenceBox(r.filing_assessment.evidence_bbox);if(!p)return;const box=document.createElement('div');box.className='box pending';box.style.left=(p.x_min*100)+'%';box.style.top=(p.y_min*100)+'%';box.style.width=((p.x_max-p.x_min)*100)+'%';box.style.height=((p.y_max-p.y_min)*100)+'%';const label=document.createElement('span');label.textContent='备案证据 · '+(i+1);box.append(label);wrap.append(box);});
+      canvas.append(wrap);
+    }
+    function resultCard(item,r,i,kind){
+      const card=document.createElement('div');card.className='result';
+      const head=document.createElement('div');head.className='resulthead';const name=document.createElement('strong');name.textContent=(i+1)+'. '+(r.label||r.field_name||'未命名结果');
+      const pill=document.createElement('span');pill.className='pill';
+      if(kind==='vision'){pill.textContent=r.detection_status==='detected'?(r.requires_manual_review?'发现线索 · 待复核':'模型发现'):(detectionNames[r.detection_status]||r.detection_status||'未知');if(r.detection_status==='detected'&&!r.requires_manual_review)pill.classList.add('risk');if(r.detection_status==='uncertain'||r.requires_manual_review)pill.classList.add('warn');}
+      else{pill.textContent=r.provider==='human-review'?'人工修正':fieldNames[r.value_status]||r.value_status||'提取结果';if(r.value_status==='uncertain')pill.classList.add('warn');}
+      head.append(name,pill);card.append(head);if(r.provider==='human-review'){const original=state.fullCase?.original_ocr_fields?.find(f=>f.field_id===r.field_id);card.append(node('p','','AI 原始识别值：'+(original?.normalized_value||original?.raw_value||'未提取')),node('p','',r.evidence_text||''));}
+      const content=document.createElement('p');content.textContent=kind==='ocr'?'提取值：'+(r.normalized_value??r.raw_value??'未提取'):(r.evidence_text||'未提供证据说明');card.append(content);
+      if(kind==='ocr'&&r.raw_value&&r.normalized_value&&r.raw_value!==r.normalized_value){const raw=document.createElement('p');raw.textContent='原始文本：'+r.raw_value;card.append(raw);}
+      if(kind==='ocr'&&r.filing_assessment){const a=r.filing_assessment;const scope=[{distributed:'分布式',centralized:'集中式'}[a.generation_mode],{building_roof:'建筑屋顶',carport_roof:'车棚顶',other:'非屋顶／非车棚'}[a.installation_site]].filter(Boolean);if(scope.length){const type=document.createElement('p');type.textContent='备案所述：'+scope.join(' · ');card.append(type);}const verdict=document.createElement('p');verdict.textContent='禁投判断：'+({confirmed:'模型确认命中',not_found:'模型未发现',uncertain:'待核'}[a.status]||a.status)+' · '+a.reason;card.append(verdict);if(a.evidence_quote){const proof=document.createElement('p');proof.textContent='原文片段：'+a.evidence_quote+(r.page_number?' · 第 '+r.page_number+' 页':'')+(a.evidence_bbox?' · 已定位':' · 位置未框选');card.append(proof);}}
+      const meta=document.createElement('div');meta.className='meta';meta.textContent=(r.provider==='human-review'?'人工核验值（非模型置信度）':'置信度 '+(typeof r.confidence==='number'?Math.round(r.confidence*100)+'%':'—'))+(r.bbox?(kind==='ocr'?' · 字段位置已保存，不绘制风险框':' · 已返回定位信息'):' · 无定位框')+(r.requires_manual_review?' · 需人工复核':'');card.append(meta);
+      const choices=document.createElement('div');choices.className='review';const key=kind+':'+(r.finding_id||r.field_id||String(i));for(const [value,label] of [['correct','正确'],['incorrect','错误'],['uncertain','待核']]){const b=document.createElement('button');b.type='button';b.textContent=label;b.className=item.feedback[key]===value?'selected':'';b.onclick=()=>{item.feedback[key]=value;renderDetails(item);saveCurrentCase();};choices.append(b);}card.append(choices);return card;
+    }
+    function renderDetails(item){
+      const root=$('details');root.replaceChildren();$('detailstatus').textContent=item?statusNames[item.status]:'等待材料';
+      if(!item){const p=document.createElement('div');p.className='notice';p.textContent='先添加材料，再运行整条链路；也可以选中一份材料单测 OCR 或图片风险。';root.append(p);return;}
+      const categoryField=document.createElement('div');categoryField.className='field';
+      const cl=document.createElement('label');cl.textContent='材料类别（自动推荐，可人工确认）';cl.htmlFor='materialCategory';
+      const cs=document.createElement('select');cs.id='materialCategory';for(const [value,label] of categories)option(cs,value,label);cs.value=canonicalCategory(item.category);cs.disabled=state.running;
+      if(item.sourceOnly){root.append(node('p','notice','厂家参数参考资料：仅作参数来源，未作为现场核保材料。'));const remove=node('button','btn','移除此参考资料');remove.disabled=state.running;remove.onclick=()=>{invalidateModelCorrection(item.id);URL.revokeObjectURL(item.url);state.items=state.items.filter(i=>i.id!==item.id);state.selected=state.items[0]?.id||null;markStale('厂家参数来源已移除，请重新确认本案参数');render();};root.append(remove);return;}
+      const confirmSelectedCategory=()=>{PvMaterialFiles.confirmCategory(item,cs.value,categories.find(c=>c[0]===cs.value)?.[1]||cs.value);item.additionalCategories=(item.additionalCategories||[]).filter(c=>c!==item.category);markStale('材料或项目资料已更新，报告待重测');state.progress='已确认材料类别，可运行整条链路。';render();};
+      cs.onchange=confirmSelectedCategory;categoryField.append(cl,cs);root.append(categoryField);
+      root.append(node('p','small',item.categoryNote||'可人工确认类别'));
+      const classifyActions=node('div','itemactions');
+      const confirmButton=node('button','btn','确认此类别');confirmButton.type='button';confirmButton.disabled=state.running;confirmButton.onclick=confirmSelectedCategory;classifyActions.append(confirmButton);
+      const reclassify=node('button','btn','重新分类');reclassify.type='button';reclassify.disabled=state.running;reclassify.onclick=()=>retryClassifications([item]);classifyActions.append(reclassify);root.append(classifyActions);
+      const classificationDetails=node('details');classificationDetails.append(node('summary','','分类依据（仅用于选择检查用途）'));
+      if(item.classification)classificationDetails.append(node('p','small',item.classification.reason+' · 模型参考分 '+Math.round(item.classification.confidence*100)+'%'));
+      for(const candidate of item.classification?.candidates||[]){const label=categories.find(c=>c[0]===canonicalCategory(candidate.category))?.[1]||candidate.category;classificationDetails.append(node('p','small',`${label}：${candidate.reason} · 参考分 ${Math.round(candidate.confidence*100)}%`));}
+      classificationDetails.append(node('p','small','分类不生成风险证据或核保结论；风险识别在单测或整单运行时执行。'));root.append(classificationDetails);
+      if(/^image\/(png|jpeg)$/.test(item.file.type)){const otherUses=node('details');otherUses.append(node('summary','','其他可检查用途（人工确认）'),node('p','small','勾选只表示该照片可用于对应检查；仍需识别结果或人工核验，不能仅凭勾选判定该项有效。'));const suggestions=new Set((item.classification?.candidates||[]).slice(1).map(c=>canonicalCategory(c.category)));for(const [value,label] of categories){if(value===item.category||['project_document','equipment_inventory','other'].includes(value))continue;const line=node('label','small');line.style.display='block';const box=document.createElement('input');box.type='checkbox';box.checked=(item.additionalCategories||[]).includes(value);box.disabled=state.running;box.onchange=()=>{const values=new Set(item.additionalCategories||[]);if(box.checked)values.add(value);else values.delete(value);item.additionalCategories=[...values];markStale('材料用途已更新，报告待重测');if(value==='panorama')renderDetails(item);persistWorkspace();};line.append(box,document.createTextNode(' '+label+(suggestions.has(value)?' · 模型候选':'')));otherUses.append(line);}root.append(otherUses);}
+      if(item.category==='panorama'||(item.additionalCategories||[]).includes('panorama')){const viewField=document.createElement('div');viewField.className='field';const vl=document.createElement('label');vl.textContent='全景拍摄视角（若知道）';const vs=document.createElement('select');for(const [value,label] of [['unknown','暂不确定'],['front_level','正面平视'],['overhead','俯拍'],['other','其他']])option(vs,value,label);vs.value=item.captureView||'unknown';vs.disabled=state.running;vs.onchange=()=>{item.captureView=vs.value;markStale('材料或项目资料已更新，报告待重测');state.progress='';renderChainSummary();persistWorkspace();};viewField.append(vl,vs);root.append(viewField);}
+      const expl=document.createElement('p');expl.className='small';expl.textContent='整条链路会按材料类别决定运行 OCR、风险识别或两者。上传的图片、PDF 和 XLSX 均先分类；文档提取业务文字，设备清单解析表格；现场照片先检查风险与拍摄水印，再分别提取水印和适用的业务文字。';root.append(expl);
+      const toolsRow=document.createElement('div');toolsRow.className='itemactions';const ocrButton=document.createElement('button');ocrButton.type='button';ocrButton.textContent='单测 OCR';ocrButton.disabled=state.running||item.file.name.toLowerCase().endsWith('.xlsx');ocrButton.onclick=()=>runModule(item,'ocr');const visionButton=document.createElement('button');visionButton.type='button';visionButton.textContent='单测图片风险';visionButton.disabled=state.running||/\.(pdf|xlsx)$/i.test(item.file.name)||['project_document','equipment_inventory'].includes(item.category);visionButton.onclick=()=>runModule(item,'vision');toolsRow.append(ocrButton,visionButton);root.append(toolsRow);
+      const title=document.createElement('div');title.className='sectiontitle';title.textContent='模块输出';root.append(title);
+      if(item.status==='pending'){const p=document.createElement('div');p.className='notice';p.textContent='等待分析。点击上方主按钮运行整条链路，或单测这个材料的模块。';root.append(p);}
+      if(item.status==='running'){const p=document.createElement('div');p.className='notice';p.textContent='正在调用模型，请稍候…';root.append(p);}
+      if(item.status==='error'){const p=document.createElement('div');p.className='errorbox';p.textContent=item.error||'请求失败';root.append(p);}
+      if(item.status==='done'){
+        const ocr=item.ocrResults||[],vision=item.visionResults||[];
+        const material=state.fullCase?.materials?.find(m=>m.material_id===item.id);
+        if(material&&!['project_document','filing_certificate','grid_connection_document','equipment_inventory'].includes(item.category))root.append(node('p','small','拍摄水印检查：'+({present:'有水印',absent:'无水印',uncertain:'无法判断',not_checked:'尚未检查'}[material.watermark_status]||'尚未检查')));
+        const executions=(state.fullCase?.processing_trace||[]).find(t=>t.step==='ocr')?.task_executions||[];
+        for(const [task,label] of [['watermark','拍摄水印提取'],['business','业务文字提取']]){
+          const fields=ocr.map((r,i)=>({r,i})).filter(({r})=>(r.extraction_task||((r.field_name||'').startsWith('watermark_')?'watermark':'business'))===task);
+          const execution=executions.find(t=>t.material_id===item.id&&t.task===task);
+          root.append(node('div','sectiontitle',label+' · '+fields.length+' 项'));
+          if(execution)root.append(node('p','small',({success:'完成',failed:'失败',skipped:'跳过'}[execution.status]||execution.status)+(execution.reason?'：'+execution.reason:'')));
+          if(fields.length)fields.forEach(({r,i})=>root.append(resultCard(item,r,i,'ocr')));
+          else if(!execution)root.append(node('p','small','没有字段；历史记录或单模块测试未记录此任务的独立执行状态。'));
+        }
+        const vh=document.createElement('div');vh.className='sectiontitle';vh.textContent='图片识别 · '+vision.length+' 条结果';root.append(vh);root.append(node('p','small','模型发现 '+vision.filter(r=>r.detection_status==='detected'&&!r.requires_manual_review&&!['installation_type','image_quality'].includes(r.category)).length+' 条 · 待核 '+vision.filter(r=>(r.detection_status==='uncertain'||r.detection_status==='detected'&&r.requires_manual_review)&&!['installation_type','image_quality'].includes(r.category)).length+' 条；其余可能是未发现、图片质量或安装类型，不等于已确认风险。'));
+        if(vision.length)vision.forEach((r,i)=>root.append(resultCard(item,r,i,'vision')));else root.append(node('p','small','本次无图片风险结果；不能据此认定图片无风险。'));
+      }
+      if(item.status==='done'||item.status==='error'){
+        const feedbackTitle=document.createElement('div');feedbackTitle.className='sectiontitle';feedbackTitle.textContent='补充人工意见';root.append(feedbackTitle);
+        const p=document.createElement('p');p.className='small';p.textContent='例如：漏识别了什么、结果为何错误、图片质量有什么问题。';root.append(p);
+        const ta=document.createElement('textarea');ta.className='field';ta.style.marginTop='9px';ta.placeholder='写下人工核对意见…';ta.value=item.note;ta.onchange=()=>{item.note=ta.value;saveCurrentCase();};root.append(ta);
+      }
+      const actions=document.createElement('div');actions.className='itemactions';
+      const remove=document.createElement('button');remove.type='button';remove.textContent='移除本份';remove.disabled=state.running;remove.onclick=()=>{invalidateModelCorrection(item.id);URL.revokeObjectURL(item.url);state.items=state.items.filter(x=>x.id!==item.id);state.selected=state.items[0]?.id||null;markStale('材料或项目资料已更新，报告待重测');state.progress='';render();};
+      const debug=node('button','btn','带此图片进入识别调试');debug.disabled=state.running||!/^image\/(png|jpeg)$/.test(item.file.type);debug.onclick=()=>openLab('image').catch(e=>alert(e.message));const replace=node('button','btn','替换本份材料');replace.disabled=state.running;replace.onclick=()=>{const input=document.createElement('input');input.type='file';input.accept='.png,.jpg,.jpeg,.pdf,.xlsx';input.onchange=()=>{if(input.files.length)addFiles(input.files,item.id);};input.click();};actions.append(debug,replace,remove);root.append(actions);
+    }
+    const processSourceUrls=new Map();
+    function markStale(reason){if(state.fullCase){state.stale=true;state.staleReason=reason;}}
+    function setCaseView(view,changeHistory=true){if(view==='report'){processRuntime.selected=6;processRuntime.autoFollow=false;}state.caseView=['materials','process'].includes(view)?view:view==='report'?'process':'materials';if(changeHistory){const url=new URL(location.href);url.searchParams.set('panel',state.caseView);history.pushState({},'',url);}renderChainSummary();persistWorkspace();}
+    function renderProcess(){
+      for(const source of processSourceUrls.values())URL.revokeObjectURL(source.url);
+      processSourceUrls.clear();
+      const result=state.running||processRuntime.failed?null:state.fullCase;
+      const sourceFor=id=>{
+        if(state.caseView!=='process')return null;
+        if(processSourceUrls.has(id))return processSourceUrls.get(id);
+        const item=(state.reportItems.length?state.reportItems:state.items).find(entry=>entry.id===id);
+        if(!item?.file)return null;
+        try{const file=PvMaterialFiles.restoreItemFile(item),source={url:URL.createObjectURL(file),pdf:file.type==='application/pdf'};processSourceUrls.set(id,source);return source;}catch{return null;}
+      };
+      AnalysisProgress.render($('processPanel'),{
+        result,job:processRuntime.job,visited:[...processRuntime.visited],selected:processRuntime.selected,
+        durationMs:result?state.runDurationMs:null,stale:state.stale&&!state.running,
+        resolveSource:sourceFor,
+        renderReport:(target,fullCase)=>{
+          const download=node('button','btn',state.stale?'导出上一轮报告':'导出本轮报告');download.type='button';
+          download.onclick=async()=>{download.disabled=true;try{const response=await fetch('/api/v1/cases/'+encodeURIComponent(fullCase.case_id)+'/report');if(!response.ok)throw Error('服务端未保留此报告，可导出评测记录保留本机结果。');const blob=new Blob([await response.text()],{type:'text/markdown;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='核保报告-'+fullCase.case_id+'.md';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);}catch(error){alert(error.message);}finally{download.disabled=false;}};
+          target.append(download);
+          if(state.stale)target.append(node('div','notice',state.staleReason+'。以下是上一轮结果。'));
+          UnderwritingReport.render(target,fullCase,{resolveSource:sourceFor,renderLocation:renderLocationAssessment,embedded:true,interpretation:true});
+        },
+        onSelect:index=>{processRuntime.selected=index;processRuntime.autoFollow=false;renderProcess();},
+      });
+    }
+    function renderChainSummary(){
+      if(state.caseView==='report'){state.caseView='process';processRuntime.selected=6;processRuntime.autoFollow=false;}
+      const historyView=new URL(location.href).searchParams.get('view')==='replay';
+      document.body.classList.toggle('ap-view',!historyView&&state.caseView==='process');
+      $('caseIdentity').hidden=historyView;$('caseIdentity').textContent='当前案件：'+(state.project.project_name||state.items[0]?.file.name||'未命名案件')+' · '+state.workId.slice(0,8)+(state.fullCase?' · 报告 R'+(state.reportRunNumber||state.runNumber||1):'');$('caseTabs').hidden=historyView;$('caseStatus').hidden=historyView||state.caseView==='process';
+      $('ruleSelection').hidden=historyView||state.caseView!=='materials';$('testWorkspace').hidden=historyView||state.caseView!=='materials';$('projectDetails').hidden=historyView||state.caseView!=='materials';$('processPanel').hidden=historyView||state.caseView!=='process';$('chainSummary').hidden=true;
+      for(const button of document.querySelectorAll('[data-case-view]'))button.setAttribute('aria-selected',String(button.dataset.caseView===state.caseView));
+      $('caseStatus').classList.toggle('wb-stale',state.stale);$('caseStatusText').textContent=state.running?state.progress:state.stale?state.staleReason:state.progress||(state.items.length?`当前案件 · ${state.items.length} 份材料 · 自动保存`:'等待添加材料');$('viewReport').hidden=!state.fullCase;$('viewReport').textContent=state.stale?'查看上一轮报告':'查看报告';
+      StrategySelection.render($('strategySelectionPanel'),{state,onChange:()=>{persistWorkspace();render();}});renderClassificationIssues();renderProcess();renderRecovery();ComponentReview.render($('componentReviewPanel'),{state,onChange:refresh=>{persistWorkspace();if(refresh)render();},onRun:run,onAddDocuments:files=>addFiles(files,null,true),onOpenSource:id=>{state.selected=id;setCaseView('materials');render();$('testWorkspace').scrollIntoView({block:'start'});}});CaseReview.render($('caseReviewPanel'),{state,onChange:refresh=>{persistWorkspace();if(refresh)render();},onRun:run,onRefresh:renderChainSummary});$('chainSummary').replaceChildren();
+    }
+    async function openLab(kind){if(state.running)return;await persistWorkspace();if(workspaceSaveError)return;const i=selected();if(kind==='image'&&(!i||!/^image\/(png|jpeg)$/.test(i.file.type))){alert('请选择一张 PNG / JPEG 图片；文档在整单测试中处理。');return;}const href=await PvWorkbench.handoff(kind,{title:state.project.project_name||state.items[0]?.file.name||'当前案件',work_id:state.workId,run_label:state.fullCase?'整单运行 R'+(state.reportRunNumber||state.runNumber||1):'尚未运行',item:kind==='image'&&i?structuredClone((({url,...data})=>data)(i)):null,full_case:state.fullCase,project:state.project,pvLoadScreeningInputText:state.pvLoadScreeningInputText,stale:state.stale});await PvWorkbench.navigate(href);}
+    async function archiveDraft(){if(!state.items.length&&!state.fullCase&&JSON.stringify(state.project)===JSON.stringify(emptyProject()))return;const record={revision_draft:state.revisionDraft||null,job_id:state.jobId||null,job_snapshot:state.jobSnapshot||null,job_fingerprint:state.jobFingerprint||null,id:'DRAFT-'+state.workId,work_id:state.workId,created_at:new Date().toISOString(),title:(state.project.project_name||state.items[0]?.file.name||'未命名案件')+' · 工作草稿',analysis_kind:'draft',selected:state.selected,scroll_y:window.scrollY,case_view:state.caseView,run_number:state.runNumber,report_run_number:state.reportRunNumber,run_duration_ms:state.runDurationMs,project:structuredClone(state.project),pv_load_screening_input_text:state.pvLoadScreeningInputText||'',rule_draft:state.ruleDraft||null,full_case:state.fullCase,stale:state.stale,report_items:structuredClone(state.reportItems||[]),human_conclusion:null,human_note:'',items:state.items.map(({url,file,...i})=>({...i,file,file_name:file.name,file_type:file.type,file_size:file.size,category_source:i.categorySource,category_note:i.categoryNote,capture_view:i.captureView,ocr_results:i.ocrResults,vision_results:i.visionResults}))};await saveReplayRecord(record);}
+    async function continueRecord(record){if(state.running)return;await archiveDraft();state.revisionDraft=record.revision_draft||null;state.reviewRefresh=0;state.submissionIssue=null;state.jobId=record.job_id||null;state.jobSnapshot=record.job_snapshot||null;state.jobFingerprint=record.job_fingerprint||null;state.appliedJobId=record.analysis_kind==='chain'?record.job_id:null;state.jobDisconnected=!!state.jobId;Object.assign(processRuntime,{job:null,visited:new Set(),selected:0,autoFollow:true,failed:false});for(const item of state.items)URL.revokeObjectURL(item.url);state.items=record.items.map(i=>({...i,file:PvMaterialFiles.restoreItemFile(i),url:URL.createObjectURL(PvMaterialFiles.restoreItemFile(i)),additionalCategories:i.additionalCategories||i.additional_categories||[],categorySource:i.category_source,categoryNote:i.category_note,classificationError:i.classification_error??i.classificationError,captureView:i.capture_view,ocrResults:i.ocr_results||[],visionResults:i.vision_results||[],feedback:i.feedback||{}}));state.selected=state.items.some(i=>i.id===record.selected)?record.selected:state.items[0]?.id||null;state.scrollY=record.scroll_y||0;state.project={...emptyProject(),...record.project,...(record.project?{}:record.full_case?.project)};state.pvLoadScreeningInputText=record.pv_load_screening_input_text||'';state.workId=record.work_id||crypto.randomUUID();state.runNumber=Math.max(record.run_number||0,...replay.records.filter(r=>r.work_id&&r.work_id===state.workId).map(r=>r.run_number||0));state.reportRunNumber=record.report_run_number||record.run_number||(record.full_case?1:0);state.runDurationMs=record.run_duration_ms??null;state.fullCase=record.full_case||null;state.reportItems=record.report_items||record.items;state.stale=record.stale||false;state.staleReason=state.stale?'恢复的草稿包含材料更新，报告待重测':'';state.lastCaseId=record.analysis_kind==='draft'?null:record.id;state.lastRunAt=record.created_at;state.analysisKind=record.analysis_kind==='draft'?(record.full_case?'chain':null):record.analysis_kind;state.ruleDraft=record.rule_draft||(record.full_case?.ruleset_snapshot?.selection?{selection:record.full_case.ruleset_snapshot.selection,context:record.full_case.ruleset_snapshot.context,name:record.full_case.ruleset_snapshot.scheme_name}:null);await window.RuleSelection.restore(state.ruleDraft);state.caseView='materials';state.progress='已恢复案件'+(state.fullCase&&state.runDurationMs!=null?'，上次整单耗时 '+formatRunDuration(state.runDurationMs):'')+'，可继续补充材料。';switchView('test');render();}
+    function renderLocationAssessment(root,location,caseId){
+      if(!location)return;
+      const labels={verified:'多来源位置一致',single_source:'只有一个位置来源，待核实',conflict:location.address_photo_conflict?'安装地址与现场坐标冲突，建议拒保':'位置冲突，需核对原件',uncertain:'位置暂无法比较',missing:'缺少位置证据'};
+      const box=node('div','notice');box.style.marginTop='10px';box.append(node('strong','',`位置核验：${labels[location.status]||location.status}`));
+      if(location.address_photo_conflict)box.append(node('p','','比较方法：先把项目地址转换为地图候选经纬度，再与现场照片水印经纬度计算距离。'));
+      for(const note of location.notes||[])box.append(node('p','',note));
+      for(const item of location.evidence||[]){const parts=[item.source,item.file_name||item.material_id,item.address,item.longitude!=null&&item.latitude!=null&&`经纬度 ${item.longitude}, ${item.latitude}`,item.coordinate_system&&`坐标系 ${item.coordinate_system}`,item.geocode_level&&`地图定位 ${item.geocode_level}`].filter(Boolean);box.append(node('p','',parts.join(' · ')));if(item.geocode_reason)box.append(node('p','',item.geocode_reason));for(const candidate of item.geocode_candidates||[])box.append(node('p','small',`候选：${candidate.address} · 定位级别 ${candidate.level} · 高德坐标 ${candidate.longitude}, ${candidate.latitude}（尚未采用）`));}
+      root.append(box);
+      if(location.status==='conflict'&&caseId){
+        const review=node('div','notice');review.style.marginTop='9px';review.append(node('strong','',location.address_photo_conflict?'核对拒保证据并记录最终结论':'人工核对后记录结论'));review.append(node('p','',location.address_photo_conflict?'系统已将安装地址与现场照片坐标的显著冲突判为建议拒保。请核对备案原件、照片水印及材料归属后记录最终核保结论。':'其他位置证据冲突仍需核对原件；确认不同标的后记录人工拒保。'));
+        const name=node('input');name.placeholder='核对人姓名';name.setAttribute('aria-label','核对人姓名');name.style.cssText='display:block;width:100%;margin-top:8px;padding:8px;border:1px solid #cbdacf;border-radius:7px';
+        const note=node('textarea');note.placeholder='写明核对了哪些原件，以及为何确认是另一座电站';note.setAttribute('aria-label','异地核对依据');note.style.cssText='display:block;width:100%;min-height:66px;margin-top:8px;padding:8px;border:1px solid #cbdacf;border-radius:7px';
+        const save=node('button','btn','确认异地并记录人工拒保');save.type='button';save.style.marginTop='8px';const feedback=node('p','small','');
+        save.disabled=state.running||(state.fullCase?.case_id===caseId&&state.stale);save.onclick=async()=>{if(state.fullCase?.case_id===caseId&&state.stale)return;if(!name.value.trim()||!note.value.trim()){feedback.textContent='请填写核对人和原件核对依据。';return;}save.disabled=true;try{const response=await fetch('/api/v1/cases/'+encodeURIComponent(caseId)+'/review',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({reviewer_name:name.value.trim(),final_decision:'recommend_reject',comment:'人工确认位置异地：'+note.value.trim()})});const data=await response.json().catch(()=>({}));if(!response.ok)throw apiError(response,data);feedback.textContent='人工拒保结论已写入案件复核记录；自动模型结论保持原样。';const report=root.closest('.uw-report');state.reviewRefresh=(state.reviewRefresh||0)+1;renderChainSummary();report?.querySelector('.uw-decision')?.append(node('p','uw-meta','人工拒保结论已记录；上方仍为原系统建议。'));}catch(error){feedback.textContent='记录失败：'+(error?.message||error);save.disabled=false;}};
+        review.append(name,note,save,feedback);root.append(review);
+      }
+    }
+    function render(){window.RuleSelection?.lock(state.running);renderProjectFields();renderList();renderViewer(selected());renderDetails(selected());renderChainSummary();updateButtons();persistWorkspace();}
+    function apiError(response,data){const detail=data?.detail,text=typeof detail==='string'?detail:JSON.stringify(detail||data);const hint=/not configured/i.test(text)?'识别服务尚未配置，请在服务配置中检查模型与密钥，再重新提交。':response.status===401||response.status===403?'服务访问权限异常，请检查登录状态或权限。':response.status===503?'服务暂时不可用或任务队列已满，请检查服务后稍后再试。':text;return new Error(hint);}
+    function newCaseId(){return 'EVAL-'+new Date().toISOString().replace(/[-:.TZ]/g,'').slice(0,14)+'-'+Math.random().toString(36).slice(2,8).toUpperCase();}
+    async function recordRun(kind,itemIds=null){state.analysisKind=kind;state.recordItemIds=itemIds;state.lastCaseId=globalThis.crypto?.randomUUID?.()||String(Date.now())+'-'+Math.random();state.lastRunAt=new Date().toISOString();await saveCurrentCase(true);if(!$('replayWorkspace').hidden)loadReplay();}
+    async function run(){
+      for(const control of $('projectFields').querySelectorAll('input')){if(!control.reportValidity())return;}
+      let revision;try{ComponentReview.requestFor(state);revision=CaseReview.revisionFor(state);}catch(error){alert(error.message);$('caseReviewPanel').scrollIntoView({block:'center'});return;}
+      let ruleRequest;try{ruleRequest=window.RuleSelection.build({...emptyProject(),...state.project});}catch(error){alert(error.message);return;}
+      if(state.running||!state.items.length)return;const unresolved=PvMaterialFiles.classificationFailures(state.items);if(unresolved.length){state.selected=unresolved[0].id;state.progress='有 '+unresolved.length+' 份材料需要重试分类或人工确认类别；整单尚未提交。';setCaseView('materials');render();$('classificationIssues').scrollIntoView({block:'center',behavior:'smooth'});return;}const runStartedAt=performance.now();state.submissionIssue=null;state.jobId=null;state.jobSnapshot=null;state.jobDisconnected=false;state.running=true;Object.assign(processRuntime,{job:{status:'running',progress_percent:0,current_step:'正在准备上传材料'},visited:new Set(),selected:0,autoFollow:true,failed:false});updateButtons();try{await PvMaterialFiles.prepareItems(state.items);}catch(error){state.running=false;processRuntime.failed=true;processRuntime.job={status:'failed',progress_percent:0,current_step:error?.message||String(error)};state.progress=error?.message||String(error);render();return;}markStale('整单重测进行中，当前报告为上一轮结果');state.progress='正在检查并提交材料…';state.items.forEach(item=>{item.status='running';item.error='';});render();
+      let screening={};try{screening=JSON.parse(state.pvLoadScreeningInputText||'{}');if(!screening||typeof screening!=='object'||Array.isArray(screening))throw Error('必须是JSON对象');}catch(error){alert('风雪参数格式错误：'+error.message);state.running=false;render();return;}
+      const manifest={strategy_selection:StrategySelection.requestFor(state),component_review:ComponentReview.requestFor(state),revision,pv_load_screening_input:screening,case_id:newCaseId(),project:{...emptyProject(),...state.project},materials:state.items.map(item=>({material_id:item.id,source_only:!!item.sourceOnly,category:item.category,additional_categories:(item.additionalCategories||[]).filter(c=>c!==item.category),category_source:item.categorySource||null,category_note:item.categoryNote||null,capture_view:item.captureView||'unknown'}))};
+      Object.assign(manifest,ruleRequest);
+      const form=new FormData();form.append('manifest',JSON.stringify(manifest));state.items.forEach(item=>form.append('files',item.file,safeName(item.file.name)));
+      try{
+        const start=await fetch('/api/v1/underwriting/jobs',{method:'POST',body:form});const started=await start.json().catch(()=>({}));if(!start.ok)throw apiError(start,started);if(!started.job_id)throw new Error('整单接口未返回任务编号');
+        state.jobId=started.job_id;state.jobStartedAt=Date.now();state.jobFingerprint=currentJobFingerprint();state.appliedJobId=null;
+        processRuntime.job={job_id:started.job_id,status:'queued',progress_percent:0,current_step:'任务已提交，等待执行'};state.jobSnapshot=processRuntime.job;state.jobDisconnected=false;await persistWorkspace();setCaseView('process');
+        await watchJob(started.job_id);
+      }catch(error){state.progress='任务提交未确认：'+(error?.message||error)+'。请检查服务状态；本页不会自动重复提交。';state.submissionIssue=state.progress;processRuntime.failed=true;state.items.forEach(item=>{item.status='error';item.error=state.progress;});await recordRun('chain_failed');}
+      finally{state.running=false;render();}
+    }
+    function currentJobFingerprint(){return JSON.stringify({work:state.workId,strategySelection:StrategySelection.requestFor(state)||null,componentReview:state.revisionDraft?.componentReview||null,corrections:state.revisionDraft?.corrections||[],project:state.project,screening:state.pvLoadScreeningInputText||'',rules:state.ruleDraft||null,items:state.items.map(i=>[i.id,i.category,i.additionalCategories||[],i.categorySource,i.categoryNote,i.captureView,i.file?.name,i.file?.size,i.file?.lastModified,!!i.sourceOnly])});}
+    function jobCompatible(){return !!state.jobFingerprint&&state.jobFingerprint===currentJobFingerprint();}
+    function renderRecovery(){
+      $('taskRecoveryPanel').hidden=new URL(location.href).searchParams.get('view')==='replay';
+      TaskRecovery.render($('taskRecoveryPanel'),{job:state.jobSnapshot,id:state.jobId,submissionIssue:state.submissionIssue,busy:state.running,disconnected:state.jobDisconnected,compatible:jobCompatible(),
+        onReconnect:reconnectJob,onRetry:retryJob,onStop:async()=>{await TaskRecovery.request('/api/v1/underwriting/jobs/'+encodeURIComponent(state.jobId)+'/stop',{method:'POST'});if(state.jobSnapshot){state.jobSnapshot.recovery??={};state.jobSnapshot.recovery.cancel_requested=true;}renderRecovery();},
+        onMaterials:()=>setCaseView('materials'),onManual:async()=>{await TaskRecovery.request('/api/v1/underwriting/jobs/'+encodeURIComponent(state.jobId)+'/manual-attention',{method:'POST'});state.jobSnapshot=await TaskRecovery.request('/api/v1/underwriting/jobs/'+encodeURIComponent(state.jobId));await persistWorkspace();renderRecovery();}});
+    }
+    async function retryJob(){
+      if(state.running||!jobCompatible())return;
+      state.running=true;render();
+      try{const started=await TaskRecovery.request('/api/v1/underwriting/jobs/'+encodeURIComponent(state.jobId)+'/retry',{method:'POST'});state.jobId=started.job_id;state.jobStartedAt=Date.now();state.jobDisconnected=false;await persistWorkspace();await watchJob(started.job_id);}
+      finally{state.running=false;render();}
+    }
+    async function reconnectJob(id){
+      if(state.running||!jobCompatible())return;
+      if(typeof id==='string')state.jobId=id;
+      state.running=true;state.jobDisconnected=false;render();
+      try{await watchJob(state.jobId);}finally{state.running=false;render();}
+    }
+    async function watchJob(id){
+      processRuntime.failed=false;setCaseView('process');
+      try{
+        const job=await TaskRecovery.poll(id,job=>{
+          processRuntime.job=job;state.jobSnapshot=job;state.jobDisconnected=false;
+          const active=AnalysisProgress.liveIndex(job);if(active!==null){if(active<6)for(let previous=0;previous<=active;previous++)processRuntime.visited.add(previous);else processRuntime.visited.add(active);if(processRuntime.autoFollow)processRuntime.selected=active;}
+          state.progress=(job.current_step||'正在分析')+' · '+(job.progress_percent??0)+'%';renderChainSummary();
+        });
+        if(job.status==='completed'&&job.result){
+          const completed=job.result;
+          state.fullCase=completed;state.reviewRefresh=(state.reviewRefresh||0)+1;processRuntime.job=null;processRuntime.failed=false;if(processRuntime.autoFollow)processRuntime.selected=6;state.stale=false;state.staleReason='';
+          if(state.appliedJobId!==id){state.runNumber=(state.runNumber||0)+1;state.reportRunNumber=state.runNumber;state.runDurationMs=Math.max(0,Date.now()-(state.jobStartedAt||Date.now()));state.reportItems=state.items.map(({url,...item})=>structuredClone(item));
+            for(const item of state.items){item.ocrResults=(completed.ocr_fields||[]).filter(x=>x.material_id===item.id);item.visionResults=(completed.findings||[]).filter(x=>x.material_id===item.id);item.results=[];item.feedback={};item.status='done';}
+            state.appliedJobId=id;await recordRun('chain');}
+          state.progress=job.recovery?.issues?.length?'分析已结束，但部分步骤异常；请先处理任务异常卡片，报告保留待核验状态。':'分析已完成，请查看整单建议并进行业务复核。';
+        }else{
+          processRuntime.failed=true;state.progress=job.status==='cancelled'?'任务已停止，成功步骤保留，可恢复未完成步骤。':'任务存在处理异常，请查看原因和下一步操作。';
+          state.items.forEach(item=>{item.status='pending';item.error='';});await recordRun('chain_failed');
+        }
+      }catch(error){
+        state.jobDisconnected=true;state.progress='进度连接暂时中断：'+error.message+'；后台状态尚未确认，请重新连接原任务。';
+      }finally{state.running=false;await persistWorkspace();render();}
+    }
+    async function runModule(item,kind){
+      if(state.running)return;state.running=true;updateButtons();try{await PvMaterialFiles.prepareItems([item]);}catch(error){state.running=false;state.progress=error.message;render();return;}markStale('材料单测已更新，整单报告待重测');state.progress='正在单独测试'+(kind==='ocr'?'文字提取':'图片风险识别')+'；本次不生成整单核保结论。';item.error='';item.status='running';render();
+      const form=new FormData();form.append('file',item.file,safeName(item.file.name));form.append('material_id',item.id);form.append('category',item.category);
+      try{const response=await fetch(kind==='ocr'?'/api/v1/ocr/extract':'/api/v1/vision/analyze',{method:'POST',body:form});const data=await response.json().catch(()=>({}));if(!response.ok)throw apiError(response,data);if(!Array.isArray(data))throw new Error('接口返回的不是结果列表');if(kind==='ocr')item.ocrResults=data;else item.visionResults=data;item.mode=kind;item.status='done';item.feedback={};state.progress='单模块测试完成。可继续测试另一模块，或点击“运行整条链路”查看整单规则与建议。';}
+      catch(error){item.status='error';item.error=error?.message||String(error);state.progress='单模块测试失败：'+item.error;}
+      await recordRun('module_'+kind,[item.id]);state.running=false;render();
+    }
+    function exportResults(){
+      const payload={format:'pv-material-evaluation-v2',exported_at:new Date().toISOString(),warning:'未收集完整标准答案，不能据此计算准确率；不包含原始文件',analysis_kind:state.analysisKind,full_case:state.fullCase,items:state.items.map(x=>({file_name:x.file.name,file_type:x.file.type,file_size:x.file.size,material_id:x.id,category:x.category,additional_categories:x.additionalCategories||[],category_source:x.categorySource,category_note:x.categoryNote,classification_error:x.classificationError||null,classification:x.classification,capture_view:x.captureView,mode:x.mode,status:x.status,error:x.error||null,ocr_results:x.ocrResults,vision_results:x.visionResults,feedback:x.feedback,note:x.note}))};
+      const blob=new Blob([JSON.stringify(payload,null,2)],{type:'application/json'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download='光伏材料评测-'+new Date().toISOString().slice(0,10)+'.json';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
+    }
+    function node(tag,className,value){const element=document.createElement(tag);if(className)element.className=className;if(value!==undefined)element.textContent=value;return element;}
+    async function loadReplay(){
+      try{const db=await openReplayDb();replay.records=await new Promise((resolve,reject)=>{const tx=db.transaction('cases','readonly');const request=tx.objectStore('cases').getAll();request.onsuccess=()=>resolve(request.result||[]);request.onerror=()=>reject(request.error);});db.close();replay.records.sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)));const filter=$('replayCase'),previous=filter.value;filter.replaceChildren();option(filter,'all','全部案件');const groups=new Map();for(const r of replay.records){const key=r.work_id||r.id;if(!groups.has(key))groups.set(key,r.project?.project_name||r.title||'未命名案件');}for(const [key,label] of groups)option(filter,key,label);filter.value=groups.has(previous)?previous:'all';if(!replay.records.some(x=>x.id===replay.selected))replay.selected=replay.records[0]?.id||null;renderReplay();}
+      catch(error){$('replayList').replaceChildren(node('div','replay-empty','读取本地案例失败：'+(error?.message||error)));}
+    }
+    async function saveReplayRecord(record){const db=await openReplayDb();try{await new Promise((resolve,reject)=>{const tx=db.transaction('cases','readwrite');tx.objectStore('cases').put(record);tx.oncomplete=resolve;tx.onerror=()=>reject(tx.error);});}finally{db.close();}}
+    function recordReviewed(record){return Boolean(record.human_conclusion||record.human_note||record.items.some(x=>x.note||Object.keys(x.feedback||{}).length));}
+    function filteredReplay(){return replay.records.filter(record=>{if($('replayCase').value!=='all'&&$('replayCase').value!==(record.work_id||record.id))return false;const feature=$('replayFunction').value,feedback=$('replayFeedback').value,conclusion=$('replayConclusion').value;if(feature!=='all'&&!record.items.some(x=>x.mode===feature||(feature==='ocr'&&x.ocr_results?.length)||(feature==='vision'&&x.vision_results?.length)))return false;if(feedback==='reviewed'&&!recordReviewed(record))return false;if(feedback==='unreviewed'&&recordReviewed(record))return false;if(feedback==='incorrect'&&!(record.human_conclusion==='incorrect'||record.items.some(x=>Object.values(x.feedback||{}).includes('incorrect'))))return false;if(conclusion==='unset'&&record.human_conclusion)return false;if(conclusion!=='all'&&conclusion!=='unset'&&record.human_conclusion!==conclusion)return false;return true;});}
+    function renderReplayList(){
+      const root=$('replayList');root.replaceChildren();const records=filteredReplay();$('replayCount').textContent=records.length+' 条';
+      if(!records.length){root.append(node('div','replay-empty',replay.records.length?'没有符合筛选条件的案例。':'暂无案例。完成一次材料分析后，这里会自动出现可复盘的记录。'));return;}
+      for(const record of records){const button=node('button','replay-item'+(replay.selected===record.id?' active':''));button.type='button';button.append(node('small','',new Date(record.created_at).toLocaleString('zh-CN')+' · '+(record.human_conclusion||'待复盘')));button.append(node('b','',record.title||'未命名案例'));button.append(node('small','',(record.run_number?'R'+record.run_number+' · ':'')+record.items.length+' 份材料 · '+record.items.filter(x=>x.status==='done').length+' 份完成'));button.onclick=()=>{replay.selected=record.id;replay.itemIndex=0;renderReplay();};root.append(button);}
+    }
+    function clearReplayUrls(){for(const url of replay.urls)URL.revokeObjectURL(url);replay.urls=[];}
+    function replayHeading(root,title){root.append(node('div','sectiontitle',title));}
+    function renderReplayResult(root,record,item){
+      if(item.status==='error'){root.append(node('div','errorbox',item.error||'分析失败'));return;}
+      if(item.status!=='done'){root.append(node('div','replay-empty','这份材料尚未完成分析。'));return;}
+      const ocr=item.ocr_results||(item.mode==='ocr'?item.results||[]:[]),vision=item.vision_results||(item.mode==='vision'?item.results||[]:[]);
+      for(const [kind,results,title] of [['ocr',ocr,'文字提取'],['vision',vision,'图片识别结果']]){
+        root.append(node('div','sectiontitle',title+' · '+results.length+' 项'));
+        if(!results.length){root.append(node('p','small','本次没有返回该模块的可核对结果。'));continue;}
+        results.forEach((result,index)=>{const card=node('div','replay-result');card.append(node('strong','',(index+1)+'. '+(result.label||result.field_name||'未命名结果')));card.append(node('p','',kind==='ocr'?'提取值：'+(result.normalized_value??result.raw_value??'未提取'):(result.evidence_text||'无证据说明')));card.append(node('div','meta','置信度 '+(typeof result.confidence==='number'?Math.round(result.confidence*100)+'%':'—')+(result.bbox?' · 有定位框':' · 无定位框')));const newKey=kind+':'+(result.finding_id||result.field_id||String(index));const oldKey=result.finding_id||result.field_id||String(index);const chosen=(item.feedback||{})[newKey]??(item.feedback||{})[oldKey];const review=node('div','review');for(const [value,label] of [['correct','正确'],['incorrect','错误'],['uncertain','待核']]){const button=node('button',chosen===value?'selected':'',label);button.type='button';button.onclick=async()=>{item.feedback??={};item.feedback[newKey]=value;try{await saveReplayRecord(record);renderReplay();}catch(error){alert('保存反馈失败：'+(error?.message||error));}};review.append(button);}card.append(review);root.append(card);});
+      }
+      if(item.note)root.append(node('div','small','测试时备注：'+item.note));
+    }
+    function renderReplayDetail(){
+      clearReplayUrls();const root=$('replayDetail');root.replaceChildren();const record=replay.records.find(x=>x.id===replay.selected);
+      if(!record){root.append(node('div','replay-empty','选择左侧案例查看复盘。'));return;}
+      const reopen=node('button','btn','恢复到整单测试');reopen.onclick=()=>continueRecord(record).catch(e=>alert('恢复失败：'+e.message));root.append(reopen);root.append(node('h2','',record.title||'未命名案例'));root.append(node('div','replay-meta',new Date(record.created_at).toLocaleString('zh-CN')+' · 案例编号 '+record.id));
+      const flowDetails=node('details');flowDetails.append(node('summary','','查看本次工作链路'));root.append(flowDetails);const flow=node('div','flow');const traces=record.full_case?.processing_trace||[];const traceFor=name=>traces.find(x=>x.step===name);const done=record.items.filter(x=>x.status==='done').length,failed=record.items.filter(x=>x.status==='error').length;
+      const steps=[['接收材料',record.items.length+' 份材料',false],['材料分类',record.items.some(x=>x.category_source==='filename')?'文件名预填 / 人工可改':'人工指定',false],['OCR / 图片分析',traces.length?`OCR ${traceFor('ocr')?.status||'未运行'}；图片 ${traceFor('vision')?.status||'未运行'}`:`${done} 份完成，${failed} 份失败`,false],['规则核验',traceFor('rule_engine')?.status||'本次未运行',!traceFor('rule_engine')],['整单建议',record.full_case?.decision?.decision||'本次未生成',!record.full_case?.decision]];
+      for(const [title,detail,waiting] of steps){const step=node('div','flow-step'+(waiting?' wait':''));step.append(node('strong','',title),node('span','',detail));flow.append(step);}flowDetails.append(flow);
+      if(record.stale)root.append(node('div','notice','此草稿的材料已更新，以下报告为上一轮结果。'));if(record.full_case){const hasHumanReview=Boolean(record.human_conclusion||record.human_note);UnderwritingReport.render(root,record.full_case,{resolveSource:id=>{const item=(record.report_items?.length?record.report_items:record.items).find(x=>x.id===id);if(!item?.file)return null;const url=URL.createObjectURL(PvMaterialFiles.restoreItemFile(item));replay.urls.push(url);return {url,pdf:item.file_type==='application/pdf'};},renderLocation:renderLocationAssessment,interpretation:true});if(hasHumanReview)root.append(node('p','notice','下方人工复盘评价识别质量；业务审核决定请在继续处理案件后查看。原 AI 建议保留。'));}
+      const materialDetails=node('details');materialDetails.append(node('summary','','查看原始材料与全部模型输出'));root.append(materialDetails);const nav=node('div','replay-materials');record.items.forEach((item,index)=>{const button=node('button',index===replay.itemIndex?'active':'',(index+1)+' · '+(categories.find(x=>x[0]===canonicalCategory(item.category))?.[1]||item.category));button.type='button';button.onclick=()=>{replay.itemIndex=index;renderReplayDetail();};nav.append(button);});materialDetails.append(nav);
+      const item=record.items[replay.itemIndex];if(!item)return;const comparison=node('div','comparison');const left=node('div');left.append(node('h3','','用户原始输入'));const source=node('div','comparison-body');const preview=node('div','replay-preview');if(item.file){const url=URL.createObjectURL(PvMaterialFiles.restoreItemFile(item));replay.urls.push(url);if(item.file_type==='application/pdf'||item.file_name?.toLowerCase().endsWith('.pdf')){const frame=node('iframe');frame.src=url;frame.title=item.file_name||'PDF';preview.append(frame);}else if(item.file_name?.toLowerCase().endsWith('.xlsx')){preview.append(node('div','replay-empty','XLSX 表格原件已保存，表格内容在整单运行时解析。'));}else{const image=node('img');image.src=url;image.alt=item.file_name||'原始图片';preview.append(image);}}else preview.append(node('div','replay-empty','原始文件未保存'));source.append(preview,node('div','filemeta',(item.file_name||'未命名')+' · '+Math.round((item.file_size||0)/1024)+' KB'));left.append(source);
+      const right=node('div');right.append(node('h3','','模型输出 · OCR 与图片风险'));const output=node('div','comparison-body');renderReplayResult(output,record,item);right.append(output);comparison.append(left,right);materialDetails.append(comparison);
+      const human=node('div','replay-human');replayHeading(human,'AI 识别质量复盘（不作为业务审核决定）');human.append(node('label','','整体判断'));const select=node('select');for(const [value,label] of [['','请选择'],['correct','结果正确'],['partial','部分正确'],['incorrect','结果错误'],['uncertain','待核']]){const opt=node('option','',label);opt.value=value;select.append(opt);}select.value=record.human_conclusion||'';human.append(select,node('label','','依据、漏检或误报说明'));const note=node('textarea');note.placeholder='写下人工判断依据…';note.value=record.human_note||'';human.append(note);const save=node('button','btn primary','保存识别质量复盘');const saved=node('span','small','');saved.style.marginLeft='10px';save.onclick=async()=>{record.human_conclusion=select.value||null;record.human_note=note.value;try{await saveReplayRecord(record);saved.textContent='已保存';renderReplayList();}catch(error){saved.textContent='保存失败：'+(error?.message||error);}};human.append(save,saved);root.append(human);
+    }
+    function renderReplay(){renderReplayList();renderReplayDetail();}
+    function switchView(view,changeHistory=true){
+      const isReplay=view==='replay';if(changeHistory){const url=new URL(location.href);if(isReplay)url.searchParams.set('view','replay');else{url.searchParams.delete('view');url.searchParams.set('panel',state.caseView);}history.pushState({},'',url);}
+      $('replayWorkspace').hidden=!isReplay;$('testActions').hidden=isReplay;$('pageTitle').textContent=isReplay?'历史案例':'整单测试';$('pageSubtitle').textContent=isReplay?'查看历次运行、原始材料与人工核对；可恢复案件继续测试。':'材料、分析过程与核保报告使用同一案件；每次整单重测保留一条记录。';$('saveinfo').hidden=isReplay;PvWorkbench.active(isReplay?'history':'case');renderChainSummary();if(isReplay)loadReplay();
+    }
+    $('drop').onclick=()=>$('files').click();$('drop').onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('files').click();}};
+    $('files').onchange=async e=>{const input=e.target;try{await addFiles([...input.files]);}catch(error){alert(error.message);}finally{input.value='';}};
+    for(const eventName of ['dragenter','dragover'])$('drop').addEventListener(eventName,e=>{e.preventDefault();$('drop').classList.add('drag');});
+    for(const eventName of ['dragleave','drop'])$('drop').addEventListener(eventName,e=>{e.preventDefault();$('drop').classList.remove('drag');});
+    $('drop').addEventListener('drop',e=>addFiles([...e.dataTransfer.files]).catch(error=>alert(error.message)));
+    document.addEventListener('paste',e=>{const files=Array.from(e.clipboardData?.items||[]).filter(x=>x.kind==='file').map(x=>x.getAsFile()).filter(Boolean);if(files.length){e.preventDefault();addFiles(files).catch(error=>alert(error.message));}});
+    PvWorkbench.beforeNavigate(async()=>{if(state.running){$('saveinfo').textContent='当前任务仍在运行，请等待完成后切换工作台。';return false;}await workspaceLoaded;state.scrollY=window.scrollY;await persistWorkspace();return !workspaceSaveError;});
+    $('clearWorkspace').onclick=async()=>{if(!confirm('清空当前材料？历史运行记录保留；未运行草稿会先保存到历史案例。'))return;try{await archiveDraft();await clearWorkspace();}catch(e){alert('保存失败，未清空：'+e.message);}};
+    $('newWorkspace').onclick=async()=>{try{await archiveDraft();await clearWorkspace();setCaseView('materials');$('saveinfo').textContent='已新建测试，原案件保存在历史案例中。';}catch(e){alert('新建失败，原案件保留：'+e.message);}};
+    $('viewReport').onclick=()=>setCaseView('report');for(const b of document.querySelectorAll('[data-case-view]'))b.onclick=()=>setCaseView(b.dataset.caseView);
+    $('run').onclick=()=>run();$('export').onclick=exportResults;
+    $('tabTest').onclick=()=>switchView('test');$('tabReplay').onclick=()=>switchView('replay');
+    $('refreshReplay').onclick=loadReplay;for(const id of ['replayCase','replayFunction','replayFeedback','replayConclusion'])$(id).onchange=()=>{if(!filteredReplay().some(x=>x.id===replay.selected)){replay.selected=filteredReplay()[0]?.id||null;replay.itemIndex=0;}renderReplay();};
+    window.onpopstate=()=>{state.caseView=new URL(location.href).searchParams.get('panel')||'materials';switchView(new URL(location.href).searchParams.get('view')==='replay'?'replay':'test',false);};
+    fetch('/ready').then(r=>{if(!r.ok)throw Error();$('dot').className='dot ok';$('service').textContent='服务已连接';}).catch(()=>{$('dot').className='dot bad';$('service').textContent='服务不可用';});
+    categoryConfig.then(()=>{render();if(!$('replayWorkspace').hidden)renderReplay();}).catch(error=>{$('service').textContent=error.message;});
+    window.RuleSelection.setProjectGetter(()=>({...emptyProject(),...state.project}));
+    window.addEventListener('rule-selection-changed',()=>{state.ruleDraft=window.RuleSelection.draft();if(state.fullCase)markStale('核保规则已调整，当前报告仍使用上一轮规则快照');persistWorkspace();renderChainSummary();});
+    render();switchView(new URL(location.href).searchParams.get('view')==='replay'?'replay':'test',false);workspaceLoaded.then(async()=>{await window.RuleSelection.restore(state.ruleDraft||(state.fullCase?.ruleset_snapshot?.selection?{selection:state.fullCase.ruleset_snapshot.selection,context:state.fullCase.ruleset_snapshot.context,name:state.fullCase.ruleset_snapshot.scheme_name}:null));const params=new URL(location.href).searchParams,panel=params.get('panel'),work=params.get('work');if(work&&work!==state.workId){const db=await openReplayDb();let records;try{records=await new Promise((resolve,reject)=>{const q=db.transaction('cases','readonly').objectStore('cases').getAll();q.onsuccess=()=>resolve(q.result||[]);q.onerror=()=>reject(q.error);});}finally{db.close();}const record=records.filter(r=>r.work_id===work).sort((a,b)=>String(b.created_at).localeCompare(String(a.created_at)))[0];if(record)await continueRecord(record);else $('saveinfo').textContent='未找到原案件草稿，当前案件保留；可到历史案例查找。';}if(panel)setCaseView(panel,false);requestAnimationFrame(()=>window.scrollTo(0,state.scrollY||0));}).catch(error=>{$('saveinfo').textContent='原案件恢复失败：'+error.message;});
+  })();
+  </script>
+</body>
+</html>

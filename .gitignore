@@ -1,0 +1,67 @@
+﻿# Python
+__pycache__/
+*.py[cod]
+*.pyd
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# Secrets
+.env
+.env.*
+!.env.example
+*.key
+*.pem
+
+# Editors and operating systems
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Private or sensitive project data
+data/private/
+data/raw/
+data/uploads/
+data/official/
+data/llm_runtime_config.json
+backend/data/llm_runtime_config.json
+*.pt
+*.pth
+*.onnx
+*.ckpt
+
+# Generated files
+outputs/
+reports/generated/
+logs/
+
+# Python packaging
+*.egg-info/
+build/
+dist/
+
+component-model-workbench/private/
+component-model-workbench/.env
+
+# Local cases, archives and delivery evidence (never publish)
+*.sqlite
+*.sqlite3
+*.sqlite3-*
+*.db
+*.db-*
+*.log
+*.zip
+*.7z
+测试素材/
+复现资料/
+v1-preservation-manifest.json
+baseline-20261016.json
+SHA256SUMS.json

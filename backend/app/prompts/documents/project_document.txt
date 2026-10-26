@@ -1,0 +1,4 @@
+检查项目证照／协议，包括备案证、并网许可、调度协议首页。
+先读取可见文档标题为 document_title。可确认文档种类时提取 document_type，normalized_value 只能为 filing_certificate、grid_connection_permit、dispatch_agreement；无法确认时为 unknown 且 value_status 为 uncertain。不能凭布局、印章或文件名确定种类。
+按原文提取 project_name、project_entity、insured_name、site_address、insured_address、project_type、province、city、district、document_number、issue_date；备案证另提取完整的 construction_content（建设内容及规模）；并网许可明确列出并网日期才提取 grid_connection_date，不能把签订日期当并网日期。可见组件型号才提取 component_model。
+备案证的 project_name 与 construction_content 分别输出 filing_assessment：status、prohibition_type、generation_mode、installation_site、reason、evidence_quote、evidence_bbox。根据备案记载的建设方式、承载场所和实际用途理解项目是否为分布式建筑屋顶／车棚顶，以及是否涉及农业、林业、畜牧、渔业、水体、滩涂、山地、沙漠；不只按项目名称中的词判断。具体边界和示例见随后追加的备案判断规则。原文与解释分开，模型不输出最终拒保动作。没有被保险人或被保险地址时不得用项目单位或项目地址补填。首页未出现的信息不推断来自后续页。

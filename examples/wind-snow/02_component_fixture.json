@@ -1,0 +1,32 @@
+{
+  "component_model": "TEST-5400",
+  "front_static_load_pa": 5400,
+  "back_static_load_pa": 2400,
+  "wind_load_pa": 2400,
+  "snow_load_pa": 6000,
+  "source_name": "离线测试夹具，不是真实厂家",
+  "source_url": "https://example.com/fixture-spec.pdf",
+  "retrieved_at": "2026-10-14T00:00:00Z",
+  "match_confidence": 1,
+  "model_match_status": "exact",
+  "parameter_evidence": {
+    "front_static_load_pa": [
+      {
+        "status": "found",
+        "value": 5400,
+        "source_url": "https://example.com/fixture-spec.pdf",
+        "quote": "Synthetic front load 5400 Pa",
+        "load_direction": "front"
+      }
+    ],
+    "snow_load_pa": [
+      {
+        "status": "found",
+        "value": 6000,
+        "source_url": "https://example.com/fixture-spec.pdf",
+        "quote": "Synthetic snow load 6000 Pa",
+        "load_direction": "front"
+      }
+    ]
+  }
+}

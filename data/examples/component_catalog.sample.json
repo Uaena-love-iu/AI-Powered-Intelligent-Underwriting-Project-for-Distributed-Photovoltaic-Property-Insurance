@@ -1,0 +1,26 @@
+[
+  {
+    "component_model": "JAM66D42-580/MB",
+    "manufacturer": "JA Solar",
+    "rated_power_w": 580,
+    "hail_resistance_mm": null,
+    "wind_load_pa": null,
+    "snow_load_pa": null,
+    "source_url": "https://www.jasolar.com/uploadfile/fujian/2024/0328/3032618e4342717.pdf",
+    "source_name": "JA Solar JAM66D42 MB official datasheet, version Global-EN-20240326A; wind, hail and snow values not normalized",
+    "retrieved_at": "2026-09-28T00:00:00+08:00",
+    "match_confidence": 0.98
+  },
+  {
+    "component_model": "JAM72D42-630W",
+    "manufacturer": "JA Solar",
+    "rated_power_w": 630,
+    "hail_resistance_mm": null,
+    "wind_load_pa": null,
+    "snow_load_pa": null,
+    "source_url": "https://www.jasolar.com/uploadfile/2023/0628/20230628040509768.pdf",
+    "source_name": "Equipment list uses JAM72D42-630W; JA Solar /LB datasheets are candidate references only. Exact variant and mechanical loads require nameplate verification.",
+    "retrieved_at": "2026-09-30T00:00:00+08:00",
+    "match_confidence": 0.5
+  }
+]

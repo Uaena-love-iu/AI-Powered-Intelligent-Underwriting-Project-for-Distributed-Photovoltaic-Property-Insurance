@@ -1,0 +1,69 @@
+{
+  "generated_at": "2026-10-12T23:01:18.221649",
+  "recognition_version": "visual-crosscheck-v2",
+  "cloud_model": "qwen3.8-flash",
+  "model_test_uploads": 31,
+  "unique_model_inputs": 24,
+  "small_image_targeted_retest_uploads": 7,
+  "filing_regression_uploads": 18,
+  "filing_regression_documents": 6,
+  "clear_datasheet_model_metrics": {
+    "tp": 23,
+    "fp": 0,
+    "fn": 0
+  },
+  "baseline_clear_datasheet_metrics": {
+    "tp": 19,
+    "fp": 0,
+    "fn": 4,
+    "expected": 23
+  },
+  "parser_replay": {
+    "tp": 23,
+    "fp": 0,
+    "fn": 0
+  },
+  "model_suite_done": 24,
+  "filing_suite_done": 18,
+  "filing_false_positive_uploads": 0,
+  "regression_spotchecks": {
+    "F08_pdf_body_read": true,
+    "F10_pdf_body_read": true,
+    "F09_image_29_6_present": true,
+    "F09_image_literal_37_present": true,
+    "C02_literal_chexiang_preserved": true,
+    "A01_image_page4_more_than_one_row": true
+  },
+  "program_tests_passed": 60,
+  "code_hashes": {
+    "recognition.py": "6596a51c4cd6ffca8e3ae636cb3c9ad3e4c3903e7d300b95cceeef5fbfc40891",
+    "recognition_agent.py": "6f046fb36c3d98c59deadd52c49c36a1f1172d4b887f47732f9294b6834a5750",
+    "server.py": "d03f1ab66437f79cfe24a8c2e2772b61ba9868ec980b4034c649965f45fe049a",
+    "web/app.js": "2a44c725a73f54255ff810e38e231c242dad5583b02f063db1843447e7817032"
+  },
+  "main_batch_code_hashes": {
+    "recognition.py": "6596a51c4cd6ffca8e3ae636cb3c9ad3e4c3903e7d300b95cceeef5fbfc40891",
+    "recognition_agent.py": "4171263ee7e964e7e855adee1b46ec76ff5c96eed2a9064d352ce3c922dc1da2",
+    "server.py": "d03f1ab66437f79cfe24a8c2e2772b61ba9868ec980b4034c649965f45fe049a",
+    "web/app.js": "2a44c725a73f54255ff810e38e231c242dad5583b02f063db1843447e7817032"
+  },
+  "filing_batch_code_hashes": {
+    "recognition.py": "6596a51c4cd6ffca8e3ae636cb3c9ad3e4c3903e7d300b95cceeef5fbfc40891",
+    "recognition_agent.py": "4171263ee7e964e7e855adee1b46ec76ff5c96eed2a9064d352ce3c922dc1da2",
+    "server.py": "d03f1ab66437f79cfe24a8c2e2772b61ba9868ec980b4034c649965f45fe049a",
+    "web/app.js": "2a44c725a73f54255ff810e38e231c242dad5583b02f063db1843447e7817032"
+  },
+  "limits": [
+    "同一批5张规格书，4家厂商；既有样本用于开发复测，非独立盲测。",
+    "裁剪图与原图、PDF相关，不视为更多独立产品。",
+    "没有真实现场铭牌正样本，不给出实际赛题泛化准确率。",
+    "交叉校验采用同一视觉模型不同视图，可能有相关错误；不保证100%。",
+    "真实文件18次回归仅覆盖6份重点案例，不是重新完成两个ZIP所有46次上传。",
+    "原文点检仅针对列明字串，不是全页逐字OCR准确率。"
+  ],
+  "intermediate_experiment_metrics": {
+    "tp": 12,
+    "fp": 0,
+    "fn": 11
+  }
+}

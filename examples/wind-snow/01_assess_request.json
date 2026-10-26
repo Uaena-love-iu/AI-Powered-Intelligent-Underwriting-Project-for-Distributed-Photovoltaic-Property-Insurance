@@ -1,0 +1,28 @@
+{
+  "project_id": "DELIVERY-DEMO",
+  "model": "TEST-5400",
+  "address": "北京市朝阳区",
+  "screening_input": {
+    "ai_geometry": {
+      "height_m": {
+        "min": 10,
+        "max": 10,
+        "source": "测试输入，非真实测量"
+      },
+      "tilt_deg": {
+        "min": 15,
+        "max": 15,
+        "source": "测试输入，非真实测量"
+      },
+      "terrain": {
+        "candidates": [
+          "B"
+        ],
+        "source": "测试类别，非真实站点分类"
+      }
+    },
+    "snow_conditions": {
+      "special_accumulation_flag": false
+    }
+  }
+}

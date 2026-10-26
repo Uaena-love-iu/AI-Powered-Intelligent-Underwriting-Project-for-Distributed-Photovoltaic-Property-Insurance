@@ -1,0 +1,1114 @@
+{
+  "date": "2026-10-12",
+  "model": "qwen3.8-flash",
+  "test_inputs": 24,
+  "batch_upload_requests": 50,
+  "method": "24例初测、24例完整复测、2例受影响样本专项验证；最终表用专项结果替换对应2例，并用最终代码离线复核全部复测输出。",
+  "scope": "OCR完整型号候选；不代表现场铭牌普遍准确率，不代表联网检索参数整体准确率。",
+  "definitions": {
+    "precision": "正确返回的完整型号 / 全部返回的完整型号",
+    "recall": "正确返回的完整型号 / 原图应识别的完整型号",
+    "exact_samples": "完整型号全部识别正确，没有漏项或多项"
+  },
+  "dataset_sha256": "2104b3f2eaa4f6f4cdcdcdf23b3976f26dfe2f024f3d2dc89bddd0f6a41f6e62",
+  "baseline_hashes": {
+    "recognition.py": "39474c4b549261a6a227e480914b853d7ef7c38b9cc1c570eedffd5b6782dae2",
+    "server.py": "72c069189b925f846c2e5ab5f71c44af0b61456709b3e7bb2ed3f70761160dd7",
+    "web/app.js": "f7c67aa7d13333e288fe08b644193fe9f82af23d8305b7b5e79e1ad83eb408db"
+  },
+  "final_hashes": {
+    "recognition.py": "49ce40690b522de6088dd95291361a0e13ceb2d47ea7bca4215c016fdd7f9d29",
+    "server.py": "72c069189b925f846c2e5ab5f71c44af0b61456709b3e7bb2ed3f70761160dd7",
+    "web/app.js": "1fc884839083e91ae1c945e4011436f177c5cffac42312af1e2eaa11dad22a33"
+  },
+  "baseline": {
+    "clear_datasheet": {
+      "samples": 5,
+      "exact_samples": 2,
+      "tp": 17,
+      "fp": 5,
+      "fn": 6,
+      "precision": 0.7727272727272727,
+      "recall": 0.7391304347826086,
+      "mean_elapsed_s": 30.12
+    },
+    "document_region": {
+      "samples": 5,
+      "exact_samples": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mean_elapsed_s": 12.19
+    },
+    "scene_without_model": {
+      "samples": 8,
+      "exact_samples": 8,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "mean_elapsed_s": 5.49
+    },
+    "inverter_document": {
+      "samples": 2,
+      "exact_samples": 2,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "mean_elapsed_s": 6.75
+    },
+    "template_only": {
+      "samples": 2,
+      "exact_samples": 0,
+      "tp": 0,
+      "fp": 3,
+      "fn": 0,
+      "precision": 0.0,
+      "recall": null,
+      "mean_elapsed_s": 28.44
+    },
+    "pdf_scanned": {
+      "samples": 1,
+      "exact_samples": 0,
+      "tp": 6,
+      "fp": 1,
+      "fn": 0,
+      "precision": 0.8571428571428571,
+      "recall": 1.0,
+      "mean_elapsed_s": 36.83
+    },
+    "pdf_text": {
+      "samples": 1,
+      "exact_samples": 1,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mean_elapsed_s": 1.14
+    }
+  },
+  "final": {
+    "clear_datasheet": {
+      "samples": 5,
+      "exact_samples": 4,
+      "tp": 19,
+      "fp": 0,
+      "fn": 4,
+      "precision": 1.0,
+      "recall": 0.8260869565217391,
+      "mean_elapsed_s": 26.08
+    },
+    "document_region": {
+      "samples": 5,
+      "exact_samples": 5,
+      "tp": 5,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mean_elapsed_s": 13.43
+    },
+    "scene_without_model": {
+      "samples": 8,
+      "exact_samples": 8,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "mean_elapsed_s": 9.41
+    },
+    "inverter_document": {
+      "samples": 2,
+      "exact_samples": 2,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "mean_elapsed_s": 14.24
+    },
+    "template_only": {
+      "samples": 2,
+      "exact_samples": 2,
+      "tp": 0,
+      "fp": 0,
+      "fn": 0,
+      "precision": null,
+      "recall": null,
+      "mean_elapsed_s": 23.38
+    },
+    "pdf_scanned": {
+      "samples": 1,
+      "exact_samples": 1,
+      "tp": 6,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mean_elapsed_s": 52.05
+    },
+    "pdf_text": {
+      "samples": 1,
+      "exact_samples": 1,
+      "tp": 3,
+      "fp": 0,
+      "fn": 0,
+      "precision": 1.0,
+      "recall": 1.0,
+      "mean_elapsed_s": 1.14
+    }
+  },
+  "program_tests_passed": 51,
+  "end_to_end_local_parameters": {
+    "model": "LR5-54HTB-440M",
+    "fields": {
+      "front_static_load_pa": 5400,
+      "back_static_load_pa": 2400,
+      "hail_resistance_mm": 25
+    },
+    "passed": true
+  },
+  "limitations": [
+    "不是随机样本",
+    "正样本来自4个厂商5份规格书；包含复用的旧晶澳规格书图片",
+    "区域截图及PDF入口与整页相关，不可当作独立现场样本",
+    "现场照片都是负样本，无法评估真实铭牌识别率",
+    "复测不是独立盲测；大模型首次输出有波动，不能把全部改善归因于程序修复。",
+    "模板被纳入候选不一定是文字识别错误，但不符合完整型号口径；本轮将其单独分类。"
+  ],
+  "cases": [
+    {
+      "id": "P01",
+      "group": "clear_datasheet",
+      "expected_models": [
+        "JAM54D40-435/LB",
+        "JAM54D40-440/LB",
+        "JAM54D40-445/LB",
+        "JAM54D40-450/LB",
+        "JAM54D40-455/LB",
+        "JAM54D40-460/LB"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 6,
+        "returned_count": 6,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 6,
+        "returned_models": [
+          "JAM54D40-435/LB",
+          "JAM54D40-440/LB",
+          "JAM54D40-445/LB",
+          "JAM54D40-450/LB",
+          "JAM54D40-455/LB",
+          "JAM54D40-460/LB"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 6,
+        "returned_count": 6,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 6,
+        "returned_models": [
+          "JAM54D40-435/LB",
+          "JAM54D40-440/LB",
+          "JAM54D40-445/LB",
+          "JAM54D40-450/LB",
+          "JAM54D40-455/LB",
+          "JAM54D40-460/LB"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "P02",
+      "group": "clear_datasheet",
+      "expected_models": [
+        "JAM66D42-580/MB",
+        "JAM66D42-585/MB",
+        "JAM66D42-590/MB",
+        "JAM66D42-595/MB",
+        "JAM66D42-600/MB",
+        "JAM66D42-605/MB"
+      ],
+      "baseline": {
+        "sample_exact": false,
+        "expected_count": 6,
+        "returned_count": 6,
+        "tp": 2,
+        "fp": 4,
+        "fn": 4,
+        "missed": [
+          "jam66d42-580/mb",
+          "jam66d42-585/mb",
+          "jam66d42-590/mb",
+          "jam66d42-595/mb"
+        ],
+        "extra": [
+          "jam66d42-s80/mb",
+          "jam66d42-s85/mb",
+          "jam66d42-s90/mb",
+          "jam66d42-s95/mb"
+        ],
+        "brand_correct_on_true_models": 2,
+        "returned_models": [
+          "JAM66D42 -S80/MB",
+          "JAM66D42 -S85/MB",
+          "JAM66D42 -S90/MB",
+          "JAM66D42 -S95/MB",
+          "JAM66D42 -600/MB",
+          "JAM66D42 -605/MB"
+        ]
+      },
+      "final": {
+        "sample_exact": false,
+        "expected_count": 6,
+        "returned_count": 2,
+        "tp": 2,
+        "fp": 0,
+        "fn": 4,
+        "missed": [
+          "jam66d42-585/mb",
+          "jam66d42-590/mb",
+          "jam66d42-600/mb",
+          "jam66d42-605/mb"
+        ],
+        "extra": [],
+        "brand_correct_on_true_models": 2,
+        "returned_models": [
+          "JAM66D42-580/MB",
+          "JAM66D42-595/MB"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "P03",
+      "group": "clear_datasheet",
+      "expected_models": [
+        "LR5-54HTB-440M",
+        "LR5-54HTB-445M",
+        "LR5-54HTB-450M"
+      ],
+      "baseline": {
+        "sample_exact": false,
+        "expected_count": 3,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 2,
+        "missed": [
+          "lr5-54htb-445m",
+          "lr5-54htb-450m"
+        ],
+        "extra": [],
+        "brand_correct_on_true_models": 1,
+        "returned_models": [
+          "LR5-54HTB-440M"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 3,
+        "returned_count": 3,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 3,
+        "returned_models": [
+          "LR5-54HTB-440M",
+          "LR5-54HTB-445M",
+          "LR5-54HTB-450M"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "P04",
+      "group": "clear_datasheet",
+      "expected_models": [
+        "TSM-430NEG9R.28",
+        "TSM-435NEG9R.28",
+        "TSM-440NEG9R.28",
+        "TSM-445NEG9R.28",
+        "TSM-450NEG9R.28",
+        "TSM-455NEG9R.28",
+        "TSM-460NEG9R.28"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 7,
+        "returned_count": 7,
+        "tp": 7,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 7,
+        "returned_models": [
+          "TSM-430 NEG9R.28",
+          "TSM-435 NEG9R.28",
+          "TSM-440 NEG9R.28",
+          "TSM-445 NEG9R.28",
+          "TSM-450 NEG9R.28",
+          "TSM-455 NEG9R.28",
+          "TSM-460 NEG9R.28"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 7,
+        "returned_count": 7,
+        "tp": 7,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 7,
+        "returned_models": [
+          "TSM-430 NEG9R.28",
+          "TSM-435 NEG9R.28",
+          "TSM-440 NEG9R.28",
+          "TSM-445 NEG9R.28",
+          "TSM-450 NEG9R.28",
+          "TSM-455 NEG9R.28",
+          "TSM-460 NEG9R.28"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "P05",
+      "group": "clear_datasheet",
+      "expected_models": [
+        "CS6.2-66HB-635H"
+      ],
+      "baseline": {
+        "sample_exact": false,
+        "expected_count": 1,
+        "returned_count": 2,
+        "tp": 1,
+        "fp": 1,
+        "fn": 0,
+        "missed": [],
+        "extra": [
+          "cs6.2-66hb-xxxh(xxx=610-645)"
+        ],
+        "brand_correct_on_true_models": 1,
+        "returned_models": [
+          "CS6.2-66HB-635H",
+          "CS6.2-66HB-xxxH (xxx=610-645)"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 1,
+        "returned_models": [
+          "CS6.2-66HB-635H"
+        ]
+      },
+      "series_candidates": [
+        "CS6.2-66HB-xxxH"
+      ],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "C01",
+      "group": "document_region",
+      "expected_models": [
+        "JAM54D40-435/LB"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "JAM54D40-435/LB"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "JAM54D40-435/LB"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "C02",
+      "group": "document_region",
+      "expected_models": [
+        "JAM54D40-460/LB"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "JAM54D40-460/LB"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "JAM54D40-460/LB"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "C03",
+      "group": "document_region",
+      "expected_models": [
+        "LR5-54HTB-440M"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "LR5-54HTB-440M"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "LR5-54HTB-440M"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "C04",
+      "group": "document_region",
+      "expected_models": [
+        "TSM-455NEG9R.28"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "TSM-455 NEG9R.28"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "TSM-455 NEG9R.28"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "C05",
+      "group": "document_region",
+      "expected_models": [
+        "CS6.2-66HB-635H"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "CS6.2-66HB-635H"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 1,
+        "returned_count": 1,
+        "tp": 1,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "CS6.2-66HB-635H"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N01",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N02",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N03",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N04",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N05",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N06",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N07",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "N08",
+      "group": "scene_without_model",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "T01",
+      "group": "template_only",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": false,
+        "expected_count": 0,
+        "returned_count": 2,
+        "tp": 0,
+        "fp": 2,
+        "fn": 0,
+        "missed": [],
+        "extra": [
+          "jkm440-480n-48hl4m-db-z2c3-oc",
+          "jkmxxxn-48hl4m-db"
+        ],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "JKMxxxN-48HL4M-DB",
+          "JKM440-480N-48HL4M-DB-Z2C3-OC"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [
+        "JKMxxxN-48HL4M-DB",
+        "JKM440-480N-48HL4M-DB-Z2C3-OC"
+      ],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "T02",
+      "group": "template_only",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": false,
+        "expected_count": 0,
+        "returned_count": 1,
+        "tp": 0,
+        "fp": 1,
+        "fn": 0,
+        "missed": [],
+        "extra": [
+          "twmnh-66hdxxx"
+        ],
+        "brand_correct_on_true_models": null,
+        "returned_models": [
+          "TWMNH-66HDXXX"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "I01",
+      "group": "inverter_document",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "I02",
+      "group": "inverter_document",
+      "expected_models": [],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 0,
+        "returned_count": 0,
+        "tp": 0,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": null,
+        "returned_models": []
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "D01",
+      "group": "pdf_scanned",
+      "expected_models": [
+        "JAM54D40-435/LB",
+        "JAM54D40-440/LB",
+        "JAM54D40-445/LB",
+        "JAM54D40-450/LB",
+        "JAM54D40-455/LB",
+        "JAM54D40-460/LB"
+      ],
+      "baseline": {
+        "sample_exact": false,
+        "expected_count": 6,
+        "returned_count": 7,
+        "tp": 6,
+        "fp": 1,
+        "fn": 0,
+        "missed": [],
+        "extra": [
+          "jam54d40lb"
+        ],
+        "brand_correct_on_true_models": 6,
+        "returned_models": [
+          "JAM54D40 LB",
+          "JAM54D40-435/LB",
+          "JAM54D40-440/LB",
+          "JAM54D40-445/LB",
+          "JAM54D40-450/LB",
+          "JAM54D40-455/LB",
+          "JAM54D40-460/LB"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 6,
+        "returned_count": 6,
+        "tp": 6,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 6,
+        "returned_models": [
+          "JAM54D40-435/LB",
+          "JAM54D40-440/LB",
+          "JAM54D40-445/LB",
+          "JAM54D40-450/LB",
+          "JAM54D40-455/LB",
+          "JAM54D40-460/LB"
+        ]
+      },
+      "series_candidates": [
+        "JAM54D40 LB"
+      ],
+      "uncertain_candidates": []
+    },
+    {
+      "id": "D02",
+      "group": "pdf_text",
+      "expected_models": [
+        "LR5-54HTB-440M",
+        "LR5-54HTB-445M",
+        "LR5-54HTB-450M"
+      ],
+      "baseline": {
+        "sample_exact": true,
+        "expected_count": 3,
+        "returned_count": 3,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 3,
+        "returned_models": [
+          "LR5-54HTB-440M",
+          "LR5-54HTB-445M",
+          "LR5-54HTB-450M"
+        ]
+      },
+      "final": {
+        "sample_exact": true,
+        "expected_count": 3,
+        "returned_count": 3,
+        "tp": 3,
+        "fp": 0,
+        "fn": 0,
+        "missed": [],
+        "extra": [],
+        "brand_correct_on_true_models": 3,
+        "returned_models": [
+          "LR5-54HTB-440M",
+          "LR5-54HTB-445M",
+          "LR5-54HTB-450M"
+        ]
+      },
+      "series_candidates": [],
+      "uncertain_candidates": []
+    }
+  ]
+}
