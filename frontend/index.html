@@ -1,0 +1,1898 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#102c28">
+  <title>光伏财产险智能核保</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #182825;
+      --muted: #64746f;
+      --line: #dce5df;
+      --paper: #f5f7f4;
+      --green: #175e4c;
+      --green-dark: #102c28;
+      --lime: #c8e36a;
+      --red: #a94336;
+      --amber: #875b16;
+      --shadow: 0 16px 42px rgba(24, 48, 40, .08);
+      font-family: "Microsoft YaHei", "Noto Sans SC", system-ui, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); }
+    button, input, select { font: inherit; }
+    button { cursor: pointer; }
+    .topbar { height: 68px; display: flex; align-items: center; justify-content: space-between; padding: 0 5vw; color: #eff8ee; background: var(--green-dark); }
+    .brand { display: flex; align-items: center; gap: 12px; font-size: 15px; font-weight: 700; letter-spacing: .02em; }
+    .brand-mark { width: 29px; height: 29px; display: grid; place-items: center; border-radius: 9px; background: var(--lime); color: var(--green-dark); font-size: 16px; }
+    .top-meta { color: #a8c0b6; font-size: 12px; }
+    main { width: min(1440px, 92vw); margin: 34px auto 64px; }
+    .hero { display: flex; align-items: end; justify-content: space-between; gap: 24px; margin-bottom: 23px; }
+    .eyebrow { margin: 0 0 8px; color: var(--green); font-size: 11px; font-weight: 800; letter-spacing: .16em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: clamp(26px, 3vw, 36px); letter-spacing: -.04em; }
+    .hero-copy { max-width: 520px; margin: 10px 0 0; color: var(--muted); font-size: 14px; line-height: 1.8; }
+    .status-pill { display: inline-flex; align-items: center; gap: 8px; padding: 9px 13px; border: 1px solid var(--line); border-radius: 999px; background: #fff; color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: #78a895; }
+    .status-pill.degraded .status-dot { background: #d49b3e; }
+    .topbar .secondary { min-height: 30px; padding: 0 9px; border-color: #547066; background: transparent; color: #eff8ee; }
+    .login-overlay { position: fixed; inset: 0; z-index: 20; display: grid; place-items: center; padding: 20px; background: rgba(9, 28, 24, .68); }
+    .login-overlay[hidden] { display: none; }
+    .login-card { width: min(390px, 100%); padding: 24px; border-radius: 14px; background: #fff; box-shadow: var(--shadow); }
+    .login-card h2 { margin: 0 0 8px; font-size: 19px; }
+    .login-card p { margin: 0 0 18px; color: var(--muted); font-size: 12px; line-height: 1.7; }
+    .login-card .field { margin-bottom: 12px; }
+    .login-error { min-height: 20px; color: var(--red); font-size: 11px; }
+    .dialog-overlay { position: fixed; inset: 0; z-index: 15; display: grid; place-items: center; padding: 20px; background: rgba(9, 28, 24, .58); }
+    .dialog-overlay[hidden] { display: none; }
+    .dialog-card { width: min(640px, 100%); max-height: min(760px, 90vh); overflow: auto; padding: 22px; border-radius: 14px; background: #fff; box-shadow: var(--shadow); }
+    .dialog-head { display: flex; align-items: start; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .dialog-head h2 { margin: 0; font-size: 18px; }
+    .user-create-form { display: grid; grid-template-columns: 1fr 1fr 1fr auto; gap: 8px; align-items: end; padding: 13px; border: 1px solid var(--line); border-radius: 10px; background: #f8faf8; }
+    .user-create-form .primary { min-height: 39px; padding: 0 12px; }
+    .user-list { display: grid; gap: 8px; margin-top: 14px; }
+    .user-entry { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 11px; border: 1px solid #e8ede9; border-radius: 9px; }
+    .user-entry p { margin: 0; }
+    .user-actions { display: flex; gap: 7px; }
+    .user-actions button { min-height: 32px; padding: 0 9px; }
+    .dialog-message { min-height: 20px; margin: 9px 0 0; color: var(--muted); font-size: 11px; }
+    .layout { display: grid; grid-template-columns: minmax(0, 1.12fr) minmax(340px, .88fr); gap: 20px; align-items: start; }
+    .panel { border: 1px solid var(--line); border-radius: 17px; background: #fff; box-shadow: var(--shadow); }
+    .panel-head { display: flex; align-items: start; justify-content: space-between; gap: 14px; padding: 22px 24px 17px; border-bottom: 1px solid #edf1ed; }
+    .panel-head h2 { margin: 0; font-size: 17px; }
+    .panel-head p { margin: 6px 0 0; color: var(--muted); font-size: 12px; line-height: 1.6; }
+    .step-no { display: grid; width: 27px; height: 27px; place-items: center; border-radius: 9px; background: #e9f1e9; color: var(--green); font-size: 12px; font-weight: 800; }
+    .panel-body { padding: 22px 24px 24px; }
+    .section-label { display: flex; align-items: center; gap: 8px; margin: 2px 0 14px; color: #45645a; font-size: 12px; font-weight: 800; }
+    .section-label::after { height: 1px; flex: 1; background: #e8eeea; content: ""; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 13px; }
+    .field { min-width: 0; }
+    .field.wide { grid-column: 1 / -1; }
+    label { display: block; margin: 0 0 6px; color: #43534e; font-size: 11px; font-weight: 700; }
+    label .optional { color: #89958f; font-weight: 400; }
+    input, select { width: 100%; height: 39px; border: 1px solid #d9e2dc; border-radius: 8px; outline: none; background: #fff; color: var(--ink); padding: 0 11px; font-size: 12px; transition: border-color .15s, box-shadow .15s; }
+    input:focus, select:focus { border-color: #4a8c73; box-shadow: 0 0 0 3px rgba(74, 140, 115, .12); }
+    input::placeholder { color: #a1aaa5; }
+    .materials-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 22px 0 12px; }
+    .materials-head .section-label { flex: 1; margin: 0; }
+    .text-button { padding: 5px 0; border: 0; background: transparent; color: var(--green); font-size: 12px; font-weight: 800; }
+    .file-list { display: grid; gap: 9px; }
+    .file-row { display: grid; grid-template-columns: minmax(120px, 1.2fr) minmax(120px, .9fr) minmax(112px, .8fr) 28px; gap: 8px; align-items: end; padding: 11px; border: 1px solid #e2e9e4; border-radius: 11px; background: #fbfcfb; }
+    .file-row .field label { font-size: 10px; }
+    .file-row input, .file-row select { height: 35px; padding-left: 8px; font-size: 11px; }
+    input[type=file] { padding: 7px 6px; }
+    .remove-row { width: 28px; height: 35px; border: 0; border-radius: 7px; background: transparent; color: #86928b; font-size: 17px; }
+    .remove-row:hover { background: #f6e9e6; color: var(--red); }
+    .hint { margin: 10px 0 0; color: var(--muted); font-size: 11px; line-height: 1.7; }
+    .address-lookup { display: flex; align-items: center; flex-wrap: wrap; gap: 9px; }
+    .address-lookup .hint { margin: 0; }
+    .address-results { display: grid; gap: 8px; }
+    .address-results[hidden] { display: none; }
+    .address-candidate { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 9px 11px; border: 1px solid var(--line); border-radius: 8px; background: #f8faf8; }
+    .address-candidate .item-copy { min-width: 0; }
+    .hint strong { color: #38594d; }
+    .form-actions { display: flex; align-items: center; gap: 12px; margin-top: 20px; }
+    .primary { min-height: 43px; padding: 0 20px; border: 0; border-radius: 9px; background: var(--green); color: #fff; font-size: 13px; font-weight: 800; box-shadow: 0 8px 18px rgba(23, 94, 76, .17); }
+    .primary:hover { background: #104d3e; }
+    .primary:disabled { cursor: wait; opacity: .65; }
+    .secondary { min-height: 39px; padding: 0 13px; border: 1px solid var(--line); border-radius: 8px; background: #fff; color: #34564a; font-size: 12px; font-weight: 700; }
+    .secondary:hover { background: #f4f8f4; }
+    .result-empty { display: grid; min-height: 380px; place-items: center; padding: 32px; text-align: center; }
+    .empty-icon { display: grid; width: 54px; height: 54px; place-items: center; margin: 0 auto 16px; border: 1px solid #dfe9e1; border-radius: 17px; background: #f1f6f0; color: var(--green); font-size: 23px; }
+    .result-empty h3 { margin: 0 0 7px; font-size: 15px; }
+    .result-empty p { max-width: 250px; margin: 0 auto; color: var(--muted); font-size: 12px; line-height: 1.8; }
+    .result-content { padding: 20px 21px 23px; }
+    .decision-card { padding: 17px; border: 1px solid #e5e9e4; border-radius: 12px; background: #f8faf7; }
+    .decision-card.reject { border-color: #f0d8d2; background: #fff7f5; }
+    .decision-card.review { border-color: #eadfca; background: #fffaf0; }
+    .decision-card.accept { border-color: #cce5d7; background: #f2faf5; }
+    .decision-top { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+    .decision-title { margin: 0; font-size: 19px; font-weight: 850; }
+    .decision-tag { padding: 5px 9px; border-radius: 999px; background: #e8eee9; color: #486057; font-size: 10px; font-weight: 800; }
+    .reject .decision-tag { background: #f7e2dc; color: #9e4033; }
+    .review .decision-tag { background: #f3ead5; color: #805b18; }
+    .accept .decision-tag { background: #dceddf; color: #276346; }
+    .decision-reason { margin: 9px 0 0; color: #54635d; font-size: 12px; line-height: 1.8; }
+    .result-actions { display: flex; justify-content: flex-end; flex-wrap: wrap; gap: 8px; margin: 12px 0 18px; }
+    textarea { width: 100%; min-height: 72px; resize: vertical; border: 1px solid #d9e2dc; border-radius: 8px; padding: 9px 11px; color: var(--ink); font: inherit; font-size: 12px; }
+    .review-form { display: grid; gap: 10px; margin-top: 18px; padding: 13px; border: 1px solid #e4ebe5; border-radius: 10px; background: #f8faf8; }
+    .review-form h3 { margin: 0; font-size: 12px; }
+    .review-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 9px; }
+    .review-pricing-label { grid-column: 1 / -1; display: flex; align-items: center; gap: 8px; color: #355d49; font-size: 12px; }
+    .review-pricing-label input { width: auto; margin: 0; }
+    .review-note { padding: 10px; border-radius: 8px; background: #edf5ef; color: #355d49; font-size: 11px; line-height: 1.7; }
+    .amap-satellite-map { width: 100%; height: 430px; min-height: 320px; border: 1px solid var(--line); border-radius: 9px; background: #edf2ed; }
+    .sentinel-preview { display: block; width: min(100%, 720px); border: 1px solid var(--line); border-radius: 9px; background: #edf2ed; }
+    .history-entry { width: 100%; padding: 11px; border: 1px solid #e8ede9; border-radius: 9px; background: #fff; color: var(--ink); text-align: left; }
+    .history-entry:hover { border-color: #85ad97; background: #f7fbf7; }
+    .no-print { }
+    @media print {
+      @page { margin: 16mm; }
+      body { background: #fff; }
+      .topbar, .hero, .layout > section:first-child, .no-print, footer { display: none !important; }
+      main { width: 100%; margin: 0; }
+      .layout { display: block; }
+      .panel { border: 0; box-shadow: none; }
+      .panel-head { padding: 0 0 12px; }
+      #result { padding: 8px 0; }
+      .result-item, .decision-card { break-inside: avoid; }
+    }
+    .result-section { margin-top: 19px; }
+    .result-section h3 { display: flex; align-items: center; gap: 8px; margin: 0 0 10px; font-size: 12px; }
+    .count { display: inline-grid; min-width: 19px; height: 19px; place-items: center; border-radius: 6px; background: #eef3ee; color: #446656; font-size: 10px; }
+    .result-list { display: grid; gap: 7px; }
+    .result-item { padding: 10px 11px; border: 1px solid #e8ede9; border-radius: 9px; background: #fff; }
+    .item-top { display: flex; justify-content: space-between; gap: 10px; }
+    .item-title { margin: 0; font-size: 11px; font-weight: 800; }
+    .item-meta { color: #738078; font-size: 10px; white-space: nowrap; }
+    .item-copy { margin: 5px 0 0; color: #68766f; font-size: 11px; line-height: 1.65; overflow-wrap: anywhere; }
+    .badge { display: inline-flex; margin: 6px 5px 0 0; padding: 3px 6px; border-radius: 5px; background: #f2f4f2; color: #617068; font-size: 9px; }
+    .badge.alert { background: #fae9e4; color: #9f4337; }
+    .badge.uncertain { background: #fff2d8; color: #795919; }
+    .error { margin: 12px 0; padding: 10px 12px; border: 1px solid #f0d2cd; border-radius: 9px; background: #fff5f3; color: #97473b; font-size: 12px; line-height: 1.65; }
+    footer { margin-top: 18px; color: #849089; font-size: 10px; line-height: 1.7; }
+    .explainability-panel { margin-top: 16px; padding: 15px; border: 1px solid #dce8df; border-radius: 12px; background: #f8fbf8; }
+    .explainability-panel h3 { margin: 0; font-size: 13px; }
+    .explainability-note { margin: 7px 0 12px; color: #5f7067; font-size: 11px; line-height: 1.75; }
+    .flow-list { display: grid; gap: 8px; }
+    .flow-step { display: grid; grid-template-columns: 25px 1fr; gap: 9px; padding: 10px; border: 1px solid #e5ece6; border-radius: 9px; background: #fff; }
+    .flow-step-no { display: grid; width: 23px; height: 23px; place-items: center; border-radius: 7px; background: #e9f2ea; color: #2d674c; font-size: 10px; font-weight: 800; }
+    .flow-step h4 { margin: 1px 0 4px; font-size: 11px; }
+    .flow-step p { margin: 0; color: #68766f; font-size: 10px; line-height: 1.7; overflow-wrap: anywhere; }
+    .evidence-details { margin-top: 8px; border-top: 1px solid #edf1ed; padding-top: 7px; }
+    .evidence-details summary { color: #315d49; cursor: pointer; font-size: 10px; font-weight: 800; }
+    .explanation-list { display: grid; gap: 6px; margin-top: 7px; }
+    .explanation-entry { padding: 7px 8px; border-radius: 7px; background: #f5f8f5; }
+    .explanation-entry strong { display: block; color: #304d40; font-size: 10px; }
+    .explanation-entry p { margin: 4px 0 0; color: #68766f; font-size: 10px; line-height: 1.65; }
+    @media (max-width: 940px) { main { width: min(740px, 92vw); } .layout { grid-template-columns: 1fr; } .result-empty { min-height: 220px; } }
+    @media (max-width: 580px) { .user-create-form { grid-template-columns: 1fr 1fr; } .user-create-form button { grid-column: 1 / -1; } .user-entry { align-items: start; flex-direction: column; } }
+    @media (max-width: 580px) { .topbar { padding: 0 4vw; } .topbar .brand { gap: 7px; font-size: 12px; } .top-meta { display: flex; max-width: 55vw; flex-wrap: wrap; justify-content: flex-end; gap: 6px !important; } .top-meta > span:first-child { display: none; } .topbar .secondary { min-height: 28px; padding: 0 7px; font-size: 10px; } main { margin-top: 24px; } .hero { display: block; } .status-pill { margin-top: 15px; } .panel-head, .panel-body { padding-left: 17px; padding-right: 17px; } .form-grid { grid-template-columns: 1fr; } .field.wide { grid-column: auto; } .file-row { grid-template-columns: 1fr 1fr 28px; } .file-row .file-field { grid-column: 1 / -1; } .file-row .view-field { grid-column: 2; } .file-row .remove-row { grid-column: 3; grid-row: 2; } }
+  </style>
+</head>
+<body>
+  <div class="login-overlay" id="loginOverlay" hidden>
+    <form class="login-card" id="loginForm">
+      <h2>登录核保工作台</h2>
+      <p>请使用管理员创建的个人账号。会话令牌只保存在当前浏览器标签页。</p>
+      <div class="field"><label for="loginUsername">用户名</label><input id="loginUsername" autocomplete="username" required></div>
+      <div class="field"><label for="loginPassword">密码</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+      <button class="primary" type="submit">登录</button>
+      <div class="login-error" id="loginError" aria-live="polite"></div>
+    </form>
+  </div>
+  <div class="dialog-overlay" id="userAdminOverlay" hidden>
+    <section class="dialog-card" role="dialog" aria-modal="true" aria-labelledby="userAdminTitle">
+      <div class="dialog-head"><div><h2 id="userAdminTitle">账号管理</h2><p class="hint">账号变更会立即生效；停用或重置密码将撤销该账号的现有会话。</p></div><button class="secondary" id="closeUserAdmin" type="button">关闭</button></div>
+      <form class="user-create-form" id="userCreateForm">
+        <div class="field"><label for="newUsername">用户名</label><input id="newUsername" minlength="3" maxlength="64" pattern="[A-Za-z0-9_.-]+" required></div>
+        <div class="field"><label for="newUserPassword">初始密码（至少 12 位）</label><input id="newUserPassword" type="password" minlength="12" maxlength="256" required></div>
+        <div class="field"><label for="newUserRole">角色</label><select id="newUserRole"><option value="viewer">查看者</option><option value="underwriter">核保员</option><option value="admin">管理员</option></select></div>
+        <button class="primary" type="submit">创建账号</button>
+      </form>
+      <p class="dialog-message" id="userAdminMessage" aria-live="polite"></p>
+      <div class="user-list" id="userList"></div>
+    </section>
+  </div>
+  <header class="topbar">
+    <div class="brand"><span class="brand-mark">☼</span><span>分布式光伏财产险 · 智能核保</span></div>
+    <div class="top-meta" style="display:flex;align-items:center;gap:14px"><span>材料解析　/　规则核验　/　核保建议</span><span id="signedInUser"></span><button id="userAdminButton" class="secondary" type="button" hidden>账号管理</button><button id="logoutButton" class="secondary" type="button" hidden>退出登录</button></div>
+  </header>
+  <main>
+    <section class="hero">
+      <div>
+        <p class="eyebrow">PV UNDERWRITING DESK</p>
+        <h1>新建核保案件</h1>
+        <p class="hero-copy">上传电站照片与备案材料，系统将逐项检查证据、匹配规则并生成核保建议。识别范围不足时会列出补充材料要求。</p>
+      </div>
+      <div class="status-pill degraded" id="systemStatus"><span class="status-dot"></span><span id="systemStatusText">正在检查服务配置…</span></div>
+    </section>
+
+    <div class="layout">
+      <section class="panel">
+        <div class="panel-head"><div><h2>案件与标的信息</h2><p>带 * 的字段用于本次核保和灾害数据查询。</p></div><span class="step-no">01</span></div>
+        <div class="panel-body">
+          <div class="section-label">投保信息</div>
+          <div class="form-grid">
+            <div class="field"><label for="caseId">案件编号 *</label><input id="caseId" value="" placeholder="自动生成"></div>
+            <div class="field"><label for="projectName">项目名称</label><input id="projectName" placeholder="与备案证保持一致"></div>
+            <div class="field"><label for="insuredName">被保险人</label><input id="insuredName" placeholder="企业或个人名称"></div>
+            <div class="field"><label for="projectEntity">项目单位 <span class="optional">可选</span></label><input id="projectEntity" placeholder="备案证载明单位"></div>
+            <div class="field"><label for="industryName">企业所属行业 <span class="optional">车间照片审核用</span></label><input id="industryName" placeholder="如：电子制造、化工"></div>
+            <div class="field"><label for="fireSurchargeConfirmed">高火险行业加费情况 <span class="optional">待业务核验</span></label><select id="fireSurchargeConfirmed"><option value="">未确认</option><option value="true">已按规则加费</option><option value="false">尚未加费</option></select></div>
+            <div class="field"><label for="projectType">项目类型 *</label><select id="projectType"><option value="rooftop">工商业屋顶式</option><option value="carport">车棚顶式</option><option value="unsupported">其他/暂不支持</option><option value="unknown">未知</option></select></div>
+            <div class="field"><label for="installationType">安装类型 *</label><select id="installationType"><option value="unknown">待图片识别</option><option value="color_steel_roof">彩钢瓦屋顶</option><option value="flat_roof">平屋顶</option><option value="tile_roof">瓦片屋顶</option><option value="carport_roof">车棚顶</option></select></div>
+            <div class="field wide"><label for="siteAddress">项目地址</label><input id="siteAddress" placeholder="省、市、区县及详细地址"></div>
+            <div class="address-lookup wide"><button class="secondary" id="extractAddressButton" type="button">从已选材料识别地址</button><button class="secondary" id="lookupAddressButton" type="button">按地址查坐标</button><span class="hint" id="extractAddressMessage" aria-live="polite">可先从备案证、并网材料或全景照片提取项目地址，再核对地图候选。</span><span class="hint" id="lookupAddressMessage" aria-live="polite">查询结果须核对后手动选用。</span></div>
+            <div class="address-results wide" id="lookupAddressResults" hidden></div>
+            <div class="field"><label for="longitude">经度 <span class="optional">未知可留空</span></label><input id="longitude" type="number" step="any" min="-180" max="180" placeholder="例如 113.2644"></div>
+            <div class="field"><label for="latitude">纬度 <span class="optional">未知可留空</span></label><input id="latitude" type="number" step="any" min="-90" max="90" placeholder="例如 23.1291"></div>
+            <p class="hint wide">经纬度须对应项目实际位置。地址查询返回候选和近似坐标，选用前请核对具体地址；不确定时两个坐标都留空，系统会跳过天气查询并转人工复核。</p>
+            <div class="field"><label for="startDate">拟起保日期</label><input id="startDate" type="date"></div>
+            <div class="field"><label for="componentModel">组件完整型号</label><input id="componentModel" placeholder="可由铭牌 OCR 补齐"></div>
+            <div class="field wide"><label for="insuredAddress">被保险地址 <span class="optional">可选</span></label><input id="insuredAddress" placeholder="用于与备案材料核对"></div>
+          </div>
+
+          <div class="materials-head"><div class="section-label">投保材料</div><button class="text-button" id="addFile" type="button">＋ 添加材料</button></div>
+          <div class="file-list" id="fileList"></div>
+          <p class="hint"><strong>最低材料门槛：</strong>5 张图片、2 张全景照、1 份备案证。全景视角可标注，但不作为补材门槛。无法识别的灾种会进入补材或人工复核。</p>
+          <div class="form-actions"><button class="primary" id="analyzeButton" type="button">开始智能核保</button><span class="hint" id="progressText" aria-live="polite"></span></div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><div><h2>核保评估结果</h2><p>逐项结论保留证据来源，明确拒保事实优先显示。</p></div><div><button class="secondary no-print" id="historyButton" type="button">历史案件</button> <span class="step-no">02</span></div></div>
+        <div id="result" class="result-empty"><div><div class="empty-icon">⌕</div><h3>等待提交案件材料</h3><p>完成左侧信息和文件选择后开始分析。报告会显示风险点、材料覆盖和灾害数据缺口。</p></div></div>
+      </section>
+    </div>
+    <footer>系统输出为辅助核保建议，最终承保决定需由授权核保人员确认。缺失的风、雹、雪参数会标记为未评估，不以演示数据补值。</footer>
+  </main>
+
+  <template id="fileRowTemplate">
+    <div class="file-row">
+      <div class="field file-field"><label>选择文件</label><input class="upload-file" type="file" accept=".jpg,.jpeg,.png,.pdf,.xlsx,image/jpeg,image/png,application/pdf,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"><small class="classification-status" aria-live="polite">选择文件后自动分类，可手动修改。</small></div>
+      <div class="field"><label>材料类别</label><select class="category">
+        <option value="panorama">电站全景照</option><option value="roof_connection">屋顶连接处</option><option value="parapet">女儿墙/排水</option><option value="workshop">厂房/车间</option><option value="project_document">项目证照／协议</option><option value="filing_certificate">备案证</option><option value="grid_connection_document">并网材料</option><option value="electrical_grounding">电气接地</option><option value="component_nameplate">组件铭牌</option><option value="component_surface">组件表面瑕疵（阶段二）</option><option value="inverter_nameplate">逆变器铭牌</option><option value="combiner_box">汇流箱</option><option value="monitoring_optional">监控（可选）</option><option value="equipment_inventory">设备清单（Excel）</option><option value="other">其他</option>
+      </select></div>
+      <div class="field view-field"><label>全景视角（可选）</label><select class="capture-view"><option value="unknown">未标注</option><option value="front_level">正面平视</option><option value="overhead">俯拍</option><option value="other">其他视角</option></select></div>
+      <button class="remove-row" type="button" aria-label="移除此材料">×</button>
+    </div>
+  </template>
+
+  <script>
+    const fileList = document.getElementById("fileList");
+    const resultRoot = document.getElementById("result");
+    const analyzeButton = document.getElementById("analyzeButton");
+    const progressText = document.getElementById("progressText");
+    const extractAddressButton = document.getElementById("extractAddressButton");
+    const extractAddressMessage = document.getElementById("extractAddressMessage");
+    const lookupAddressButton = document.getElementById("lookupAddressButton");
+    const lookupAddressMessage = document.getElementById("lookupAddressMessage");
+    const lookupAddressResults = document.getElementById("lookupAddressResults");
+    const siteAddressInput = document.getElementById("siteAddress");
+    const longitudeInput = document.getElementById("longitude");
+    const latitudeInput = document.getElementById("latitude");
+    let selectedGeocodedAddress = null;
+    const systemStatus = document.getElementById("systemStatus");
+    const systemStatusText = document.getElementById("systemStatusText");
+    const loginOverlay = document.getElementById("loginOverlay");
+    const loginError = document.getElementById("loginError");
+    const userAdminOverlay = document.getElementById("userAdminOverlay");
+    const userAdminMessage = document.getElementById("userAdminMessage");
+    let authenticatedRole = "admin";
+    let authenticationEnabled = false;
+    let nextMaterialId = 1;
+
+    const nativeFetch = window.fetch.bind(window);
+    window.fetch = (input, init = {}) => {
+      const headers = new Headers(init.headers || {});
+      const token = sessionStorage.getItem("pv-auth-token");
+      if (token) headers.set("Authorization", `Bearer ${token}`);
+      const requestUrl = new URL(input instanceof Request ? input.url : input, window.location.href);
+      return nativeFetch(input, { ...init, headers }).then(response => {
+        if (response.status === 401 && token && requestUrl.pathname !== "/api/v1/auth/login") {
+          sessionStorage.removeItem("pv-auth-token");
+          showLoginOverlay();
+        }
+        return response;
+      });
+    };
+
+    const labels = {
+      accept: "建议承保", recommend_reject: "建议拒保", surcharge: "建议承保（加费）",
+      conditional_accept: "建议附条件承保", request_more: "建议补充材料", manual_review: "转人工复核",
+      pass: "通过", warning: "风险提示", conditional: "建议附加条件", not_applicable: "不适用",
+      detected: "已识别", not_detected: "未发现", uncertain: "不确定",
+      project_site: "项目现场本身", operational_surroundings: "项目邻近周边（边界待核）",
+      distant_background: "远处背景景物",
+      low: "低", medium: "中", high: "高", critical: "严重", unknown: "未知",
+      panorama: "电站全景照", roof_connection: "屋顶连接处", parapet: "女儿墙/排水", workshop: "厂房/车间",
+      filing_certificate: "备案证", grid_connection_document: "并网材料", electrical_grounding: "电气接地",
+      component_nameplate: "组件铭牌", component_surface: "组件表面瑕疵", inverter_nameplate: "逆变器铭牌", combiner_box: "汇流箱",
+      monitoring_optional: "监控（可选）", other: "其他",
+      color_steel_roof: "彩钢瓦屋顶", flat_roof: "平屋顶", tile_roof: "瓦片屋顶", carport_roof: "车棚顶"
+    };
+    const decisionLabel = decision => {
+      const code = decision?.decision;
+      const base = labels[code] || code || "尚未生成结论";
+      return ["accept", "conditional_accept"].includes(code) && decision.pricing_recommendation === "surcharge"
+        ? `${base}（加费）` : base;
+    };
+    const reviewDecisionLabel = review => decisionLabel({
+      decision: review?.final_decision,
+      pricing_recommendation: review?.pricing_recommendation,
+    });
+    const ocrLabels = {
+      project_name: "项目名称", project_entity: "项目单位", insured_name: "被保险人",
+      insured_address: "被保险地址", site_address: "项目地址", component_model: "组件型号",
+      inverter_model: "逆变器型号", rated_power_w: "额定功率（W）", serial_number: "序列号",
+      grid_connection_date: "并网日期", grounding_resistance_ohm: "接地电阻（Ω）",
+      inspection_date: "检测日期", inspection_result: "检测结论", monitoring_present: "监控状态"
+    };
+    const ocrStatusLabels = { extracted: "已提取", missing: "缺失", uncertain: "不确定" };
+
+    async function checkReadiness() {
+      try {
+        const response = await fetch("/ready");
+        const readiness = await response.json();
+        const missing = Object.entries(readiness.checks || {}).filter(([, ready]) => !ready).map(([name]) => name);
+        const isReady = response.ok && readiness.status === "ready";
+        systemStatus.classList.toggle("degraded", !isReady);
+        systemStatusText.textContent = isReady ? "本地服务已就绪" : `服务待配置${missing.length ? ` · ${missing.length} 项` : ""}`;
+        systemStatus.title = missing.length ? `未就绪：${missing.join("、")}` : "服务配置检查通过；外部天气连通性会在案件分析时验证";
+      } catch {
+        systemStatusText.textContent = "无法连接核保服务";
+        systemStatus.title = "请确认后端服务正在运行";
+      }
+    }
+
+    function showLoginOverlay() {
+      loginError.textContent = "";
+      loginOverlay.hidden = false;
+      document.getElementById("loginUsername").focus();
+    }
+
+    async function initializeAuthentication() {
+      try {
+        const response = await fetch("/api/v1/auth/config");
+        const configuration = await response.json();
+        authenticationEnabled = configuration.enabled === true;
+        if (!authenticationEnabled) {
+          sessionStorage.removeItem("pv-auth-token");
+          authenticatedRole = "admin";
+          document.getElementById("signedInUser").textContent = "本地演示";
+          document.getElementById("userAdminButton").hidden = true;
+          await checkReadiness();
+          return;
+        }
+
+        const token = sessionStorage.getItem("pv-auth-token");
+        if (!token) {
+          document.getElementById("userAdminButton").hidden = true;
+          return showLoginOverlay();
+        }
+        const userResponse = await fetch("/api/v1/auth/me");
+        if (!userResponse.ok) {
+          sessionStorage.removeItem("pv-auth-token");
+          return showLoginOverlay();
+        }
+        const user = await userResponse.json();
+        authenticatedRole = user.role;
+        const roleLabels = { viewer: "查看者", underwriter: "核保员", admin: "管理员" };
+        document.getElementById("signedInUser").textContent = `${user.username} · ${roleLabels[user.role] || user.role}`;
+        document.getElementById("logoutButton").hidden = false;
+        document.getElementById("userAdminButton").hidden = user.role !== "admin";
+        analyzeButton.disabled = authenticatedRole === "viewer";
+        if (authenticatedRole === "viewer") analyzeButton.textContent = "查看者无提交权限";
+        loginOverlay.hidden = true;
+        await checkReadiness();
+      } catch {
+        systemStatusText.textContent = "无法连接核保服务";
+        systemStatus.title = "请确认后端服务正在运行";
+      }
+    }
+
+    document.getElementById("loginForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      loginError.textContent = "登录中…";
+      try {
+        const response = await fetch("/api/v1/auth/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("loginUsername").value,
+            password: document.getElementById("loginPassword").value,
+          }),
+        });
+        const data = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(data.detail || `登录失败 (${response.status})`);
+        sessionStorage.setItem("pv-auth-token", data.access_token);
+        await initializeAuthentication();
+      } catch (error) {
+        loginError.textContent = error.message || "登录失败";
+      }
+    });
+
+    document.getElementById("logoutButton").addEventListener("click", async () => {
+      try { await fetch("/api/v1/auth/logout", { method: "POST" }); } catch { /* clear local session below */ }
+      sessionStorage.removeItem("pv-auth-token");
+      document.getElementById("logoutButton").hidden = true;
+      document.getElementById("userAdminButton").hidden = true;
+      document.getElementById("signedInUser").textContent = "";
+      userAdminOverlay.hidden = true;
+      authenticatedRole = "viewer";
+      showLoginOverlay();
+    });
+
+    async function refreshUsers() {
+      userAdminMessage.textContent = "正在读取账号…";
+      try {
+        const response = await fetch("/api/v1/auth/users");
+        const users = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(users.detail || `账号读取失败 (${response.status})`);
+        const roleLabels = { viewer: "查看者", underwriter: "核保员", admin: "管理员" };
+        const list = document.getElementById("userList");
+        list.replaceChildren();
+        users.forEach(user => {
+          const entry = makeNode("div", "user-entry");
+          const info = makeNode("div");
+          info.appendChild(makeNode("p", "item-title", `${user.username} · ${roleLabels[user.role] || user.role}`));
+          info.appendChild(makeNode("p", "item-copy", `${user.active ? "启用" : "已停用"} · 创建于 ${user.created_at}`));
+          entry.appendChild(info);
+          if (user.active) {
+            const actions = makeNode("div", "user-actions");
+            const resetButton = makeNode("button", "secondary", "重置密码");
+            resetButton.type = "button";
+            resetButton.addEventListener("click", async () => {
+              const password = window.prompt(`为 ${user.username} 设置新密码（至少 12 位）`);
+              if (password === null) return;
+              try {
+                const resetResponse = await fetch(`/api/v1/auth/users/${encodeURIComponent(user.username)}/password`, {
+                  method: "PUT", headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ password })
+                });
+                const result = await resetResponse.json().catch(() => ({}));
+                if (!resetResponse.ok) throw new Error(result.detail || `密码重置失败 (${resetResponse.status})`);
+                userAdminMessage.textContent = `${user.username} 的密码已重置，其会话已撤销。`;
+                if (user.username === document.getElementById("signedInUser").textContent.split(" · ")[0]) {
+                  sessionStorage.removeItem("pv-auth-token");
+                  await initializeAuthentication();
+                }
+              } catch (error) {
+                userAdminMessage.textContent = error.message || "密码重置失败";
+              }
+            });
+            actions.appendChild(resetButton);
+            if (user.username !== document.getElementById("signedInUser").textContent.split(" · ")[0]) {
+              const deactivateButton = makeNode("button", "secondary", "停用");
+              deactivateButton.type = "button";
+              deactivateButton.addEventListener("click", async () => {
+                if (!window.confirm(`确定停用账号 ${user.username} 吗？`)) return;
+                try {
+                  const deactivateResponse = await fetch(`/api/v1/auth/users/${encodeURIComponent(user.username)}/deactivate`, { method: "POST" });
+                  const result = await deactivateResponse.json().catch(() => ({}));
+                  if (!deactivateResponse.ok) throw new Error(result.detail || `账号停用失败 (${deactivateResponse.status})`);
+                  userAdminMessage.textContent = `${user.username} 已停用。`;
+                  await refreshUsers();
+                } catch (error) {
+                  userAdminMessage.textContent = error.message || "账号停用失败";
+                }
+              });
+              actions.appendChild(deactivateButton);
+            }
+            entry.appendChild(actions);
+          }
+          list.appendChild(entry);
+        });
+        if (!users.length) list.appendChild(makeNode("p", "hint", "尚无账号"));
+        userAdminMessage.textContent = `${users.length} 个账号`;
+      } catch (error) {
+        userAdminMessage.textContent = error.message || "账号读取失败";
+      }
+    }
+
+    document.getElementById("userAdminButton").addEventListener("click", async () => {
+      userAdminOverlay.hidden = false;
+      await refreshUsers();
+      document.getElementById("newUsername").focus();
+    });
+    document.getElementById("closeUserAdmin").addEventListener("click", () => {
+      userAdminOverlay.hidden = true;
+      document.getElementById("userAdminButton").focus();
+    });
+    userAdminOverlay.addEventListener("click", event => {
+      if (event.target === userAdminOverlay) userAdminOverlay.hidden = true;
+    });
+    document.getElementById("userCreateForm").addEventListener("submit", async event => {
+      event.preventDefault();
+      const submitButton = event.currentTarget.querySelector("button[type=submit]");
+      submitButton.disabled = true;
+      userAdminMessage.textContent = "正在创建账号…";
+      try {
+        const response = await fetch("/api/v1/auth/users", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username: document.getElementById("newUsername").value,
+            password: document.getElementById("newUserPassword").value,
+            role: document.getElementById("newUserRole").value,
+          })
+        });
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.detail || `账号创建失败 (${response.status})`);
+        event.currentTarget.reset();
+        userAdminMessage.textContent = `已创建账号 ${result.username}。`;
+        await refreshUsers();
+      } catch (error) {
+        userAdminMessage.textContent = error.message || "账号创建失败";
+      } finally {
+        submitButton.disabled = false;
+      }
+    });
+    document.addEventListener("keydown", event => {
+      if (event.key === "Escape" && !userAdminOverlay.hidden) userAdminOverlay.hidden = true;
+    });
+
+    function addFileRow() {
+      const fragment = document.getElementById("fileRowTemplate").content.cloneNode(true);
+      const row = fragment.querySelector(".file-row");
+      row.dataset.materialId = `material-${String(nextMaterialId++).padStart(3, "0")}`;
+      const category = row.querySelector(".category");
+      const view = row.querySelector(".capture-view");
+      const viewField = row.querySelector(".view-field");
+      const fileInput = row.querySelector(".upload-file");
+      const classificationStatus = row.querySelector(".classification-status");
+      const syncView = () => { viewField.style.visibility = category.value === "panorama" ? "visible" : "hidden"; };
+      category.addEventListener("change", () => {
+        row.dataset.classificationStatus = "manual";
+        classificationStatus.textContent = "已人工确认类别；可开始核保。";
+        syncView();
+      });
+      fileInput.addEventListener("change", async () => {
+        const file = fileInput.files?.[0];
+        const requestId = String(Number(row.dataset.classificationRun || 0) + 1);
+        row.dataset.classificationRun = requestId;
+        if (!file) {
+          row.dataset.classificationStatus = "";
+          classificationStatus.textContent = "选择文件后自动分类，可手动修改。";
+          return;
+        }
+        row.dataset.classificationStatus = "pending";
+        classificationStatus.textContent = "正在按文件内容分类…";
+        try {
+          const body = new FormData();
+          body.append("file", file, file.name);
+          const response = await fetch("/api/v1/vision/lab/classify", { method: "POST", body });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(typeof result.detail === "string" ? result.detail : `分类服务返回 ${response.status}`);
+          if (row.dataset.classificationRun !== requestId || row.dataset.classificationStatus === "manual") return;
+          if (![...category.options].some(option => option.value === result.category)) throw new Error("分类结果的材料类别无效");
+          category.value = result.category;
+          row.dataset.classificationStatus = "done";
+          classificationStatus.textContent = `自动分类：${category.selectedOptions[0].textContent}；可手动修改。`;
+          syncView();
+        } catch (error) {
+          if (row.dataset.classificationRun !== requestId || row.dataset.classificationStatus === "manual") return;
+          row.dataset.classificationStatus = "failed";
+          classificationStatus.textContent = `自动分类失败：${error.message || error}。请手动确认类别。`;
+        }
+      });
+      syncView();
+      row.querySelector(".remove-row").addEventListener("click", () => {
+        if (fileList.children.length > 1) row.remove();
+      });
+      fileList.appendChild(fragment);
+    }
+
+    function readProject() {
+      const numberOrNull = (id) => {
+        const value = document.getElementById(id).value.trim();
+        return value === "" ? null : Number(value);
+      };
+      const textOrNull = (id) => document.getElementById(id).value.trim() || null;
+      return {
+        project_name: textOrNull("projectName"),
+        insured_name: textOrNull("insuredName"),
+        insured_address: textOrNull("insuredAddress"),
+        project_entity: textOrNull("projectEntity"),
+        industry_name: textOrNull("industryName"),
+        fire_surcharge_confirmed: document.getElementById("fireSurchargeConfirmed").value === ""
+          ? null
+          : document.getElementById("fireSurchargeConfirmed").value === "true",
+        project_type: document.getElementById("projectType").value,
+        installation_type: document.getElementById("installationType").value,
+        site_address: textOrNull("siteAddress"),
+        longitude: numberOrNull("longitude"),
+        latitude: numberOrNull("latitude"),
+        proposed_start_date: textOrNull("startDate"),
+        component_model: textOrNull("componentModel")
+      };
+    }
+
+    async function lookupAddress() {
+      const address = siteAddressInput.value.trim();
+      lookupAddressResults.hidden = true;
+      lookupAddressResults.replaceChildren();
+      if (address.length < 4) {
+        lookupAddressMessage.textContent = "请先填写至少 4 个字的详细项目地址。";
+        siteAddressInput.focus();
+        return;
+      }
+
+      lookupAddressButton.disabled = true;
+      lookupAddressMessage.textContent = "正在查询地址候选…";
+      try {
+        const response = await fetch(`/api/v1/locations/resolve?address=${encodeURIComponent(address)}`);
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const detail = typeof payload.detail === "string" ? payload.detail : null;
+          throw new Error(detail || `地址查询失败 (${response.status})`);
+        }
+        const candidates = Array.isArray(payload.candidates) ? payload.candidates : [];
+        if (!candidates.length) {
+          lookupAddressMessage.textContent = "没有找到地址候选，请补充省、市、区县和详细地址。";
+          return;
+        }
+
+        lookupAddressMessage.textContent = `找到 ${candidates.length} 个候选，请核对后选择。`;
+        candidates.forEach(candidate => {
+          const row = makeNode("div", "address-candidate");
+          const copy = makeNode("div", "item-copy");
+          copy.appendChild(makeNode("strong", "", candidate.formatted_address || "未命名地址"));
+          copy.appendChild(makeNode(
+            "div",
+            "",
+            `地址级别：${candidate.level || "未知"} · Open-Meteo 用近似 WGS84 ${candidate.longitude}, ${candidate.latitude}`
+          ));
+          const useButton = makeNode("button", "secondary", "确认位置并用于天气查询");
+          useButton.type = "button";
+          useButton.addEventListener("click", () => {
+            siteAddressInput.value = candidate.formatted_address || address;
+            longitudeInput.value = candidate.longitude;
+            latitudeInput.value = candidate.latitude;
+            selectedGeocodedAddress = siteAddressInput.value;
+            lookupAddressResults.hidden = true;
+            lookupAddressMessage.textContent = "位置已确认。提交核保时将按该近似 WGS84 坐标查询 Open-Meteo 历史 10 米最大阵风和单日降雪；冰雹直径与结构雪荷载仍需其他可靠资料。";
+          });
+          row.append(copy, useButton);
+          lookupAddressResults.appendChild(row);
+        });
+        lookupAddressResults.hidden = false;
+      } catch (error) {
+        lookupAddressMessage.textContent = error.message || "地址查询失败，请稍后重试。";
+      } finally {
+        lookupAddressButton.disabled = false;
+      }
+    }
+
+    async function extractAddressFromSelectedMaterials() {
+      lookupAddressResults.hidden = true;
+      lookupAddressResults.replaceChildren();
+      const supportedCategories = new Set([
+        "filing_certificate",
+        "grid_connection_document",
+        "panorama",
+      ]);
+      const selectedMaterials = [...fileList.querySelectorAll(".file-row")]
+        .map(row => ({
+          file: row.querySelector(".upload-file")?.files?.[0],
+          category: row.querySelector(".category")?.value,
+        }))
+        .filter(item => item.file && supportedCategories.has(item.category));
+
+      if (!selectedMaterials.length) {
+        extractAddressMessage.textContent = "请先选择备案证、并网材料或全景照片。";
+        return;
+      }
+
+      extractAddressButton.disabled = true;
+      lookupAddressButton.disabled = true;
+      extractAddressMessage.textContent = `正在识别 ${selectedMaterials.length} 份地址相关材料…`;
+      const addresses = new Map();
+      const failures = [];
+      try {
+        for (const [index, item] of selectedMaterials.entries()) {
+          const form = new FormData();
+          form.append("file", item.file);
+          form.append("material_id", `address-preflight-${index + 1}`);
+          form.append("category", item.category);
+          try {
+            const response = await fetch("/api/v1/ocr/extract", {
+              method: "POST",
+              body: form,
+            });
+            const payload = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              const detail = typeof payload.detail === "string" ? payload.detail : null;
+              throw new Error(detail || `OCR 请求失败 (${response.status})`);
+            }
+            for (const field of Array.isArray(payload) ? payload : []) {
+              if (field.field_name !== "site_address") continue;
+              const address = String(field.normalized_value || field.raw_value || "").trim();
+              if (!address) continue;
+              const key = address.replace(/\s+/g, "");
+              const entry = addresses.get(key) || {
+                address,
+                sources: [],
+                confidence: 0,
+                status: field.value_status,
+              };
+              entry.sources.push(item.file.name);
+              entry.confidence = Math.max(entry.confidence, Number(field.confidence) || 0);
+              if (field.value_status === "extracted") entry.status = "extracted";
+              addresses.set(key, entry);
+            }
+          } catch (error) {
+            failures.push(`${item.file.name}：${error.message || "识别失败"}`);
+          }
+        }
+
+        if (!addresses.size) {
+          extractAddressMessage.textContent = failures.length
+            ? `没有提取到项目地址。${failures.join("；")}`
+            : "没有识别到项目地址，请检查图片清晰度或手动填写。";
+          return;
+        }
+
+        extractAddressMessage.textContent = `识别到 ${addresses.size} 个地址候选；请核对材料来源和文字后再选用。`;
+        for (const entry of addresses.values()) {
+          const row = makeNode("div", "address-candidate");
+          const copy = makeNode("div", "item-copy");
+          copy.appendChild(makeNode("strong", "", entry.address));
+          copy.appendChild(makeNode(
+            "div",
+            "",
+            `OCR 置信度 ${Math.round(entry.confidence * 100)}% · ${entry.status === "extracted" ? "识别状态：已提取" : "识别状态：需核实"} · 来源：${[...new Set(entry.sources)].join("、")}`
+          ));
+          const useButton = makeNode("button", "secondary", "填入地址并查坐标");
+          useButton.type = "button";
+          useButton.addEventListener("click", () => {
+            siteAddressInput.value = entry.address;
+            longitudeInput.value = "";
+            latitudeInput.value = "";
+            selectedGeocodedAddress = null;
+            lookupAddressMessage.textContent = "地址已填入；点击“按地址查坐标”，核对位置后再提交。";
+            extractAddressMessage.textContent = "OCR 地址仅作候选，需核对材料原文和地图定位。";
+            lookupAddressResults.hidden = true;
+          });
+          row.append(copy, useButton);
+          lookupAddressResults.appendChild(row);
+        }
+        if (failures.length) {
+          lookupAddressResults.appendChild(makeNode("p", "hint", `部分材料未能完成 OCR：${failures.join("；")}`));
+        }
+        lookupAddressResults.hidden = false;
+      } finally {
+        extractAddressButton.disabled = false;
+        lookupAddressButton.disabled = false;
+      }
+    }
+
+    function makeNode(tag, className, text) {
+      const element = document.createElement(tag);
+      if (className) element.className = className;
+      if (text !== undefined && text !== null) element.textContent = String(text);
+      return element;
+    }
+
+    let amapLoaderPromise = null;
+
+    function ensureAmapLoader(securityJsCode) {
+      window._AMapSecurityConfig = { securityJsCode };
+      if (window.AMapLoader) return Promise.resolve(window.AMapLoader);
+      if (amapLoaderPromise) return amapLoaderPromise;
+      amapLoaderPromise = new Promise((resolve, reject) => {
+        const script = document.createElement("script");
+        script.src = "https://webapi.amap.com/loader.js";
+        script.async = true;
+        script.onload = () => window.AMapLoader
+          ? resolve(window.AMapLoader)
+          : reject(new Error("高德地图 SDK 加载失败"));
+        script.onerror = () => reject(new Error("高德地图 SDK 加载失败"));
+        document.head.appendChild(script);
+      }).catch(error => {
+        amapLoaderPromise = null;
+        throw error;
+      });
+      return amapLoaderPromise;
+    }
+
+    async function showAmapSatellite(container, candidate, config) {
+      if (!config?.configured || !config.api_key || !config.security_js_code) {
+        throw new Error("尚未配置高德 Web 端 JS API Key 和安全密钥");
+      }
+      const loader = await ensureAmapLoader(config.security_js_code);
+      const AMap = await loader.load({ key: config.api_key, version: "2.0" });
+      if (container.__amapMap) container.__amapMap.destroy();
+      const center = [candidate.amap_longitude, candidate.amap_latitude];
+      const map = new AMap.Map(container, {
+        center,
+        zoom: 18,
+        viewMode: "2D",
+        layers: [new AMap.TileLayer.Satellite(), new AMap.TileLayer.RoadNet()],
+      });
+      map.add(new AMap.Marker({ position: center, title: candidate.formatted_address }));
+      container.__amapMap = map;
+      return map;
+    }
+
+    function renderListSection(parent, title, rows, renderItem, emptyText = "无") {
+      const section = makeNode("section", "result-section");
+      const heading = makeNode("h3", "", title);
+      heading.appendChild(makeNode("span", "count", rows.length));
+      section.appendChild(heading);
+      const list = makeNode("div", "result-list");
+      if (!rows.length) list.appendChild(makeNode("div", "item-copy", emptyText));
+      rows.forEach(row => list.appendChild(renderItem(row)));
+      section.appendChild(list);
+      parent.appendChild(section);
+    }
+
+    function appendRuleExplanations(parent, ruleIds, decision) {
+      const explanations = new Map((decision?.rule_explanations || []).map(item => [item.rule_id, item]));
+      const list = makeNode("div", "explanation-list");
+      if (!ruleIds.length) {
+        list.appendChild(makeNode("p", "item-copy", "没有登记命中规则。"));
+      }
+      ruleIds.forEach(ruleId => {
+        const explanation = explanations.get(ruleId);
+        const entry = makeNode("div", "explanation-entry");
+        entry.appendChild(makeNode("strong", "", `${ruleId} · ${explanation?.title || "规则说明未登记"}`));
+        entry.appendChild(makeNode("p", "", `触发条件：${explanation?.trigger || "请核对规则编号和原始案件记录。"}`));
+        entry.appendChild(makeNode("p", "", `处理作用：${explanation?.effect || "编号已保留；需补齐该规则的中文说明。"}`));
+        list.appendChild(entry);
+      });
+      parent.appendChild(list);
+    }
+
+    function renderEvidenceDetails(parent, review, data) {
+      const details = document.createElement("details");
+      details.className = "evidence-details";
+      const findingIds = review.finding_ids || [];
+      const ocrFieldIds = review.ocr_field_ids || [];
+      const ruleIds = review.triggered_rule_ids || [];
+      const summary = makeNode("summary", "", `查看规则说明和关联证据（规则 ${ruleIds.length} · 图片 ${findingIds.length} · OCR ${ocrFieldIds.length}）`);
+      details.appendChild(summary);
+      appendRuleExplanations(details, ruleIds, data.decision);
+
+      const findingList = makeNode("div", "explanation-list");
+      if (!findingIds.length) findingList.appendChild(makeNode("p", "item-copy", "该材料没有关联视觉发现。"));
+      findingIds.forEach(findingId => {
+        const finding = (data.findings || []).find(candidate => candidate.finding_id === findingId);
+        const entry = makeNode("div", "explanation-entry");
+        if (!finding) {
+          entry.appendChild(makeNode("strong", "", `${findingId} · 引用记录未找到`));
+        } else {
+          const status = labels[finding.detection_status] || finding.detection_status;
+          entry.appendChild(makeNode("strong", "", `${findingId} · ${finding.label} · ${status}`));
+          entry.appendChild(makeNode("p", "", `证据描述：${finding.evidence_text || "未提供"}`));
+          if (finding.category?.endsWith("_environment")) entry.appendChild(makeNode("p", "", `环境与现场关系：${labels[finding.environment_relation] || "现场关系不确定"}`));
+          entry.appendChild(makeNode("p", "", `模型参考置信度：${Math.round((finding.confidence || 0) * 100)}%（未校准） · ${finding.provider} / ${finding.model}`));
+          if (finding.bbox) entry.appendChild(makeNode("p", "", `图片区域：${(finding.bbox.x_min * 100).toFixed(0)}%, ${(finding.bbox.y_min * 100).toFixed(0)}% - ${(finding.bbox.x_max * 100).toFixed(0)}%, ${(finding.bbox.y_max * 100).toFixed(0)}%`));
+        }
+        findingList.appendChild(entry);
+      });
+      details.appendChild(makeNode("p", "item-copy", "关联视觉证据"));
+      details.appendChild(findingList);
+
+      const ocrList = makeNode("div", "explanation-list");
+      if (!ocrFieldIds.length) ocrList.appendChild(makeNode("p", "item-copy", "该材料没有关联 OCR 字段。"));
+      ocrFieldIds.forEach(fieldId => {
+        const field = (data.ocr_fields || []).find(candidate => candidate.field_id === fieldId);
+        const entry = makeNode("div", "explanation-entry");
+        if (!field) {
+          entry.appendChild(makeNode("strong", "", `${fieldId} · 引用记录未找到`));
+        } else {
+          const fieldName = ocrLabels[field.field_name] || field.field_name;
+          const status = ocrStatusLabels[field.value_status] || field.value_status;
+          entry.appendChild(makeNode("strong", "", `${fieldId} · ${fieldName} · ${status}`));
+          entry.appendChild(makeNode("p", "", `原文：${field.raw_value || "未识别"} · 规范值：${field.normalized_value || "未标准化"}`));
+          entry.appendChild(makeNode("p", "", `识别参考置信度：${Math.round((field.confidence || 0) * 100)}%（未校准） · ${field.provider} / ${field.model}`));
+        }
+        ocrList.appendChild(entry);
+      });
+      details.appendChild(makeNode("p", "item-copy", "关联 OCR 字段"));
+      details.appendChild(ocrList);
+      parent.appendChild(details);
+    }
+
+    function renderDecisionPath(parent, data, savedRecord) {
+      const decision = data.decision || {};
+      const packageInfo = data.package_assessment;
+      const materials = data.materials || [];
+      const reviews = data.material_reviews || [];
+      const findings = data.findings || [];
+      const fields = data.ocr_fields || [];
+      const traces = data.processing_trace || [];
+      const uncertainFindings = findings.filter(item => item.detection_status === "uncertain").length;
+      const incompleteTraces = traces.filter(item => ["partial", "failed"].includes(item.status)).length;
+      const actionCounts = reviews.reduce((counts, item) => {
+        const label = item.action === "surcharge" ? "建议加费" : (labels[item.action] || item.action);
+        counts[label] = (counts[label] || 0) + 1;
+        return counts;
+      }, {});
+      const actionSummary = Object.entries(actionCounts).map(([label, count]) => `${label} ${count} 份`).join("、") || "暂无逐项材料审核结果";
+      const section = makeNode("section", "explainability-panel");
+      section.appendChild(makeNode("h3", "", "判断过程与依据"));
+      section.appendChild(makeNode("p", "explainability-note", "这里展示从材料、识别证据、规则到建议结论的路径。识别模型提供 OCR/视觉观察；确定性规则引擎汇总材料动作和整单建议。显示的置信度是识别参考分数，未经过概率校准。"));
+      const flow = makeNode("div", "flow-list");
+      const addStep = (title, description, detailsRenderer = null) => {
+        const step = makeNode("div", "flow-step");
+        step.appendChild(makeNode("span", "flow-step-no", flow.children.length + 1));
+        const content = document.createElement("div");
+        content.appendChild(makeNode("h4", "", title));
+        content.appendChild(makeNode("p", "", description));
+        if (detailsRenderer) detailsRenderer(content);
+        step.appendChild(content);
+        flow.appendChild(step);
+      };
+
+      if (packageInfo) {
+        addStep("材料接收与适用检查", `收到 ${materials.length} 份材料；图片 ${packageInfo.image_count} 张、全景 ${packageInfo.panorama_count} 张；备案证${packageInfo.has_filing_certificate ? "已提供" : "未提供"}。数量仅作覆盖统计，补材由具体检查项决定。`);
+      } else {
+        addStep("材料接收与适用检查", `收到 ${materials.length} 份材料；当前结果未包含材料覆盖统计。`);
+      }
+      addStep("文字与图像信息提取", `OCR 字段 ${fields.length} 项；视觉检查 ${findings.length} 项，其中不确定 ${uncertainFindings} 项。模型只提供观察和证据描述；不确定结果会交给规则转补材料或人工复核。`);
+      addStep("单份材料规则审核", `${reviews.length} 份材料已生成审核动作：${actionSummary}。每份材料卡片可展开查看具体规则、OCR 字段和图片证据之间的关联。`);
+      const component = data.component_profile;
+      if (component) {
+        const componentValue = value => value === null || value === undefined ? "未提供" : value;
+        const componentParameterLabels = {
+          rated_power_w: "额定功率",
+          front_static_load_pa: "正面最大静载",
+          back_static_load_pa: "背面最大静载",
+          hail_resistance_mm: "冰雹试验直径",
+          hail_impact_velocity_m_s: "冰雹试验速度",
+          wind_load_pa: "厂家风荷载",
+          snow_load_pa: "厂家雪荷载"
+        };
+        const componentSources = Object.entries(component.parameter_sources || {})
+          .map(([field, url]) => `${componentParameterLabels[field] || field}: ${url}`)
+          .join("；") || "没有逐字段来源链接";
+        addStep(
+          "组件型号与参数证据",
+          `匹配型号：${component.component_model}（${component.manufacturer || "厂商未知"}；${component.market_version || "市场版本未记录"}；型号匹配参考分 ${component.match_confidence}）。额定功率 ${componentValue(component.rated_power_w)} W；正面/背面最大静载 ${componentValue(component.front_static_load_pa)}/${componentValue(component.back_static_load_pa)} Pa；冰雹试验 ${componentValue(component.hail_resistance_mm)} mm @ ${componentValue(component.hail_impact_velocity_m_s)} m/s。正反面静载不会换算成项目风压或雪荷载，字段有值也不代表灾种筛查通过。资料：${component.source_name || "未记录"} · ${component.source_url || "无链接"}。逐项来源：${componentSources}。${component.source_note || "无参数适用说明"} ${[...(component.lookup_notes || [])].join("；")}`
+        );
+      } else {
+        addStep("组件型号与参数证据", "没有按完整型号取得厂家参数；不从相似型号推填，需核对铭牌和厂家规格书。灾害结论保留未知。 ");
+      }
+      const componentNeedsResearch = !component || [
+        "wind_load_pa", "snow_load_pa", "hail_resistance_mm", "hail_impact_velocity_m_s"
+      ].some(field => component[field] === null || component[field] === undefined);
+      if (componentNeedsResearch && authenticatedRole !== "viewer") {
+        addStep(
+          "组件缺参搜索与人工补正",
+          "按厂商精确型号 → 厂商系列 → Solar-Stack → 全网网页候选顺序找资料。无需预设受信域名；全网结果均是待核验线索，只有人工确认原始 Datasheet 与铭牌型号一致后，才可录入缺失参数。",
+          content => {
+            const panel = makeNode("div", "review-form no-print");
+            const field = (labelText, value, type = "text", placeholder = "") => {
+              const wrapper = makeNode("div", "field");
+              const label = makeNode("label", "", labelText);
+              const input = document.createElement("input");
+              input.type = type;
+              input.value = value || "";
+              input.placeholder = placeholder;
+              wrapper.append(label, input);
+              return { wrapper, input };
+            };
+            const manufacturerField = field("厂商", component?.manufacturer || "", "text", "例如 JA Solar / LONGi");
+            const modelField = field("完整型号（核对铭牌）", component?.component_model || "", "text", "例如 JAM72D42-630W");
+            const seriesField = field("系列（可选）", "", "text", "例如 JAM72D42");
+            const searchFields = makeNode("div", "review-fields");
+            searchFields.append(manufacturerField.wrapper, modelField.wrapper, seriesField.wrapper);
+            panel.appendChild(searchFields);
+            const searchButton = makeNode("button", "secondary", "按资料链搜索");
+            searchButton.type = "button";
+            panel.appendChild(searchButton);
+            const searchMessage = makeNode("p", "dialog-message", "");
+            panel.appendChild(searchMessage);
+            const searchResults = makeNode("div", "result-list");
+            panel.appendChild(searchResults);
+            const searchLink = document.createElement("a");
+            searchLink.className = "secondary";
+            searchLink.textContent = "打开 Solar-Stack 搜索页";
+            searchLink.target = "_blank";
+            searchLink.rel = "noopener noreferrer";
+            searchLink.hidden = true;
+            panel.appendChild(searchLink);
+            const browserSearchLinks = makeNode("div", "review-fields");
+            panel.appendChild(browserSearchLinks);
+
+            searchButton.addEventListener("click", async () => {
+              const model = modelField.input.value.trim();
+              if (!model) {
+                searchMessage.textContent = "请先输入并核对组件铭牌上的完整型号。";
+                return;
+              }
+              searchButton.disabled = true;
+              searchMessage.textContent = "正在按顺序查找资料…";
+              searchResults.replaceChildren();
+              browserSearchLinks.replaceChildren();
+              try {
+                const params = new URLSearchParams({ model });
+                if (manufacturerField.input.value.trim()) params.set("manufacturer", manufacturerField.input.value.trim());
+                if (seriesField.input.value.trim()) params.set("series", seriesField.input.value.trim());
+                const response = await fetch(`/api/v1/components/sources?${params.toString()}`);
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(result.detail || `搜索失败 (${response.status})`);
+                searchLink.href = result.solar_stack_search_url;
+                searchLink.hidden = false;
+                (result.browser_search_links || []).forEach(searchInfo => {
+                  const link = document.createElement("a");
+                  link.className = "secondary";
+                  link.href = searchInfo.url;
+                  link.target = "_blank";
+                  link.rel = "noopener noreferrer";
+                  link.textContent = searchInfo.label || "打开网页检索";
+                  browserSearchLinks.appendChild(link);
+                });
+                (result.stages || []).forEach(stage => {
+                  const card = makeNode("div", "result-item");
+                  card.appendChild(makeNode("p", "item-title", `${stage.label} · ${stage.status}`));
+                  card.appendChild(makeNode("p", "item-copy", stage.note || ""));
+                  (stage.documents || []).forEach(documentInfo => {
+                    const link = document.createElement("a");
+                    link.href = documentInfo.url;
+                    link.target = "_blank";
+                    link.rel = "noopener noreferrer";
+                    link.textContent = documentInfo.title || documentInfo.url;
+                    link.addEventListener("click", () => {
+                      sourceUrl.input.value = documentInfo.url;
+                    });
+                    card.appendChild(link);
+                    card.appendChild(makeNode("p", "item-copy", `${documentInfo.source_domain} · 型号线索：${documentInfo.model_match} · ${documentInfo.description || ""}`));
+                    if (stage.stage === "local_catalog_variant_candidates" && documentInfo.model_match === "variant_candidate_requires_nameplate_confirmation") {
+                      const useCandidateButton = makeNode("button", "secondary", "铭牌确认后填入型号框");
+                      useCandidateButton.type = "button";
+                      useCandidateButton.addEventListener("click", () => {
+                        modelField.input.value = documentInfo.title;
+                        searchMessage.textContent = "候选型号已填入。请先确认铭牌后缀和版本完全一致，再点击“按资料链搜索”；未确认前不要用于核保。";
+                      });
+                      card.appendChild(useCandidateButton);
+                    }
+                  });
+                  searchResults.appendChild(card);
+                });
+                searchMessage.textContent = result.search_api_configured
+                  ? "已完成配置的检索阶段。请打开 Datasheet 原文确认型号及参数；结果不自动写入核保结论。"
+                  : "后台网页检索 API 未配置。已提供浏览器检索入口和本地型号候选；请在浏览器核对铭牌及原始 Datasheet，候选不会自动用于核保。";
+              } catch (error) {
+                searchMessage.textContent = error.message || "组件资料搜索失败。";
+              } finally {
+                searchButton.disabled = false;
+              }
+            });
+
+            const correctionForm = document.createElement("form");
+            correctionForm.className = "review-form";
+            correctionForm.appendChild(makeNode("h3", "", "核对原始 Datasheet 后补正缺失字段"));
+            correctionForm.appendChild(makeNode("p", "review-note", "补正只写入本机目录覆盖文件，供后续新案件使用；不会改写当前报告，也不会覆盖已有非空参数。每个数值都要关联原始 HTTPS 来源。"));
+            const correctionGrid = makeNode("div", "review-fields");
+            const correctionInputs = {};
+            const parameters = [
+              ["rated_power_w", "额定功率 (W)"],
+              ["front_static_load_pa", "正面最大静载 (Pa)"],
+              ["back_static_load_pa", "背面最大静载 (Pa)"],
+              ["hail_resistance_mm", "冰雹试验直径 (mm)"],
+              ["hail_impact_velocity_m_s", "冰雹试验速度 (m/s)"],
+              ["wind_load_pa", "厂家明确风荷载 (Pa)"],
+              ["snow_load_pa", "厂家明确雪荷载 (Pa)"],
+            ];
+            parameters.forEach(([name, labelText]) => {
+              const entry = field(labelText, "", "number", "留空表示资料未列出");
+              entry.input.min = "0.001";
+              entry.input.step = "any";
+              correctionInputs[name] = entry.input;
+              correctionGrid.appendChild(entry.wrapper);
+            });
+            const docType = field("资料类型", "Datasheet PDF", "text");
+            const sourceUrl = field("已打开的原始资料 HTTPS 链接", "", "url", "粘贴 Datasheet 原始链接");
+            const reviewer = field("复核人", document.getElementById("signedInUser").textContent.split(" · ")[0] || "", "text");
+            correctionForm.append(correctionGrid, docType.wrapper, sourceUrl.wrapper, reviewer.wrapper);
+            const sourceNote = document.createElement("textarea");
+            sourceNote.placeholder = "记录数据页码、市场版本、载荷方向/测试方法等适用说明；没有列出的参数请留空。";
+            sourceNote.required = true;
+            correctionForm.appendChild(sourceNote);
+            const exactLabel = document.createElement("label");
+            const exactCheck = document.createElement("input");
+            exactCheck.type = "checkbox";
+            exactCheck.required = true;
+            exactLabel.append(exactCheck, document.createTextNode(" 我已逐项核对完整型号与铭牌/原始 Datasheet，并确认每个录入值、单位和测试条件。"));
+            correctionForm.appendChild(exactLabel);
+            const correctionMessage = makeNode("p", "dialog-message", "");
+            const correctionButton = makeNode("button", "primary", "保存人工补正供后续案件使用");
+            correctionButton.type = "submit";
+            correctionForm.append(correctionButton, correctionMessage);
+            correctionForm.addEventListener("submit", async event => {
+              event.preventDefault();
+              const model = modelField.input.value.trim();
+              const manufacturer = manufacturerField.input.value.trim();
+              if (!model || !manufacturer || !sourceUrl.input.value.trim() || !reviewer.input.value.trim()) {
+                correctionMessage.textContent = "请补全完整型号、厂商、资料链接和复核人。";
+                return;
+              }
+              const body = {
+                component_model: model,
+                manufacturer,
+                source_document_type: docType.input.value.trim(),
+                source_url: sourceUrl.input.value.trim(),
+                source_note: sourceNote.value.trim(),
+                reviewer_name: reviewer.input.value.trim(),
+                exact_model_verified: exactCheck.checked,
+                parameter_sources: {},
+              };
+              parameters.forEach(([name]) => {
+                const value = correctionInputs[name].value.trim();
+                if (value) {
+                  body[name] = Number(value);
+                  body.parameter_sources[name] = body.source_url;
+                }
+              });
+              correctionButton.disabled = true;
+              correctionMessage.textContent = "正在保存人工补正…";
+              try {
+                const response = await fetch("/api/v1/components/corrections", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify(body),
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(result.detail || `保存失败 (${response.status})`);
+                correctionMessage.textContent = `${result.note} 字段：${(result.saved_field_names || []).join("、")}`;
+              } catch (error) {
+                correctionMessage.textContent = error.message || "人工补正保存失败。";
+              } finally {
+                correctionButton.disabled = false;
+              }
+            });
+            panel.appendChild(correctionForm);
+            content.appendChild(panel);
+          }
+        );
+      }
+      const weather = data.weather_profile;
+      if (weather) {
+        const weatherValue = value => value === null || value === undefined ? "未提供" : value;
+        const grid = weather.grid_latitude === null || weather.grid_latitude === undefined
+          ? "上游未返回网格坐标"
+          : `${weather.grid_longitude}, ${weather.grid_latitude}（距项目点 ${weather.grid_distance_km ?? "未知"} km；网格 DEM 高程 ${weather.grid_elevation_m ?? "未知"} m）`;
+        const expectedDays = weather.expected_day_count ?? "未知";
+        addStep("气象数据来源与覆盖", `${weather.source_name || "气象源未知"}；项目点 WGS84 ${weather.longitude}, ${weather.latitude}；实际网格 ${grid}；数据集 ${weather.dataset_selection || "未记录"}；网格选择 ${weather.grid_selection_method || "未记录"}；时区 ${weather.timezone || "未记录"}；请求期 ${weather.observation_start || "未知"} 至 ${weather.observation_end || "未知"}，返回日期 ${weather.returned_data_start || "无"} 至 ${weather.returned_data_end || "无"}。10米日阵风有效日 ${weather.wind_valid_day_count ?? 0}/${expectedDays}，最大值 ${weatherValue(weather.historical_max_wind_m_s)} ${weather.wind_unit || "m/s"}；10米日持续风速有效日 ${weather.wind_speed_valid_day_count ?? 0}/${expectedDays}，最大值 ${weatherValue(weather.historical_max_daily_wind_speed_m_s)} ${weather.wind_speed_unit || "m/s"}；日总降水有效日 ${weather.precipitation_valid_day_count ?? 0}/${expectedDays}，最大单日 ${weatherValue(weather.historical_max_daily_precipitation_mm)} ${weather.precipitation_unit || "mm"}；日降雨有效日 ${weather.rain_valid_day_count ?? 0}/${expectedDays}，最大单日 ${weatherValue(weather.historical_max_daily_rain_mm)} ${weather.rain_unit || "mm"}；降水时数有效日 ${weather.precipitation_hours_valid_day_count ?? 0}/${expectedDays}，最长单日有降水 ${weatherValue(weather.historical_max_daily_precipitation_hours)} ${weather.precipitation_hours_unit || "h"}；降雪有效日 ${weather.snowfall_valid_day_count ?? 0}/${expectedDays}，最大单日降雪 ${weatherValue(weather.historical_max_daily_snowfall_cm)} ${weather.snowfall_unit || "cm"}。这些历史背景值不替代设计风压、结构雪荷载或洪涝风险评估。${[...(weather.data_quality_notes || [])].join("；")}`);
+      } else {
+        addStep("气象数据来源与覆盖", "没有取得项目坐标对应的历史天气资料；这不表示当地灾害风险低。 ");
+      }
+      const catastrophe = data.catastrophe_assessment;
+      if (catastrophe) {
+        const thresholds = Number.isFinite(catastrophe.critical_shortfall_ratio) && Number.isFinite(catastrophe.adequate_margin_ratio)
+          ? `旧版演示筛查门槛：严重不足 < ${catastrophe.critical_shortfall_ratio.toFixed(2)}；能力不足 < 1.00；余量有限 < ${catastrophe.adequate_margin_ratio.toFixed(2)}。该门槛未经结构设计/业务审批，不等同工程判断。`
+          : "当前未计算能力比：组件试验参数与历史天气指标的比较口径尚未验证。";
+        addStep("自然灾害量化评估", `${catastrophe.explanation || "已完成组件能力与气象指标比较。"} ${[...(catastrophe.factors || [])].join("；")} ${thresholds}`);
+        const hazardLabels = { wind: "大风", hail: "冰雹", snow: "积雪" };
+        const applicabilityLabels = { usable: "可用", not_applicable: "不适用", pending_confirmation: "待确认" };
+        const applicabilityReviews = catastrophe.installation_parameter_reviews || [];
+        if (applicabilityReviews.length) {
+          const details = applicabilityReviews.map(review =>
+            `${hazardLabels[review.hazard] || review.hazard}：${applicabilityLabels[review.status] || review.status}。${review.explanation}需核对：${(review.required_evidence || []).join("；")}（${review.triggered_rule_id}）`
+          ).join("\n");
+          addStep("逐灾种安装参数适用性", details);
+        }
+      } else {
+        addStep("自然灾害量化评估", "未生成完整的组件与历史气象联合评估；缺失原因可在规则和处理记录中查看。未评估不等于风险已通过。 ");
+      }
+      const priorityText = "整单先判断拒保、补材、人工复核及承保条件；加费作为独立价格建议。";
+      const decisionText = decisionLabel(decision);
+      const decisionReason = {
+        recommend_reject: "存在建议拒保动作，优先于其他结论。",
+        request_more: "没有更高优先级的建议拒保，但存在必需材料或信息缺口。",
+        manual_review: "没有更高优先级的拒保或补材料结论，但存在需人工确认的事项。",
+        surcharge: "前序条件未触发，规则汇总为建议加费。",
+        conditional_accept: "前序条件未触发，规则汇总为附条件承保。",
+        accept: "前序风险、资料缺口和人工复核条件均未触发。"
+      }[decision.decision] || "系统尚未生成整单结论。";
+      addStep("整单结论汇总", `系统建议：${decisionText}。${decisionReason} ${priorityText}`, content => {
+        const rules = decision.decisive_rule_ids || [];
+        const details = document.createElement("details");
+        details.className = "evidence-details";
+        details.appendChild(makeNode("summary", "", `查看整单命中规则解释（${rules.length} 项）`));
+        appendRuleExplanations(details, rules, decision);
+        content.appendChild(details);
+        if ((decision.reasons || []).length) content.appendChild(makeNode("p", "item-copy", `理由：${decision.reasons.join("；")}`));
+        if (incompleteTraces) content.appendChild(makeNode("p", "item-copy", `${incompleteTraces} 个自动处理步骤未完整执行，已纳入人工复核判断。`));
+        if (savedRecord?.final_decision) content.appendChild(makeNode("p", "item-copy", `人工核保结论：${reviewDecisionLabel(savedRecord)} · ${savedRecord.reviewer_name || "未记录复核人"}${savedRecord.review_comment ? `；依据：${savedRecord.review_comment}` : ""}`));
+      });
+      section.appendChild(flow);
+      parent.appendChild(section);
+    }
+
+    function renderMapReviewSection(parent, data) {
+      const uncertainMaterialIds = new Set(
+        (data.findings || [])
+          .filter(finding => finding.category === "image_quality" && ["detected", "uncertain"].includes(finding.detection_status))
+          .map(finding => finding.material_id)
+      );
+      (data.materials || []).forEach(material => {
+        if ((material.media_type || "").startsWith("image/") && (["poor", "unusable"].includes(material.quality_status) || (material.quality_issues || []).length)) {
+          uncertainMaterialIds.add(material.material_id);
+        }
+      });
+      const mapReviews = data.map_reviews || [];
+      if (!uncertainMaterialIds.size && !mapReviews.length) return;
+
+      const section = makeNode("section", "result-section");
+      section.appendChild(makeNode("h3", "", "地图影像辅助复核"));
+      section.appendChild(makeNode("p", "review-note", "高德卫星影像有更新时滞，不能视为实时现场画面；日期可能不可见。地点、影像和观察结果都需核保员确认。地图只作补充线索，不替代投保材料或自动改变核保结论。"));
+
+      mapReviews.forEach(review => {
+        const item = makeNode("div", "result-item");
+        const visibility = { visible: "可见", not_visible: "未见", unclear: "不确定" }[review.photovoltaic_visibility] || "不确定";
+        const matched = review.site_match_confirmed ? "已确认是项目位置" : "未确认是项目位置";
+        const addressSource = { project_info: "项目基本信息", material_ocr: "材料文字识别/人工核对", human_corrected: "人工更正" }[review.address_source] || review.address_source;
+        const providerName = review.provider === "amap_maps" ? "高德地图" : "百度地图（历史记录）";
+        const scoreText = review.geocoding_confidence === null || review.geocoding_confidence === undefined
+          ? "高德不提供匹配置信分，已人工确认候选"
+          : `地址理解度 ${review.address_comprehension ?? "未知"}/100 · 定位分 ${review.geocoding_confidence}/100`;
+        const mapCoordinates = review.longitude_gcj02 !== null && review.longitude_gcj02 !== undefined
+          ? `GCJ-02 ${review.longitude_gcj02}, ${review.latitude_gcj02}`
+          : `BD-09 ${review.longitude_bd09}, ${review.latitude_bd09}`;
+        item.appendChild(makeNode("p", "item-title", `地图人工复核 · ${review.reviewer_name} · ${matched}`));
+        item.appendChild(makeNode("p", "item-copy", `触发材料：${(review.triggering_material_ids || []).join("、") || "未记录"}`));
+        item.appendChild(makeNode("p", "item-copy", `地图服务：${providerName} · 地址来源：${addressSource} · ${review.query_address} → ${review.matched_address} · ${scoreText} · 影像日期 ${review.imagery_capture_date || "未知"}`));
+        item.appendChild(makeNode("p", "item-copy", `地图坐标 ${mapCoordinates} · 天气坐标 WGS84 近似 ${review.longitude_wgs84 ?? "未记录"}, ${review.latitude_wgs84 ?? "未记录"}`));
+        item.appendChild(makeNode("p", "item-copy", `光伏组件：${visibility} · 安装载体：${labels[review.observed_installation_type] || review.observed_installation_type} · 观察：${review.observations}`));
+        const mapLink = makeNode("a", "item-copy", `在${providerName}中查看复核位置`);
+        mapLink.href = review.provider_map_url;
+        mapLink.target = "_blank";
+        mapLink.rel = "noopener noreferrer";
+        item.appendChild(mapLink);
+        section.appendChild(item);
+      });
+
+      if (uncertainMaterialIds.size && authenticatedRole !== "viewer") {
+        const panel = makeNode("div", "review-form no-print");
+        panel.appendChild(makeNode("h3", "", "图片质量不足：使用高德地图辅助复核"));
+        panel.appendChild(makeNode("p", "item-copy", `触发材料：${Array.from(uncertainMaterialIds).join("、")}。系统只显示高德官方卫星图层和位置标记，不下载或截图地图影像，也不把影像传给视觉模型。`));
+
+        const prepareForm = document.createElement("form");
+        prepareForm.className = "review-form";
+        const address = document.createElement("input");
+        address.type = "text";
+        address.required = true;
+        address.maxLength = 128;
+        address.value = data.project?.site_address || "";
+        address.placeholder = "项目地址或材料中可读出的地址";
+        address.setAttribute("aria-label", "用于高德地图匹配的地址");
+        const addressSource = document.createElement("select");
+        addressSource.setAttribute("aria-label", "地址来源");
+        [["project_info", "项目基本信息"], ["material_ocr", "材料文字识别/人工核对"], ["human_corrected", "人工更正"]].forEach(([value, label]) => {
+          const option = makeNode("option", "", label);
+          option.value = value;
+          addressSource.appendChild(option);
+        });
+        const addressFields = makeNode("div", "review-fields");
+        addressFields.append(address, addressSource);
+        prepareForm.appendChild(addressFields);
+
+        const ocrAddresses = new Map();
+        (data.ocr_fields || [])
+          .filter(field => field.field_name === "site_address")
+          .forEach(field => {
+            const candidateAddress = String(field.normalized_value || field.raw_value || "").trim();
+            if (!candidateAddress) return;
+            const key = candidateAddress.replace(/\s+/g, "");
+            const previous = ocrAddresses.get(key);
+            const confidence = Number(field.confidence) || 0;
+            if (!previous || confidence > previous.confidence) {
+              ocrAddresses.set(key, { address: candidateAddress, confidence });
+            }
+          });
+        if (ocrAddresses.size) {
+          const ocrGroup = makeNode("div", "result-list");
+          ocrGroup.appendChild(makeNode("p", "item-copy", "从案件材料 OCR 提取到以下地址候选；选择后仍需核对原文："));
+          [...ocrAddresses.values()].sort((a, b) => b.confidence - a.confidence).forEach(candidate => {
+            const row = makeNode("div", "address-candidate");
+            row.appendChild(makeNode("p", "item-copy", `${candidate.address} · OCR 置信度 ${Math.round(candidate.confidence * 100)}%`));
+            const chooseOcr = makeNode("button", "secondary", "用作地图地址");
+            chooseOcr.type = "button";
+            chooseOcr.addEventListener("click", () => {
+              address.value = candidate.address;
+              addressSource.value = "material_ocr";
+            });
+            row.appendChild(chooseOcr);
+            ocrGroup.appendChild(row);
+          });
+          prepareForm.appendChild(ocrGroup);
+        }
+
+        const consentLabel = document.createElement("label");
+        consentLabel.className = "item-copy";
+        const consent = document.createElement("input");
+        consent.type = "checkbox";
+        consent.required = true;
+        consentLabel.append(consent, document.createTextNode(" 我同意将上述地址发送给高德开放平台进行地址解析，并查看相应地图影像。"));
+        prepareForm.appendChild(consentLabel);
+        const prepareButton = makeNode("button", "secondary", "查询地址并显示候选位置");
+        prepareButton.type = "submit";
+        prepareForm.appendChild(prepareButton);
+        const prepareMessage = makeNode("p", "item-copy", "");
+        prepareMessage.setAttribute("aria-live", "polite");
+        prepareForm.appendChild(prepareMessage);
+        panel.appendChild(prepareForm);
+
+        const mapResult = makeNode("div", "result-list");
+        panel.appendChild(mapResult);
+        prepareForm.addEventListener("submit", async event => {
+          event.preventDefault();
+          prepareButton.disabled = true;
+          prepareMessage.textContent = "正在向高德解析地址…";
+          mapResult.replaceChildren();
+          try {
+            const response = await fetch(`/api/v1/cases/${encodeURIComponent(data.case_id)}/map-review/prepare`, {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ acknowledged_address_transfer: consent.checked, address: address.value, address_source: addressSource.value })
+            });
+            const result = await response.json().catch(() => ({}));
+            if (!response.ok) {
+              const detail = result.detail;
+              throw new Error(typeof detail === "string" ? detail : detail?.message || `高德地址解析失败 (${response.status})`);
+            }
+            prepareMessage.textContent = result.notice;
+
+            const candidateList = makeNode("div", "result-list");
+            candidateList.appendChild(makeNode("p", "item-copy", "高德不返回地址可信度分数。请逐项核对地址级别和位置，选择确切项目点后再记录观察。"));
+            const mapMessage = makeNode("p", "item-copy", result.satellite_map?.configured
+              ? "内嵌卫星图层已配置；影像更新时间可能有延迟，请留意地图自身显示的日期。"
+              : "内嵌卫星图层尚未配置。可先打开高德地图定位链接并手动切换卫星图层；如需在工作台内显示，请另配 Web 端 JS API Key 和安全密钥。"
+            );
+            const mapContainer = makeNode("div", "amap-satellite-map");
+            mapContainer.hidden = true;
+            let selectedCandidate = null;
+            let selectedButton = null;
+            let sentinelContextRecord = null;
+            let sentinelOutput = null;
+
+            (result.candidates || []).forEach(candidate => {
+              const row = makeNode("div", "address-candidate");
+              const details = makeNode("div", "item-copy", `${candidate.formatted_address} · 级别 ${candidate.level} · 高德 GCJ-02 ${candidate.amap_longitude}, ${candidate.amap_latitude} · 天气查询 WGS84 近似 ${candidate.longitude}, ${candidate.latitude}`);
+              row.appendChild(details);
+              const actions = makeNode("div", "user-actions");
+              const viewButton = makeNode("button", "secondary", result.satellite_map?.configured ? "在卫星图层中查看" : "选择此位置");
+              viewButton.type = "button";
+              viewButton.addEventListener("click", async () => {
+                selectedCandidate = candidate;
+                sentinelContextRecord = null;
+                if (sentinelOutput) sentinelOutput.replaceChildren();
+                if (selectedButton) selectedButton.disabled = false;
+                selectedButton = viewButton;
+                viewButton.disabled = true;
+                reviewForm.hidden = false;
+                mapContainer.hidden = false;
+                if (result.satellite_map?.configured) {
+                  mapMessage.textContent = "正在加载高德卫星图层…";
+                  try {
+                    await showAmapSatellite(mapContainer, candidate, result.satellite_map);
+                    mapMessage.textContent = "已加载高德卫星图层和候选位置标记。请人工确认地点；卫星影像并非实时。";
+                  } catch (error) {
+                    mapMessage.textContent = "卫星图层加载失败。请检查 JS API Key、安全密钥、Key 的域名限制和网络连接，也可使用高德地图定位链接手动查看。";
+                  }
+                } else {
+                  mapMessage.textContent = "已选中候选位置。请打开该候选的高德地图链接并手动切换卫星图层，再记录观察。";
+                }
+              });
+              const mapLink = makeNode("a", "secondary", "高德地图定位链接");
+              mapLink.href = candidate.map_url;
+              mapLink.target = "_blank";
+              mapLink.rel = "noopener noreferrer";
+              mapLink.style.display = "inline-flex";
+              mapLink.style.alignItems = "center";
+              mapLink.style.textDecoration = "none";
+              actions.append(viewButton, mapLink);
+              row.appendChild(actions);
+              candidateList.appendChild(row);
+            });
+            mapResult.append(candidateList, mapMessage, mapContainer);
+
+            const reviewForm = document.createElement("form");
+            reviewForm.className = "review-form";
+            reviewForm.hidden = true;
+            reviewForm.appendChild(makeNode("h3", "", "Sentinel-2 \u5468\u8fb9\u73af\u5883\u5f71\u50cf\uff08\u7ea6 10 \u7c73\u50cf\u5143\uff09"));
+            reviewForm.appendChild(makeNode("p", "item-copy", "\u5f71\u50cf\u53ea\u53cd\u6620\u9ad8\u5fb7\u5730\u5740\u7ea7\u8fd1\u4f3c\u5750\u6807\u5468\u56f4\u7ea6 2 \u516c\u91cc\u8303\u56f4\u5185\u7684\u5730\u8868\u80cc\u666f\uff0c\u5b9a\u4f4d\u70b9\u4e0d\u4fdd\u8bc1\u843d\u5728\u9879\u76ee\u5730\u5757\u5185\u3002\u5b83\u4e0d\u80fd\u786e\u8ba4\u5177\u4f53\u5c4b\u9876\u3001\u7ec4\u4ef6\u3001\u5730\u5757\u8fb9\u754c\u3001\u517b\u6b96\u6d3b\u52a8\u6216\u73b0\u573a\u73b0\u72b6\uff1b\u4e91\u5f71\u548c\u5b63\u8282\u5dee\u5f02\u4f1a\u5f71\u54cd\u89c2\u5bdf\u3002"));
+            const sentinelConsentLabel = document.createElement("label");
+            sentinelConsentLabel.className = "item-copy";
+            const sentinelConsent = document.createElement("input");
+            sentinelConsent.type = "checkbox";
+            sentinelConsentLabel.append(sentinelConsent, document.createTextNode(" \u540c\u610f\u5c06\u5df2\u9009\u4f4d\u7f6e\u7684 WGS84 \u8fd1\u4f3c\u5750\u6807\u53d1\u9001\u7ed9 Copernicus \u67e5\u8be2 Sentinel-2 \u5f71\u50cf\u3002"));
+            reviewForm.appendChild(sentinelConsentLabel);
+            const sentinelVlmLabel = document.createElement("label");
+            sentinelVlmLabel.className = "item-copy";
+            const sentinelVlmConsent = document.createElement("input");
+            sentinelVlmConsent.type = "checkbox";
+            sentinelVlmLabel.append(sentinelVlmConsent, document.createTextNode(" \u5355\u72ec\u540c\u610f\u628a\u53d6\u56de\u7684 Sentinel-2 \u5f71\u50cf\u53d1\u9001\u7ed9\u5df2\u914d\u7f6e\u7684\u89c6\u89c9\u5927\u6a21\u578b\uff0c\u83b7\u53d6\u975e\u7ea6\u675f\u6027\u7684\u73af\u5883\u63cf\u8ff0\uff1b\u4e0d\u52fe\u9009\u65f6\u4ec5\u663e\u793a\u5f71\u50cf\uff0c\u4e0d\u8c03\u7528\u6a21\u578b\u3002"));
+            reviewForm.appendChild(sentinelVlmLabel);
+            const sentinelButton = makeNode("button", "secondary", "\u83b7\u53d6 Sentinel-2 \u5f71\u50cf");
+            sentinelButton.type = "button";
+            reviewForm.appendChild(sentinelButton);
+            sentinelOutput = makeNode("div", "result-list");
+            reviewForm.appendChild(sentinelOutput);
+            sentinelButton.addEventListener("click", async () => {
+              if (!selectedCandidate) return;
+              if (!consent.checked || !sentinelConsent.checked) {
+                sentinelOutput.replaceChildren(makeNode("p", "error", "\u8bf7\u5148\u540c\u610f\u5730\u5740\u89e3\u6790\u53ca\u5c06\u5750\u6807\u53d1\u9001\u7ed9 Copernicus\u3002"));
+                return;
+              }
+              sentinelButton.disabled = true;
+              sentinelOutput.replaceChildren(makeNode("p", "item-copy", "\u6b63\u5728\u67e5\u8be2 Copernicus Sentinel-2 \u5f71\u50cf\u2026"));
+              try {
+                const response = await fetch(`/api/v1/cases/${encodeURIComponent(data.case_id)}/map-review/sentinel-context`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    address: address.value,
+                    address_source: addressSource.value,
+                    selected_candidate: selectedCandidate,
+                    acknowledged_address_transfer: consent.checked,
+                    acknowledged_coordinate_transfer: sentinelConsent.checked,
+                    analyze_with_vlm: sentinelVlmConsent.checked,
+                    acknowledged_vlm_transfer: sentinelVlmConsent.checked
+                  })
+                });
+                const result = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(result.detail || `Sentinel-2 \u67e5\u8be2\u5931\u8d25 (${response.status})`);
+                sentinelContextRecord = result.metadata;
+                sentinelOutput.replaceChildren();
+                const image = document.createElement("img");
+                image.className = "sentinel-preview";
+                image.alt = "\u6240\u9009\u5730\u5740\u5468\u56f4 Sentinel-2 L2A \u771f\u5f69\u8272\u5f71\u50cf\uff0c\u5df2\u906e\u7f69\u4e91\u3001\u4e91\u5f71\u548c\u65e0\u6570\u636e\u50cf\u5143";
+                image.src = `data:${result.mime_type};base64,${result.image_base64}`;
+                sentinelOutput.appendChild(image);
+                const cloud = sentinelContextRecord.tile_cloud_cover_percent == null
+                  ? "\u672a\u77e5"
+                  : `${Number(sentinelContextRecord.tile_cloud_cover_percent).toFixed(1)}%\uff08\u573a\u666f/\u74e6\u7247\u4f30\u7b97\uff0c\u4e0d\u662f\u5730\u5757\u4e91\u91cf\uff09`;
+                sentinelOutput.appendChild(makeNode("p", "item-copy", `\u83b7\u53d6\u65e5\u671f ${sentinelContextRecord.acquired_at} \u00b7 \u50cf\u5143\u7ea6 ${sentinelContextRecord.pixel_size_m} \u7c73 \u00b7 \u5468\u8fb9\u534a\u5f84 ${sentinelContextRecord.radius_m} \u7c73 \u00b7 \u74e6\u7247\u4e91\u91cf ${cloud} \u00b7 \u900f\u660e\u906e\u7f69\u50cf\u5143 ${(sentinelContextRecord.masked_pixel_fraction * 100).toFixed(1)}%`));
+                sentinelOutput.appendChild(makeNode("p", "item-copy", `${sentinelContextRecord.attribution}\u3002${sentinelContextRecord.tile_cloud_cover_note}`));
+                if (sentinelContextRecord.quality_warning) sentinelOutput.appendChild(makeNode("p", "error", sentinelContextRecord.quality_warning));
+                if (sentinelContextRecord.analysis_warning) sentinelOutput.appendChild(makeNode("p", "error", sentinelContextRecord.analysis_warning));
+                if (sentinelContextRecord.analysis) {
+                  const analysis = makeNode("div", "review-note");
+                  analysis.appendChild(makeNode("strong", "", "\u89c6\u89c9\u6a21\u578b\u8f85\u52a9\u63cf\u8ff0\uff08\u9700\u4eba\u5de5\u6838\u9a8c\uff09"));
+                  analysis.appendChild(makeNode("p", "item-copy", sentinelContextRecord.analysis.summary));
+                  const categoryNames = { cultivated_fields: "\u8015\u4f5c\u5730", tree_cover: "\u6811\u6728\u8986\u76d6", water: "\u6c34\u4f53", built_up: "\u5efa\u6210\u533a", bare_or_mountain: "\u88f8\u5730\u6216\u5c71\u5730", other: "\u5176\u4ed6", uncertain: "\u4e0d\u786e\u5b9a" };
+                  (sentinelContextRecord.analysis.observations || []).forEach(item => {
+                    analysis.appendChild(makeNode("p", "item-copy", `${categoryNames[item.category] || item.category} \u00b7 ${item.presence} \u00b7 \u7f6e\u4fe1\u5ea6 ${(item.confidence * 100).toFixed(0)}%\uff1a${item.evidence}`));
+                  });
+                  sentinelOutput.appendChild(analysis);
+                }
+                sentinelOutput.appendChild(makeNode("p", "hint", "\u5f71\u50cf\u53ca\u6a21\u578b\u63cf\u8ff0\u4ec5\u4f5c\u4e3a\u4eba\u5de5\u590d\u6838\u4e0a\u4e0b\u6587\u3002Sentinel-2 \u50cf\u5143\u5c3a\u5ea6\u4e0d\u8db3\u4ee5\u8bc1\u660e\u9879\u76ee\u5730\u5757\u5185\u662f\u5426\u6709\u6811\u6728\u3001\u519c\u4f5c\u7269\u6216\u517b\u6b96\u8bbe\u65bd\uff0c\u4e5f\u4e0d\u5f97\u5355\u72ec\u4f5c\u4e3a\u62d2\u4fdd\u4f9d\u636e\u3002"));
+              } catch (error) {
+                sentinelContextRecord = null;
+                sentinelOutput.replaceChildren(makeNode("p", "error", error.message || "Sentinel-2 \u67e5\u8be2\u5931\u8d25"));
+              } finally {
+                sentinelButton.disabled = false;
+              }
+            });
+            reviewForm.appendChild(makeNode("p", "item-copy", "只记录地图上可直接观察到的情况。未确认地点、图像遮挡或拍摄日期未知时，选择“不确定”并说明。"));
+            const reviewer = document.createElement("input");
+            reviewer.type = "text";
+            reviewer.maxLength = 100;
+            reviewer.required = true;
+            reviewer.placeholder = "复核人姓名";
+            const visibility = document.createElement("select");
+            visibility.setAttribute("aria-label", "地图中光伏组件可见情况");
+            [["unclear", "不确定/无覆盖"], ["visible", "可见"], ["not_visible", "未见（不代表现场没有）"]].forEach(([value, label]) => {
+              const option = makeNode("option", "", label);
+              option.value = value;
+              visibility.appendChild(option);
+            });
+            const reviewerFields = makeNode("div", "review-fields");
+            reviewerFields.append(reviewer, visibility);
+            reviewForm.appendChild(reviewerFields);
+            const installation = document.createElement("select");
+            installation.setAttribute("aria-label", "观察到的安装载体");
+            [["unknown", "安装载体不确定"], ["color_steel_roof", "彩钢瓦屋顶"], ["flat_roof", "平屋顶"], ["tile_roof", "瓦片屋顶"], ["carport_roof", "车棚顶"]].forEach(([value, label]) => {
+              const option = makeNode("option", "", label);
+              option.value = value;
+              installation.appendChild(option);
+            });
+            reviewForm.appendChild(installation);
+            const captureDate = document.createElement("input");
+            captureDate.type = "text";
+            captureDate.maxLength = 7;
+            captureDate.pattern = "[0-9]{4}(-[0-9]{2})?";
+            captureDate.placeholder = "影像拍摄/更新日期（YYYY 或 YYYY-MM；未知则留空）";
+            captureDate.setAttribute("aria-label", "地图影像拍摄时间");
+            reviewForm.appendChild(captureDate);
+            const openedLabel = document.createElement("label");
+            openedLabel.className = "item-copy";
+            const opened = document.createElement("input");
+            opened.type = "checkbox";
+            opened.required = true;
+            openedLabel.append(opened, document.createTextNode(" 我已打开高德卫星图层或高德地图页面查看影像。"));
+            reviewForm.appendChild(openedLabel);
+            const matchLabel = document.createElement("label");
+            matchLabel.className = "item-copy";
+            const siteMatch = document.createElement("input");
+            siteMatch.type = "checkbox";
+            matchLabel.append(siteMatch, document.createTextNode(" 我已确认地图位置对应本投保项目；未勾选时，本条观察会标记为位置未确认。"));
+            reviewForm.appendChild(matchLabel);
+            const observations = document.createElement("textarea");
+            observations.required = true;
+            observations.maxLength = 2000;
+            observations.placeholder = "只记录地图画面中可直接观察到的情况，并说明视角、遮挡、日期或地点不确定性";
+            observations.setAttribute("aria-label", "地图影像人工观察");
+            reviewForm.appendChild(observations);
+            const saveButton = makeNode("button", "secondary", "保存地图辅助复核记录");
+            saveButton.type = "submit";
+            reviewForm.appendChild(saveButton);
+            const saveMessage = makeNode("p", "item-copy", "");
+            saveMessage.setAttribute("aria-live", "polite");
+            reviewForm.appendChild(saveMessage);
+            mapResult.appendChild(reviewForm);
+            reviewForm.addEventListener("submit", async submitEvent => {
+              submitEvent.preventDefault();
+              if (!selectedCandidate) {
+                saveMessage.textContent = "请先选择一个已核对的地址候选。";
+                return;
+              }
+              saveButton.disabled = true;
+              saveMessage.textContent = "正在保存复核留痕…";
+              try {
+                const response = await fetch(`/api/v1/cases/${encodeURIComponent(data.case_id)}/map-review`, {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({
+                    acknowledged_address_transfer: consent.checked,
+                    address: address.value,
+                    address_source: addressSource.value,
+                    selected_candidate: selectedCandidate,
+                    reviewer_name: reviewer.value,
+                    map_page_opened: opened.checked,
+                    site_match_confirmed: siteMatch.checked,
+                    photovoltaic_visibility: visibility.value,
+                    observed_installation_type: installation.value,
+                    imagery_capture_date: captureDate.value || null,
+                    observations: observations.value,
+                    sentinel_context: sentinelContextRecord
+                  })
+                });
+                const savedResult = await response.json().catch(() => ({}));
+                if (!response.ok) throw new Error(savedResult.detail || `保存失败 (${response.status})`);
+                if (savedResult.case) renderCase(savedResult.case, savedResult);
+              } catch (error) {
+                saveMessage.textContent = error.message || "地图复核记录保存失败";
+                saveButton.disabled = false;
+              }
+            });
+          } catch (error) {
+            prepareMessage.textContent = error.message || "高德地址匹配失败";
+            prepareButton.disabled = false;
+          }
+        });
+        section.appendChild(panel);
+      } else if (uncertainMaterialIds.size) {
+        section.appendChild(makeNode("p", "item-copy", `发现图片质量问题（材料 ${Array.from(uncertainMaterialIds).join("、")}）。地图辅助复核需要核保人员权限。`));
+      }
+      parent.appendChild(section);
+    }
+
+    function renderCase(data, savedRecord = null) {
+      resultRoot.className = "result-content";
+      resultRoot.replaceChildren();
+      const decision = data.decision || {};
+      const cardClass = decision.decision === "recommend_reject" ? "reject" :
+        decision.decision === "accept" ? "accept" : "review";
+      const card = makeNode("div", `decision-card ${cardClass}`);
+      const top = makeNode("div", "decision-top");
+      top.appendChild(makeNode("h3", "decision-title", decisionLabel(decision)));
+      top.appendChild(makeNode("span", "decision-tag", `案件 ${data.case_id || ""}`));
+      card.appendChild(top);
+      card.appendChild(makeNode("p", "decision-reason", (decision.reasons || []).join("；") || "没有额外判断说明。"));
+      if (savedRecord?.final_decision) {
+        const finalLabel = reviewDecisionLabel(savedRecord);
+        card.appendChild(makeNode("p", "decision-reason", `人工复核结论：${finalLabel} · ${savedRecord.reviewer_name || ""}`));
+        if (savedRecord.review_comment) card.appendChild(makeNode("p", "decision-reason", `复核意见：${savedRecord.review_comment}`));
+      }
+      if ((decision.missing_requirements || []).length) {
+        card.appendChild(makeNode("p", "decision-reason", `待补充：${decision.missing_requirements.join("；")}`));
+      }
+      resultRoot.appendChild(card);
+
+      const actions = makeNode("div", "result-actions");
+      const reportButton = makeNode("button", "secondary", "下载核保报告");
+      reportButton.type = "button";
+      reportButton.addEventListener("click", () => downloadReport(data));
+      actions.appendChild(reportButton);
+      const printButton = makeNode("button", "secondary no-print", "打印 / 保存为 PDF");
+      printButton.type = "button";
+      printButton.addEventListener("click", () => window.print());
+      actions.appendChild(printButton);
+      const historyButton = makeNode("button", "secondary no-print", "历史案件");
+      historyButton.type = "button";
+      historyButton.addEventListener("click", loadHistory);
+      actions.appendChild(historyButton);
+      resultRoot.appendChild(actions);
+      renderDecisionPath(resultRoot, data, savedRecord);
+      renderMapReviewSection(resultRoot, data);
+
+      const reviewForm = makeNode("form", "review-form no-print");
+      reviewForm.appendChild(makeNode("h3", "", "人工核保意见"));
+      const reviewStatus = savedRecord?.review_status === "completed" ? "已完成复核" : "待复核";
+      reviewForm.appendChild(makeNode("p", "item-copy", `状态：${reviewStatus}。提交意见会保留复核人、结论和时间。`));
+      const reviewFields = makeNode("div", "review-fields");
+      const reviewer = document.createElement("input");
+      reviewer.type = "text";
+      reviewer.maxLength = 100;
+      reviewer.required = true;
+      reviewer.placeholder = "核保人姓名";
+      reviewer.setAttribute("aria-label", "核保人姓名");
+      const finalDecision = document.createElement("select");
+      finalDecision.setAttribute("aria-label", "人工核保结论");
+      finalDecision.required = true;
+      const decisionPlaceholder = makeNode("option", "", "请选择最终结论");
+      decisionPlaceholder.value = "";
+      decisionPlaceholder.disabled = true;
+      decisionPlaceholder.selected = true;
+      finalDecision.appendChild(decisionPlaceholder);
+      ["accept", "recommend_reject", "conditional_accept", "request_more"].forEach(value => {
+        const option = makeNode("option", "", labels[value]);
+        option.value = value;
+        finalDecision.appendChild(option);
+      });
+      reviewFields.append(reviewer, finalDecision);
+      const priceLabel = makeNode("label", "review-pricing-label");
+      const priceInput = document.createElement("input");
+      priceInput.type = "checkbox";
+      priceInput.checked = false;
+      priceLabel.append(priceInput, document.createTextNode("建议加费（价格建议，具体幅度另行确认）"));
+      const syncPricing = () => {
+        const eligible = ["accept", "conditional_accept"].includes(finalDecision.value);
+        priceInput.disabled = !eligible;
+        if (!eligible) priceInput.checked = false;
+      };
+      finalDecision.addEventListener("change", syncPricing);
+      syncPricing();
+      reviewFields.appendChild(priceLabel);
+      reviewForm.appendChild(reviewFields);
+      const reviewComment = document.createElement("textarea");
+      reviewComment.required = true;
+      reviewComment.maxLength = 4000;
+      reviewComment.placeholder = "记录人工判断依据、条件或补充要求";
+      reviewComment.setAttribute("aria-label", "人工复核意见");
+      reviewForm.appendChild(reviewComment);
+      const submitReview = makeNode("button", "secondary", "保存人工复核");
+      submitReview.type = "submit";
+      reviewForm.appendChild(submitReview);
+      const reviewMessage = makeNode("p", "item-copy", "");
+      reviewMessage.setAttribute("aria-live", "polite");
+      reviewForm.appendChild(reviewMessage);
+      reviewForm.addEventListener("submit", async event => {
+        event.preventDefault();
+        submitReview.disabled = true;
+        reviewMessage.textContent = "正在保存…";
+        try {
+          const response = await fetch(`/api/v1/cases/${encodeURIComponent(data.case_id)}/review`, {
+            method: "POST", headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ reviewer_name: reviewer.value, final_decision: finalDecision.value,
+              pricing_recommendation: priceInput.checked ? "surcharge" : "not_proposed", comment: reviewComment.value })
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) throw new Error(result.detail || `保存失败 (${response.status})`);
+          renderCase(data, result);
+        } catch (error) {
+          reviewMessage.textContent = error.message || "复核意见保存失败";
+        } finally {
+          submitReview.disabled = false;
+        }
+      });
+      if (authenticatedRole !== "viewer") resultRoot.appendChild(reviewForm);
+
+      if (savedRecord?.review_history?.length) {
+        renderListSection(resultRoot, "人工复核记录", savedRecord.review_history, review => {
+          const item = makeNode("div", "result-item");
+          item.appendChild(makeNode("p", "item-title", `${review.reviewer_name} · ${reviewDecisionLabel(review)}`));
+          item.appendChild(makeNode("p", "item-copy", `${review.reviewed_at} · ${review.comment}`));
+          return item;
+        });
+      }
+
+      const packageInfo = data.package_assessment;
+      if (packageInfo) {
+        const packageRows = [
+          `图片 ${packageInfo.image_count} 张 · 全景 ${packageInfo.panorama_count} 张 · 备案证 ${packageInfo.has_filing_certificate ? "已提供" : "未提供"}`,
+          ...(packageInfo.missing_material_categories || []).map(value => `未覆盖类别（仅统计）：${labels[value] || value}`)
+        ];
+        renderListSection(resultRoot, "材料覆盖统计", packageRows, value => makeNode("div", "item-copy", value));
+      }
+
+      renderListSection(resultRoot, "设备清单结构化结果", data.equipment_inventory || [], item => {
+        const title = [item.item_category, item.item_name, item.normalized_component_model].filter(Boolean).join(" · ") || "设备清单行";
+        const detail = [item.manufacturer, item.specification, item.quantity ? `数量 ${item.quantity} ${item.unit || ""}` : "", item.total_price ? `合计 ${item.total_price}` : "", `${item.worksheet_name} 第 ${item.row_number} 行`].filter(Boolean).join(" · ");
+        const row = makeNode("div", "result-item");
+        row.appendChild(makeNode("p", "item-title", title));
+        row.appendChild(makeNode("p", "item-copy", detail));
+        return row;
+      });
+
+      renderListSection(resultRoot, "逐项材料审核", data.material_reviews || [], review => {
+        const item = makeNode("div", "result-item");
+        const material = (data.materials || []).find(candidate => candidate.material_id === review.material_id);
+        item.appendChild(makeNode("p", "item-title", `${material ? material.file_name : review.material_id} · ${review.action === "surcharge" ? "建议加费" : (labels[review.action] || review.action)}`));
+        item.appendChild(makeNode("p", "item-copy", (review.reasons || []).join("；") || "无补充说明"));
+        renderEvidenceDetails(item, review, data);
+        return item;
+      });
+
+      renderListSection(resultRoot, "OCR 字段提取", data.ocr_fields || [], field => {
+        const item = makeNode("div", "result-item");
+        const material = (data.materials || []).find(candidate => candidate.material_id === field.material_id);
+        const fieldName = ocrLabels[field.field_name] || field.field_name;
+        item.appendChild(makeNode("p", "item-title", `${fieldName} · ${ocrStatusLabels[field.value_status] || field.value_status} · 参考分数 ${Math.round((field.confidence || 0) * 100)}%（未校准）`));
+        item.appendChild(makeNode("p", "item-copy", `${material ? material.file_name : field.material_id} · 原文：${field.raw_value || "未识别"} · 规范值：${field.normalized_value || "未标准化"}`));
+        if (field.bbox) item.appendChild(makeNode("p", "item-copy", `图片位置 ${(field.bbox.x_min * 100).toFixed(0)}%, ${(field.bbox.y_min * 100).toFixed(0)}% - ${(field.bbox.x_max * 100).toFixed(0)}%, ${(field.bbox.y_max * 100).toFixed(0)}%`));
+        return item;
+      }, "没有提取到可显示的 OCR 字段");
+
+      renderListSection(resultRoot, "图片风险与检查", data.findings || [], finding => {
+        const item = makeNode("div", "result-item");
+        const material = (data.materials || []).find(candidate => candidate.material_id === finding.material_id);
+        const titleRow = makeNode("div", "item-top");
+        titleRow.appendChild(makeNode("p", "item-title", finding.label));
+        titleRow.appendChild(makeNode("span", "item-meta", `${labels[finding.detection_status] || finding.detection_status} · 参考分数 ${Math.round((finding.confidence || 0) * 100)}%（未校准）`));
+        item.appendChild(titleRow);
+        item.appendChild(makeNode("p", "item-copy", `${material ? material.file_name : finding.material_id} · ${finding.evidence_text || "无证据说明"}`));
+        if (finding.category?.endsWith("_environment")) item.appendChild(makeNode("p", "item-copy", `环境与现场关系：${labels[finding.environment_relation] || "现场关系不确定"}`));
+        if (finding.bbox) item.appendChild(makeNode("p", "item-copy", `图片位置 ${(finding.bbox.x_min * 100).toFixed(0)}%, ${(finding.bbox.y_min * 100).toFixed(0)}% - ${(finding.bbox.x_max * 100).toFixed(0)}%, ${(finding.bbox.y_max * 100).toFixed(0)}%`));
+        return item;
+      }, "没有返回可核验的图片检查结果");
+
+      const catastrophe = data.catastrophe_assessment;
+      if (catastrophe) {
+        const summary = [catastrophe.explanation, ...(catastrophe.factors || [])].join("；");
+        renderListSection(resultRoot, "自然灾害风险量化", [summary], value => makeNode("div", "item-copy", value));
+      }
+      renderListSection(resultRoot, "处理记录", data.processing_trace || [], trace => {
+        const item = makeNode("div", "result-item");
+        const stepLabels = { material_parse: "材料解析", ocr: "文字识别", equipment_inventory: "设备清单解析", vision: "图片风险识别", component_lookup: "组件参数查询", weather_lookup: "气象数据查询", catastrophe_assessment: "灾害风险评估", map_review: "地图辅助复核", rule_engine: "规则判断", decision: "综合决策" };
+        const statusLabels = { success: "成功", partial: "部分成功", failed: "失败" };
+        const stepPurposes = { material_parse: "检查文件可读性并提取基础信息", ocr: "提取可核对的文字字段", equipment_inventory: "解析设备型号和数量", vision: "识别图像风险观察，不直接决定整单结论", component_lookup: "查询组件抗灾参数来源", weather_lookup: "查询项目坐标对应的历史气象指标", catastrophe_assessment: "比较组件额定能力与历史灾害指标", map_review: "记录人工查看第三方地图页面后的补充观察，不改变自动结论", rule_engine: "将材料事实与程序规则逐项比对", decision: "按固定优先顺序汇总材料动作和评估结果" };
+        item.appendChild(makeNode("p", "item-title", `${stepLabels[trace.step] || trace.step} · ${statusLabels[trace.status] || trace.status}`));
+        item.appendChild(makeNode("p", "item-copy", `${stepPurposes[trace.step] || "处理步骤"}。${trace.provider}${trace.model ? ` / ${trace.model}` : ""} · ${trace.latency_ms} ms${trace.error_code ? ` · ${trace.error_code}` : ""}${trace.error_message ? ` · ${trace.error_message}` : ""}${["partial", "failed"].includes(trace.status) ? " · 未完整执行会触发人工复核" : ""}`));
+        return item;
+      });
+    }
+
+    async function downloadReport(data) {
+      try {
+        const response = await fetch(`/api/v1/cases/${encodeURIComponent(data.case_id)}/report`);
+        if (!response.ok) throw new Error(`报告生成失败 (${response.status})`);
+        const blob = await response.blob();
+        const link = document.createElement("a");
+        link.href = URL.createObjectURL(blob);
+        link.download = "underwriting-report.md";
+        link.click();
+        setTimeout(() => URL.revokeObjectURL(link.href), 1000);
+      } catch (error) {
+        showError(error.message || "报告下载失败");
+      }
+    }
+
+    async function loadHistory() {
+      try {
+        const response = await fetch("/api/v1/cases?limit=50");
+        const records = await response.json().catch(() => []);
+        if (!response.ok) throw new Error(records.detail || `历史记录读取失败 (${response.status})`);
+        resultRoot.className = "result-content";
+        resultRoot.replaceChildren();
+        renderListSection(resultRoot, "历史案件（最近 50 条）", records, record => {
+          const button = makeNode("button", "history-entry");
+          button.type = "button";
+          button.appendChild(makeNode("p", "item-title", `${record.case_id} · ${decisionLabel({decision: record.decision, pricing_recommendation: record.system_pricing_recommendation})}`));
+          button.appendChild(makeNode("p", "item-copy", `${record.stored_at} · 人工复核：${record.review_status === "completed" ? "已完成" : "待复核"}`));
+          button.addEventListener("click", async () => {
+            try {
+              const detailResponse = await fetch(`/api/v1/cases/${encodeURIComponent(record.case_id)}`);
+              const detail = await detailResponse.json().catch(() => ({}));
+              if (!detailResponse.ok) throw new Error(detail.detail || `案件读取失败 (${detailResponse.status})`);
+              renderCase(detail.case, detail);
+            } catch (error) {
+              showError(error.message || "案件读取失败");
+            }
+          });
+          return button;
+        }, "暂无历史案件");
+      } catch (error) {
+        showError(error.message || "历史记录读取失败");
+      }
+    }
+
+    function showError(message) {
+      resultRoot.className = "result-content";
+      resultRoot.replaceChildren(makeNode("div", "error", message));
+    }
+
+    async function analyze() {
+      const rows = [...fileList.querySelectorAll(".file-row")];
+      const selected = rows.map(row => ({ row, file: row.querySelector(".upload-file").files[0] })).filter(item => item.file);
+      if (!selected.length) return showError("请至少选择一份投保材料。");
+      if (selected.some(({ row }) => row.dataset.classificationStatus === "pending")) return showError("材料正在分类，请等分类完成后再运行核保。");
+      if (selected.some(({ row }) => !["done", "manual"].includes(row.dataset.classificationStatus))) return showError("有材料尚未完成分类，请手动确认类别后再运行核保。");
+      const project = readProject();
+      if (!project.project_type) return showError("请选择项目类型。");
+      if ((project.longitude === null) !== (project.latitude === null)) {
+        return showError("经度和纬度请同时填写；暂时不知道时两个都留空。");
+      }
+      if (project.longitude !== null && (project.longitude < -180 || project.longitude > 180)) {
+        return showError("经度须在 -180 到 180 之间，请填写项目实际位置。");
+      }
+      if (project.latitude !== null && (project.latitude < -90 || project.latitude > 90)) {
+        return showError("纬度须在 -90 到 90 之间，请填写项目实际位置。");
+      }
+      const caseId = document.getElementById("caseId").value.trim() || `PV-${new Date().toISOString().slice(0, 10).replaceAll("-", "")}-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+      document.getElementById("caseId").value = caseId;
+      const manifestMaterials = selected.map(({ row }) => ({
+        material_id: row.dataset.materialId,
+        category: row.querySelector(".category").value,
+        capture_view: row.querySelector(".capture-view").value
+      }));
+      const form = new FormData();
+      form.append("manifest", JSON.stringify({ case_id: caseId, project, materials: manifestMaterials }));
+      selected.forEach(({ file }) => form.append("files", file, file.name));
+      analyzeButton.disabled = true;
+      progressText.textContent = "正在检查材料并运行模型，请稍候…";
+      resultRoot.className = "result-empty";
+      resultRoot.replaceChildren(makeNode("div", "item-copy", "正在执行 OCR、图片风险识别、灾害查询和规则判断…"));
+      try {
+        const response = await fetch("/api/v1/underwriting/jobs", { method: "POST", body: form });
+        const started = await response.json().catch(() => ({}));
+        if (!response.ok) {
+          const detail = started.detail;
+          throw new Error(typeof detail === "string" ? detail : detail?.message || `核保请求失败 (${response.status})`);
+        }
+        let completedJob = null;
+        for (let attempt = 0; attempt < 900; attempt += 1) {
+          await new Promise(resolve => setTimeout(resolve, 1000));
+          const jobResponse = await fetch(`/api/v1/underwriting/jobs/${encodeURIComponent(started.job_id)}`);
+          const job = await jobResponse.json().catch(() => ({}));
+          if (!jobResponse.ok) throw new Error(job.detail || `任务状态读取失败 (${jobResponse.status})`);
+          progressText.textContent = `${job.current_step || "正在处理"} · ${job.progress_percent || 0}%`;
+          if (job.status === "completed") {
+            completedJob = job;
+            break;
+          }
+          if (job.status === "failed") {
+            throw new Error(`核保任务失败（${job.error_code || "未知错误"}）。请查看服务日志并重试。`);
+          }
+        }
+        if (!completedJob) throw new Error(`核保任务等待时间过长。可用任务编号 ${started.job_id} 查询状态。`);
+        const data = completedJob.result;
+        renderCase(data);
+        document.getElementById("caseId").value = "";
+        progressText.textContent = "分析完成";
+      } catch (error) {
+        showError(error.message || "核保失败，请检查服务配置后重试。");
+        progressText.textContent = "请求未完成";
+      } finally {
+        analyzeButton.disabled = false;
+      }
+    }
+
+    document.getElementById("addFile").addEventListener("click", addFileRow);
+    document.getElementById("historyButton").addEventListener("click", loadHistory);
+    extractAddressButton.addEventListener("click", extractAddressFromSelectedMaterials);
+    lookupAddressButton.addEventListener("click", lookupAddress);
+    siteAddressInput.addEventListener("input", () => {
+      if (selectedGeocodedAddress !== null && siteAddressInput.value !== selectedGeocodedAddress) {
+        longitudeInput.value = "";
+        latitudeInput.value = "";
+        selectedGeocodedAddress = null;
+        lookupAddressMessage.textContent = "地址已修改，请重新查询并选择位置。";
+      }
+      lookupAddressResults.hidden = true;
+    });
+    longitudeInput.addEventListener("input", () => { selectedGeocodedAddress = null; });
+    latitudeInput.addEventListener("input", () => { selectedGeocodedAddress = null; });
+    analyzeButton.addEventListener("click", analyze);
+    addFileRow();
+    initializeAuthentication();
+  </script>
+</body>
+</html>

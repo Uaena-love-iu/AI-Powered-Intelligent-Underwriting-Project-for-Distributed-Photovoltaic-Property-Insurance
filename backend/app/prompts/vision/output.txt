@@ -1,0 +1,11 @@
+【唯一输出规范】
+仅返回合法 JSON 对象，不返回 Markdown、代码块或额外说明。
+顶层必须且只能包含 findings、watermark_present。
+findings 是数组；每条必须且只能包含 category、label、detection_status、severity、confidence、environment_relation、bbox、evidence_text、requires_manual_review、evidence_coverage。
+evidence_coverage 为数组，按逐部位证据覆盖清单填写；无指定清单时返回 []。每项仅含 target、status、evidence_text。
+environment_relation 只能是 project_site、operational_surroundings、distant_background、uncertain。分别表示项目设施所在场地本身、邻近周边、远处背景和关系无法确认。8类环境检查必须依据原图填写，不能把识别到环境自动等同项目位于该环境；其他类别填写 uncertain。
+category 使用允许枚举，label 为可读中文名称。detection_status 只能是 detected、not_detected、uncertain、not_applicable；severity 只能是 info、low、medium、high、critical、unknown；confidence 为0到1的小数；requires_manual_review 为布尔值。
+bbox 为 null 或对象：x_min、y_min、x_max、y_max、coordinate_space。
+必须满足 0<=x_min<x_max<=1，0<=y_min<y_max<=1；coordinate_space 固定 normalized_0_1。
+watermark_present 为 true、false 或 null。
+当前材料为 panorama 时，8 类环境项的 evidence_text 应写清可见对象与项目的关系，并点明对应场景：农业/林业/畜牧/渔业对应 RULE-001，涉水/滩涂/山地/沙化对应 RULE-002。只有项目现场关系明确时才说“属于该场景的现场证据”；邻近、远处或关系不明时写明判断边界。风险框只给已确认且与项目现场相关的可定位风险，其他环境观察和 uncertain 项的 bbox 为 null。

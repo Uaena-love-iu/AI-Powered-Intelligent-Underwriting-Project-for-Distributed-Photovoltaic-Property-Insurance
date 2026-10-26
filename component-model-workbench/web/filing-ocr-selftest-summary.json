@@ -1,0 +1,392 @@
+{
+  "generated_at": "2026-10-12T21:35:47.516453",
+  "model": "qwen3.8-flash",
+  "document_count": 17,
+  "certificate_count": 16,
+  "supplementary_announcement_count": 1,
+  "unique_page_images": 31,
+  "batch_upload_count": 46,
+  "original_pdf_upload_count": 15,
+  "image_upload_count": 31,
+  "done": 46,
+  "false_positive_uploads": 0,
+  "returned_full_models": 0,
+  "positive_model_examples": 0,
+  "positive_model_accuracy": null,
+  "parameter_retrieval_evaluated": false,
+  "full_page_ocr_accuracy": null,
+  "known_body_omission_pdf_count": 2,
+  "ui_extra_uploads": 1,
+  "dataset_sha256": "0de8e4db080d7d305beca7a65afa8a8a659dea8d0ac2c7bbbc8421a6a2bcfa04",
+  "raw_results_sha256": "2de3d37f243bea068cfd964081cfd1e5fe5c1a6cb70aa17341b8aef1476c392d",
+  "code_hashes": {
+    "recognition.py": "49ce40690b522de6088dd95291361a0e13ceb2d47ea7bca4215c016fdd7f9d29",
+    "server.py": "72c069189b925f846c2e5ab5f71c44af0b61456709b3e7bb2ed3f70761160dd7",
+    "web/app.js": "1fc884839083e91ae1c945e4011436f177c5cffac42312af1e2eaa11dad22a33"
+  },
+  "packs": [
+    {
+      "id": "roof",
+      "sample_alias_count": 9,
+      "unique_input_count_within_pack": 28,
+      "false_positive_uploads": 0
+    },
+    {
+      "id": "filing",
+      "sample_alias_count": 10,
+      "unique_input_count_within_pack": 24,
+      "false_positive_uploads": 0
+    }
+  ],
+  "documents": [
+    {
+      "id": "D01",
+      "aliases": [
+        "roof:R01"
+      ],
+      "project_name": "易门大自然工程有限公司240kW分布式光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://www.ym.gov.cn/u/cms/ymxzfxxgk/202507/020727376oyh.pdf",
+      "original_sha256": "7c5c44d5e2a7ab651a98cd42de236bf94891cb33264b6a89b908500ab5b6dead",
+      "original_input_id": "I01",
+      "image_input_ids": [
+        "I02",
+        "I03"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D02",
+      "aliases": [
+        "roof:R02"
+      ],
+      "project_name": "昆明凝达新能源科技有限公司屋顶分布式光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://www.ym.gov.cn/u/cms/ymxzfxxgk/202404/25111646yqql.pdf",
+      "original_sha256": "15b29d4ee17aa05233a667866644837b42070d5da4f1947d0a727bf0d6561f65",
+      "original_input_id": "I04",
+      "image_input_ids": [
+        "I05",
+        "I06"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D03",
+      "aliases": [
+        "roof:R03"
+      ],
+      "project_name": "元江山泰新能源有限公司李德仰户用分布式光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://www.yjx.gov.cn/u/cms/yjxzfxxgk/202604/30172855qxio.pdf",
+      "original_sha256": "d94e5e0d8953faf0cc3f2a3b73d3d08eb11b88fd8f5884fa30ecd0ff8f503d92",
+      "original_input_id": "I07",
+      "image_input_ids": [
+        "I08",
+        "I09"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D04",
+      "aliases": [
+        "roof:R04"
+      ],
+      "project_name": "云南活发集团投资有限公司峨山活发智能机械厂屋顶分布式光伏项目",
+      "supplementary": false,
+      "source_url": "https://www.yxes.gov.cn/u/cms/esxzfxxgk/202501/100909348ogv.pdf",
+      "original_sha256": "2d214d0eb871aa67a0f5f7fb195fa6ca764f796c802cb764db3f7ca21f5356f0",
+      "original_input_id": "I10",
+      "image_input_ids": [
+        "I11",
+        "I12"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D05",
+      "aliases": [
+        "roof:C01"
+      ],
+      "project_name": "同心高速路口360kW充电桩项目",
+      "supplementary": false,
+      "source_url": "https://www.tongxin.gov.cn/zwgk/zfxxgkml/zdxm/zdxm_54945/202307/W020230704340294989602.pdf",
+      "original_sha256": "6e229a05752c77beb4a92b4f79c1f64a4d4f83ead5599adab6fe76bcbaac55a2",
+      "original_input_id": "I13",
+      "image_input_ids": [
+        "I14"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D06",
+      "aliases": [
+        "roof:C02"
+      ],
+      "project_name": "宁夏水投中源水务公司同心分公司场站分布式光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://www.tongxin.gov.cn/zwgk/zfxxgkml/zdxm/zdxm_54945/202508/W020250815357678607289.pdf",
+      "original_sha256": "22a0ce52f6ae352045ffd3374988699228968875f86409b483e4d781c69e8337",
+      "original_input_id": "I15",
+      "image_input_ids": [
+        "I16"
+      ],
+      "no_model_output": true,
+      "issues": [
+        "CHAR",
+        "NOTES"
+      ]
+    },
+    {
+      "id": "D07",
+      "aliases": [
+        "roof:R05",
+        "filing:F05"
+      ],
+      "project_name": "易门工业园区广东产业园C区分布式光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://www.ym.gov.cn/u/cms/ymxzfxxgk/202209/191007422810.pdf",
+      "original_sha256": "cbcedfeb0ce9a142d13ab19400bc42e9c8c247de9501e92df609770d765d816a",
+      "original_input_id": "I17",
+      "image_input_ids": [
+        "I18",
+        "I19"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D08",
+      "aliases": [
+        "roof:R06",
+        "filing:F03"
+      ],
+      "project_name": "元江山泰新能源有限公司白阿宝户用分布式光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://www.yjx.gov.cn/u/cms/yjxzfxxgk/202604/30172744lsoh.pdf",
+      "original_sha256": "b34e8b7810cb5bc90fb28e7e9c54d25870d18db31709bf221b73048becad1d10",
+      "original_input_id": "I20",
+      "image_input_ids": [
+        "I21",
+        "I22"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D09",
+      "aliases": [
+        "roof:A01"
+      ],
+      "project_name": "中山市横栏镇2025年9月备案项目信息公告（5页）",
+      "supplementary": true,
+      "source_url": "https://www.zs.gov.cn/attachment/0/550/550076/2556730.pdf",
+      "original_sha256": "2d740e9642947eaa78d81574fc2cd7a416d7dc50d3245ac1848462b1ceb39ffb",
+      "original_input_id": "I23",
+      "image_input_ids": [
+        "I24",
+        "I25",
+        "I26",
+        "I27",
+        "I28"
+      ],
+      "no_model_output": true,
+      "issues": [
+        "TABLE"
+      ]
+    },
+    {
+      "id": "D10",
+      "aliases": [
+        "filing:F04"
+      ],
+      "project_name": "易门县小街乡人民政府分布式光伏发电开发建设项目",
+      "supplementary": false,
+      "source_url": "https://www.ym.gov.cn/u/cms/ymxzfxxgk/202407/010845058vg9.pdf",
+      "original_sha256": "8df8fc03a45b26b652c69af60a97b6bdeb7835c1d2f6e598bf1f2721b6dcf57f",
+      "original_input_id": "I29",
+      "image_input_ids": [
+        "I30",
+        "I31"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D11",
+      "aliases": [
+        "filing:F06"
+      ],
+      "project_name": "十堰堰疆新能源有限公司大冶分公司光伏建设项目",
+      "supplementary": false,
+      "source_url": "https://fgw.huangshi.gov.cn/xwzx/xzsp/202408/W020240813622843253762_ORIGIN.jpg",
+      "original_sha256": "7ec73a5bed1b2ad66e6f6b61a215ba2bacf62af46c0cc7893230aea576050795",
+      "original_input_id": "I32",
+      "image_input_ids": [
+        "I32"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D12",
+      "aliases": [
+        "filing:F07"
+      ],
+      "project_name": "中国石化黄石石油分公司光伏建设项目",
+      "supplementary": false,
+      "source_url": "https://fgw.huangshi.gov.cn/xwzx/xzsp/202311/W020231115590696951227.jpg",
+      "original_sha256": "d421a994736d30955af42e2c9597cb9cb569ee914a995bb161a4a4b3dd6f34fc",
+      "original_input_id": "I33",
+      "image_input_ids": [
+        "I33"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D13",
+      "aliases": [
+        "filing:F08"
+      ],
+      "project_name": "象山县涂茨镇黄沙塘12MW渔光互补光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://zjjcmspublic.oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/jcms_files/jcms1/web3507/site/attach/0/f3be40bf306e45079c8de5a9d1aa6f57.pdf",
+      "original_sha256": "cd20cc592b034a5304a660b537e4099c2dcccb12d9a5354bf82cc774cc738f51",
+      "original_input_id": "I34",
+      "image_input_ids": [
+        "I35",
+        "I36"
+      ],
+      "no_model_output": true,
+      "issues": [
+        "PDF-BODY"
+      ]
+    },
+    {
+      "id": "D14",
+      "aliases": [
+        "filing:F09"
+      ],
+      "project_name": "大唐浙江富阳万市扩容37MW光伏复合发电项目（一期）",
+      "supplementary": false,
+      "source_url": "https://zjjcmspublic.oss-cn-hangzhou-zwynet-d01-a.internet.cloud.zj.gov.cn/jcms_files/jcms1/web3249/site/attach/0/c0124372cd714c61bab5042c5c47175d.pdf",
+      "original_sha256": "bad79e8552bc26e17acee375d5dbc1fb367c361f02d9fe03827f758e20f70fe0",
+      "original_input_id": "I37",
+      "image_input_ids": [
+        "I38",
+        "I39"
+      ],
+      "no_model_output": true,
+      "issues": [
+        "NUMBER"
+      ]
+    },
+    {
+      "id": "D15",
+      "aliases": [
+        "filing:F10"
+      ],
+      "project_name": "陆丰市明大星都经济开发区110MW光伏电站项目",
+      "supplementary": false,
+      "source_url": "https://www.shanwei.gov.cn/hbj/upfiles/file/20170615/6363312170295312509790553.pdf",
+      "original_sha256": "41782c657fe390ecaef87c931fd0c52e75790a46123cad16d1e6bfe5fbf20d3c",
+      "original_input_id": "I40",
+      "image_input_ids": [
+        "I41"
+      ],
+      "no_model_output": true,
+      "issues": [
+        "PDF-BODY"
+      ]
+    },
+    {
+      "id": "D16",
+      "aliases": [
+        "filing:F11"
+      ],
+      "project_name": "阳城东冶、白桑100MW光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://xxgk.yczf.gov.cn/xzf/yczsj/fdzdgknr/spjzdxmjsly/pzjgxx/202212/P020221209631420134276.pdf",
+      "original_sha256": "63b53b6aa6cbb7b1ca817a7dfed0ccf718f4e99dd3728dc1ad5327e2c2709f31",
+      "original_input_id": "I42",
+      "image_input_ids": [
+        "I43",
+        "I44"
+      ],
+      "no_model_output": true,
+      "issues": []
+    },
+    {
+      "id": "D17",
+      "aliases": [
+        "filing:F12"
+      ],
+      "project_name": "大唐山西阳城润城100MW光伏发电项目",
+      "supplementary": false,
+      "source_url": "https://xxgk.yczf.gov.cn/xzf/yczsj/fdzdgknr/spjzdxmjsly/pzjgxx/202306/P020230613537550759859.pdf",
+      "original_sha256": "7f8597408f960fb9b8900c67b5b2baf43a616256edb93f56fd2e1508a35e63c5",
+      "original_input_id": "I45",
+      "image_input_ids": [
+        "I46",
+        "I44"
+      ],
+      "no_model_output": true,
+      "issues": []
+    }
+  ],
+  "issues": [
+    {
+      "id": "PDF-BODY",
+      "priority": "优先修复",
+      "aliases": [
+        "filing:F08",
+        "filing:F10"
+      ],
+      "detail": "两份PDF含少量标题/页码文字层和大幅扫描正文。工作台按排序后文字长度≥40直接读取文字层，F08第1页只返回附件标题，F10只返回附件标题及81页码，漏掉扫描正文。相同页面PNG上传能读出主体、代码、容量。",
+      "recommendation": "检测文字层覆盖率、图像面积与正文有效字符，而非只数文字长度；必要时渲染页面做视觉OCR。"
+    },
+    {
+      "id": "NUMBER",
+      "priority": "优先修复",
+      "aliases": [
+        "filing:F09"
+      ],
+      "detail": "PNG第1页把项目名称中的37MW改成37.2MW，又把建设内容中的规划容量29.6MW改成37.2MW。主项目名称确实另写37.2MW，但不能据此改写其他字段。同一原件PDF这次正确保留了37、37.2、29.6与40MWp，表明输入分辨率/模型输出存在差异。",
+      "recommendation": "逐字段保留原文及位置，数字冲突单列复核；对关键数字做局部二次识别，禁止用其他字段覆盖原文。"
+    },
+    {
+      "id": "CHAR",
+      "priority": "保留原字",
+      "aliases": [
+        "roof:C02"
+      ],
+      "detail": "原件建设内容印作“光伏车相”，PDF和PNG两次OCR均输出“光伏车棚”。语义上可能指车棚，但逐字OCR不应静默改字。1.77MW交流侧、2.11191MWp直流侧本次转写均保留。",
+      "recommendation": "原文与语义归一化分栏，“疑似车棚”作为待核对解释，保留“车相”原字。"
+    },
+    {
+      "id": "TABLE",
+      "priority": "完善表格处理",
+      "aliases": [
+        "roof:A01"
+      ],
+      "detail": "5页公告不是单份备案证。PDF文字层按空间排序后存在跨列穿插，第3页两条标注项目的代码及一条项目名无法作为连续字符串定位；页面图片第3页保留这两条标注信息，但第4页仅转写最后一行建设内容，前面的项目行遗漏。",
+      "recommendation": "对密集表格分行/分区读取并检查覆盖；不要把“找组件”的任务提示当成完整公告OCR。"
+    },
+    {
+      "id": "NOTES",
+      "priority": "修正返回格式兼容",
+      "aliases": [
+        "roof:C02"
+      ],
+      "detail": "PDF识别说明出现逐字拆开的notes数组（“文”“档”“中”…）。原因是模型返回字符串时被列表extend逐字符展开。图片同案例返回列表时没有这一问题。",
+      "recommendation": "统一校验并归一化JSON字段类型，字符串notes转换为单项列表。"
+    }
+  ],
+  "method": "先目视审核并冻结空型号真值；实际HTTP上传、轮询任务完成，SHA256去重。31张页面图片与15份PDF是同一批案例的不同输入，不当成46个独立项目。另一次浏览器上传C01验证旧型号及厂商字段清空。业务识别代码本次未修改。"
+}

@@ -1,0 +1,114 @@
+{
+  "counts": {
+    "source_images": 45,
+    "source_rows": 666,
+    "unique_records": 652,
+    "duplicate_rows_merged": 14,
+    "rows_per_image": {
+      "1": 10,
+      "2": 14,
+      "3": 14,
+      "4": 14,
+      "5": 13,
+      "6": 14,
+      "7": 14,
+      "8": 14,
+      "9": 14,
+      "10": 14,
+      "11": 14,
+      "12": 14,
+      "13": 14,
+      "14": 14,
+      "15": 14,
+      "16": 14,
+      "17": 14,
+      "18": 14,
+      "19": 14,
+      "20": 14,
+      "21": 14,
+      "22": 14,
+      "23": 14,
+      "24": 14,
+      "25": 14,
+      "26": 14,
+      "27": 14,
+      "28": 14,
+      "29": 14,
+      "30": 14,
+      "31": 14,
+      "32": 15,
+      "33": 14,
+      "34": 14,
+      "35": 17,
+      "36": 25,
+      "37": 14,
+      "38": 13,
+      "39": 14,
+      "40": 21,
+      "41": 21,
+      "42": 26,
+      "43": 16,
+      "44": 24,
+      "45": 3
+    }
+  },
+  "flagged_records": [
+    {
+      "id": "E5-07-03",
+      "name": "阿腾席连",
+      "flags": [
+        "source_name_requires_confirmation"
+      ]
+    },
+    {
+      "id": "E5-23-03",
+      "name": "吉诃德",
+      "flags": [
+        "source_name_requires_confirmation"
+      ]
+    },
+    {
+      "id": "E5-25-10",
+      "name": "海源",
+      "flags": [
+        "source_name_requires_confirmation"
+      ]
+    },
+    {
+      "id": "E5-28-01",
+      "name": "玛沁县仁嵌姆",
+      "flags": [
+        "source_name_requires_confirmation"
+      ]
+    },
+    {
+      "id": "E5-37-05",
+      "name": "贺山",
+      "flags": [
+        "source_name_requires_confirmation"
+      ]
+    },
+    {
+      "id": "E5-37-10",
+      "name": "龙舟",
+      "flags": [
+        "source_name_requires_confirmation"
+      ]
+    },
+    {
+      "id": "E5-43-02",
+      "name": "屏边",
+      "flags": [
+        "wind_non_monotonic_source_values"
+      ]
+    }
+  ],
+  "missing_10_year": {
+    "wind": 77,
+    "snow": 123
+  },
+  "transcription_occurrences_checked": 666,
+  "canonical_records_checked": 652,
+  "source_image_paths_verified": true,
+  "automated_tests_passed": 45
+}

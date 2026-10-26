@@ -1,0 +1,344 @@
+{
+  "model_version": "city-wind-snow-3.1.0",
+  "project_id": "DEMO-BEIJING",
+  "created_at": "2026-10-14T10:19:42.872127+00:00",
+  "assessment_type": "10年重现期风雪量化初筛",
+  "mode": "real",
+  "location_match": {
+    "status": "MATCHED",
+    "record_id": "E5-01-01",
+    "province": "北京",
+    "city_source": "北京市",
+    "match_method": "地址行政地名前缀匹配",
+    "return_period_years": 10,
+    "unit": "kN/m²",
+    "wind_pressure_kn_m2": 0.3,
+    "snow_pressure_kn_m2": 0.25,
+    "dataset_id": "GB50009-2012-E5-cabr-20261013",
+    "source_url": "http://gf.cabr-fire.com/m/article-13925.htm",
+    "sources": [
+      {
+        "image_number": 1,
+        "row_in_image": 1,
+        "image_file": "sources/original_images/01.jpg",
+        "image_url": "http://gf.cabr-fire.com/Web/uploads/allimg/161227/15-16122GFQ4362.jpg"
+      }
+    ],
+    "quality_flags": [],
+    "warnings": [
+      "使用所选城市/站点代表值；项目地点与表列站点的适用性需业务确认。"
+    ]
+  },
+  "manufacturer": {
+    "model": "TEST-5400",
+    "source": "离线测试夹具，不是真实厂家"
+  },
+  "component_capacities": {
+    "wind": {
+      "value_pa": 5400.0,
+      "field": "front_static_load_pa",
+      "source": "https://example.com/fixture-spec.pdf；Synthetic front load 5400 Pa",
+      "direction": "front",
+      "reason": "",
+      "evidence": [
+        {
+          "status": "found",
+          "value": 5400,
+          "source_url": "https://example.com/fixture-spec.pdf",
+          "quote": "Synthetic front load 5400 Pa",
+          "load_direction": "front"
+        }
+      ],
+      "basis_label": "正面标称机械载荷映射值"
+    },
+    "snow": {
+      "value_pa": 6000.0,
+      "field": "snow_load_pa",
+      "source": "https://example.com/fixture-spec.pdf；Synthetic snow load 6000 Pa",
+      "direction": "front",
+      "reason": "",
+      "evidence": [
+        {
+          "status": "found",
+          "value": 6000,
+          "source_url": "https://example.com/fixture-spec.pdf",
+          "quote": "Synthetic snow load 6000 Pa",
+          "load_direction": "front"
+        }
+      ],
+      "basis_label": "厂家雪荷载参数"
+    }
+  },
+  "component_profile": {
+    "component_model": "TEST-5400",
+    "model_aliases": [],
+    "manufacturer": null,
+    "rated_power_w": null,
+    "open_circuit_voltage_v": null,
+    "maximum_power_voltage_v": null,
+    "short_circuit_current_a": null,
+    "maximum_power_current_a": null,
+    "module_efficiency_percent": null,
+    "length_mm": null,
+    "width_mm": null,
+    "thickness_mm": null,
+    "weight_kg": null,
+    "cell_count": null,
+    "maximum_system_voltage_v": null,
+    "maximum_series_fuse_a": null,
+    "nominal_operating_cell_temperature_c": null,
+    "nominal_module_operating_temperature_c": null,
+    "power_temperature_coefficient_percent_per_c": null,
+    "voltage_temperature_coefficient_percent_per_c": null,
+    "current_temperature_coefficient_percent_per_c": null,
+    "bifaciality_ratio": null,
+    "power_tolerance_percent": null,
+    "power_tolerance_w": null,
+    "is_bifacial": null,
+    "cell_technology": null,
+    "series_name": null,
+    "available_markets": [],
+    "datasheet_urls": [],
+    "source_updated_at": null,
+    "missing_parameters": {},
+    "parameter_evidence": {
+      "front_static_load_pa": [
+        {
+          "status": "found",
+          "value": 5400,
+          "source_url": "https://example.com/fixture-spec.pdf",
+          "quote": "Synthetic front load 5400 Pa",
+          "load_direction": "front"
+        }
+      ],
+      "snow_load_pa": [
+        {
+          "status": "found",
+          "value": 6000,
+          "source_url": "https://example.com/fixture-spec.pdf",
+          "quote": "Synthetic snow load 6000 Pa",
+          "load_direction": "front"
+        }
+      ]
+    },
+    "model_match_status": "exact",
+    "workbench_run_id": null,
+    "workbench_result": {},
+    "hail_resistance_mm": null,
+    "wind_load_pa": 2400.0,
+    "snow_load_pa": 6000.0,
+    "front_static_load_pa": 5400.0,
+    "back_static_load_pa": 2400.0,
+    "hail_impact_velocity_m_s": null,
+    "market_version": null,
+    "model_derivation_method": null,
+    "source_document_type": null,
+    "source_note": null,
+    "source_url": "https://example.com/fixture-spec.pdf",
+    "source_name": "离线测试夹具，不是真实厂家",
+    "retrieved_at": "2026-10-14T00:00:00Z",
+    "match_confidence": 1.0,
+    "parameter_sources": {},
+    "lookup_notes": []
+  },
+  "assumptions": [
+    "地址匹配所给城市表，风压和雪压均固定采用10年重现期值，kN/m²乘1000转为Pa",
+    "默认固定支架",
+    "默认组件正面均匀加载，统一采用迎风mu_sw",
+    "不采用额外地形修正和阵列遮挡折减",
+    "不区分厂家设计或试验荷载，不作1.5倍转换",
+    "均匀积雪系数1.0，不给予倾角减载",
+    "风雪分别比较，最大指数仅用于复核排序"
+  ],
+  "limitations": [
+    "对比比例不是出险概率、安全裕度或承载验算结论",
+    "基本雪压对应水平投影面；本模型以其数值作正面标称值初筛，不代表精确法向雪压力",
+    "未评价背面风吸力、支架、连接件、屋顶承载及风雪组合",
+    "厂家参数性质未校核，低于标称值不能证明安全",
+    "高度、倾角来自AI估计；表外高度不插值或外推",
+    "不能根据本结果自动承保、加费或拒保",
+    "10年重现期城市代表值不等于项目实测值，也不等于25年设计口径；本结果为约定场景初筛，非完整规范验算。",
+    "城市未匹配、同名歧义和原表缺值均须补充确认；不得取0或擅用邻近城市。",
+    "不覆盖局部堆雪、积雪滑移。",
+    "所示最大值是10年重现期场景及参数区间内的不利估计，不是未来绝对最大值。",
+    "等级为可配置初筛分档，沿用现有0.75/1.25能力比阈值，待业务确认，不是出险概率。",
+    "本轮仅评价正面风雪，不纳入冰雹。"
+  ],
+  "thresholds": {
+    "adequate_capacity_demand_ratio": 1.25,
+    "critical_capacity_demand_ratio": 0.75,
+    "business_confirmed": false
+  },
+  "actions": [
+    "复核组件完整型号、参数来源及现场安装条件；本轮等级不能单独决定承保或加费"
+  ],
+  "can_auto_approve": false,
+  "input_snapshot": {
+    "model": "TEST-5400",
+    "address": "北京市朝阳区",
+    "screening_input": {
+      "ai_geometry": {
+        "height_m": {
+          "min": 10,
+          "max": 10,
+          "source": "测试输入，非真实测量"
+        },
+        "tilt_deg": {
+          "min": 15,
+          "max": 15,
+          "source": "测试输入，非真实测量"
+        },
+        "terrain": {
+          "candidates": [
+            "B"
+          ],
+          "source": "测试类别，非真实站点分类"
+        }
+      },
+      "snow_conditions": {
+        "special_accumulation_flag": false
+      }
+    }
+  },
+  "integration_issue": null,
+  "wind": {
+    "status": "NOT_EXCEEDED",
+    "label": "本轮未发现数值超标",
+    "load_pa": {
+      "min": 637.5,
+      "max": 637.5
+    },
+    "comparison_ratio": {
+      "min": 0.11805555555555555,
+      "max": 0.11805555555555555
+    },
+    "comparison_percent": {
+      "min": 11.805555555555555,
+      "max": 11.805555555555555
+    },
+    "trace": {
+      "formula": "1000*w0*beta_gz*mu_z*mu_sw",
+      "return_period_years": 10,
+      "q_pa": 300.0,
+      "location_match": {
+        "status": "MATCHED",
+        "record_id": "E5-01-01",
+        "province": "北京",
+        "city_source": "北京市",
+        "match_method": "地址行政地名前缀匹配",
+        "return_period_years": 10,
+        "unit": "kN/m²",
+        "wind_pressure_kn_m2": 0.3,
+        "snow_pressure_kn_m2": 0.25,
+        "dataset_id": "GB50009-2012-E5-cabr-20261013",
+        "source_url": "http://gf.cabr-fire.com/m/article-13925.htm",
+        "sources": [
+          {
+            "image_number": 1,
+            "row_in_image": 1,
+            "image_file": "sources/original_images/01.jpg",
+            "image_url": "http://gf.cabr-fire.com/Web/uploads/allimg/161227/15-16122GFQ4362.jpg"
+          }
+        ],
+        "quality_flags": [],
+        "warnings": [
+          "使用所选城市/站点代表值；项目地点与表列站点的适用性需业务确认。"
+        ]
+      },
+      "coefficient_source": "5.1.3表1 / 5.1.4表2 / 5.1.6.3表3",
+      "evaluated_combinations": [
+        {
+          "terrain": "B",
+          "height_m": 10,
+          "tilt_deg": 15,
+          "beta_gz": 1.7,
+          "mu_z": 1.0,
+          "mu_sw": 1.25,
+          "load_pa": 637.5
+        },
+        {
+          "terrain": "B",
+          "height_m": 10,
+          "tilt_deg": 15,
+          "beta_gz": 1.7,
+          "mu_z": 1.0,
+          "mu_sw": 1.25,
+          "load_pa": 637.5
+        }
+      ]
+    },
+    "capacity_pa": 5400.0,
+    "capacity_field": "front_static_load_pa",
+    "risk_level": "low",
+    "risk_label": "低",
+    "risk_range": [
+      "low",
+      "low"
+    ],
+    "uncertainty_crosses_grade": false
+  },
+  "snow": {
+    "status": "NOT_EXCEEDED",
+    "label": "本轮未发现数值超标",
+    "load_pa": {
+      "min": 250.0,
+      "max": 250.0
+    },
+    "comparison_ratio": {
+      "min": 0.041666666666666664,
+      "max": 0.041666666666666664
+    },
+    "comparison_percent": {
+      "min": 4.166666666666666,
+      "max": 4.166666666666666
+    },
+    "trace": {
+      "formula": "1000*S0",
+      "mu_r": 1.0,
+      "return_period_years": 10,
+      "source": "http://gf.cabr-fire.com/m/article-13925.htm",
+      "location_match": {
+        "status": "MATCHED",
+        "record_id": "E5-01-01",
+        "province": "北京",
+        "city_source": "北京市",
+        "match_method": "地址行政地名前缀匹配",
+        "return_period_years": 10,
+        "unit": "kN/m²",
+        "wind_pressure_kn_m2": 0.3,
+        "snow_pressure_kn_m2": 0.25,
+        "dataset_id": "GB50009-2012-E5-cabr-20261013",
+        "source_url": "http://gf.cabr-fire.com/m/article-13925.htm",
+        "sources": [
+          {
+            "image_number": 1,
+            "row_in_image": 1,
+            "image_file": "sources/original_images/01.jpg",
+            "image_url": "http://gf.cabr-fire.com/Web/uploads/allimg/161227/15-16122GFQ4362.jpg"
+          }
+        ],
+        "quality_flags": [],
+        "warnings": [
+          "使用所选城市/站点代表值；项目地点与表列站点的适用性需业务确认。"
+        ]
+      },
+      "basis": "水平投影面雪荷载数值作为正面标称值初筛输入；不作倾角减载"
+    },
+    "capacity_pa": 6000.0,
+    "capacity_field": "snow_load_pa",
+    "risk_level": "low",
+    "risk_label": "低",
+    "risk_range": [
+      "low",
+      "low"
+    ],
+    "uncertainty_crosses_grade": false
+  },
+  "data_complete": true,
+  "risk_level": "low",
+  "known_max_risk_level": "low",
+  "risk_label": "低",
+  "status": "NOT_EXCEEDED",
+  "label": "风雪初筛等级：低",
+  "requires_manual_review": true
+}

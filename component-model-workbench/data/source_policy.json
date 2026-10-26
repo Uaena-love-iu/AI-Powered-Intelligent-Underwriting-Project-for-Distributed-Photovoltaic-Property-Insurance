@@ -1,0 +1,32 @@
+{
+  "version": "strict-org-sources-v2",
+  "manufacturer_official": {
+    "JA Solar": ["jasolar.com"], "LONGi": ["longi.com"],
+    "JinkoSolar": ["jinkosolar.com"], "Trina Solar": ["trinasolar.com"],
+    "Canadian Solar": ["csisolar.com", "canadiansolar.com"],
+    "Astronergy": ["astronergy.com", "astronergy.com.cn"],
+    "HT-SAAE": ["ht-saae.com", "htsolar.com.tr"], "Risen": ["risenenergy.com"]
+  },
+  "institutions": [
+    {"publisher": "DNV", "domains": ["dnv.com"], "kind": "technical_institution"},
+    {"publisher": "TÜV Rheinland", "domains": ["tuv.com"], "kind": "technical_institution"},
+    {"publisher": "TÜV SÜD", "domains": ["tuvsud.com"], "kind": "technical_institution"},
+    {"publisher": "Fraunhofer ISE", "domains": ["ise.fraunhofer.de"], "kind": "research_institution"},
+    {"publisher": "IEA", "domains": ["iea.org"], "kind": "international_organization"},
+    {"publisher": "IRENA", "domains": ["irena.org"], "kind": "international_organization"},
+    {"publisher": "IEC", "domains": ["iec.ch"], "kind": "standards_organization"},
+    {"publisher": "新华社", "domains": ["xinhuanet.com", "news.cn"], "kind": "institutional_news"},
+    {"publisher": "Reuters", "domains": ["reuters.com"], "kind": "institutional_news"},
+    {"publisher": "pv magazine", "domains": ["pv-magazine.com", "pv-magazine-china.com"], "kind": "institutional_news"}
+  ],
+  "blocked_platforms": [
+    "zhihu.com", "csdn.net", "reddit.com", "sohu.com", "baidu.com",
+    "weixin.qq.com", "toutiao.com", "xiaohongshu.com", "bilibili.com",
+    "weibo.com", "facebook.com", "x.com", "twitter.com", "medium.com",
+    "substack.com", "1688.com", "alibaba.com", "made-in-china.com"
+  ],
+  "excluded_path_pattern": "(?:^|/)(?:forum|forums|community|communities|users|user|profile|profiles|comments|comment|discussion|discussions)(?:/|$)",
+  "excluded_host_pattern": "(?:^|\\.)(?:forums?|community|communities|users|bbs|social)(?:\\.|$)",
+  "unknown_sources": "exclude_until_verified",
+  "note": "域名登记是来源准入条件，不是参数真实性保证。仍需读取原文、核验完整型号及版本。规则库覆盖150家厂商；当前官网域名登记覆盖8家，其他厂商未核验域名不得自动当作官网。机构或新闻中没有完整型号对应的数值不得补参。"
+}

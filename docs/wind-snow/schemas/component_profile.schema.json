@@ -1,0 +1,242 @@
+{
+  "additionalProperties": false,
+  "description": "光伏组件型号、厂家参数和参数证据。",
+  "properties": {
+    "component_model": {
+      "minLength": 1,
+      "title": "Component Model",
+      "type": "string"
+    },
+    "model_aliases": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Model Aliases",
+      "type": "array"
+    },
+    "manufacturer": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Manufacturer"
+    },
+    "rated_power_w": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Rated Power W"
+    },
+    "hail_resistance_mm": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Hail Resistance Mm"
+    },
+    "wind_load_pa": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Wind Load Pa"
+    },
+    "snow_load_pa": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Snow Load Pa"
+    },
+    "front_static_load_pa": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Front Static Load Pa"
+    },
+    "back_static_load_pa": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Back Static Load Pa"
+    },
+    "hail_impact_velocity_m_s": {
+      "anyOf": [
+        {
+          "exclusiveMinimum": 0.0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Hail Impact Velocity M S"
+    },
+    "market_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Market Version"
+    },
+    "model_derivation_method": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Derivation Method"
+    },
+    "source_document_type": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Document Type"
+    },
+    "source_note": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Note"
+    },
+    "source_url": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "title": "Source Url"
+    },
+    "source_name": {
+      "minLength": 1,
+      "title": "Source Name",
+      "type": "string"
+    },
+    "retrieved_at": {
+      "format": "date-time",
+      "title": "Retrieved At",
+      "type": "string"
+    },
+    "match_confidence": {
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Match Confidence",
+      "type": "number"
+    },
+    "parameter_sources": {
+      "additionalProperties": {
+        "type": "string"
+      },
+      "title": "Parameter Sources",
+      "type": "object"
+    },
+    "lookup_notes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Lookup Notes",
+      "type": "array"
+    },
+    "model_match_status": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Match Status"
+    },
+    "parameter_evidence": {
+      "additionalProperties": {
+        "items": {
+          "additionalProperties": true,
+          "type": "object"
+        },
+        "type": "array"
+      },
+      "title": "Parameter Evidence",
+      "type": "object"
+    }
+  },
+  "required": [
+    "component_model",
+    "source_url",
+    "source_name",
+    "retrieved_at",
+    "match_confidence"
+  ],
+  "title": "ComponentProfile",
+  "type": "object"
+}

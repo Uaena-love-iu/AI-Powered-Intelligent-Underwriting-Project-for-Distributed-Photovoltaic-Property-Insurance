@@ -1,0 +1,2 @@
+const {test}=require('node:test');const assert=require('node:assert/strict');const {requestFor}=require('../../frontend/strategy-selection.js');
+test('case strategy selection is explicit and confined to its revision draft',()=>{assert.equal(requestFor({}),undefined);assert.equal(requestFor({revisionDraft:{}}),undefined);assert.deepEqual(requestFor({revisionDraft:{strategySelection:{record_id:'S1'}}}),{record_id:'S1'});assert.equal(requestFor({revisionDraft:{strategySelection:null}}),undefined);});
